@@ -1,10 +1,11 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_layout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
     <fragment
         android:id="@+id/map"
@@ -104,4 +105,25 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        app:anchorPoint="@dimen/anchor_point"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
+        app:layout_behavior="@string/BottomSheetBehaviorGoogleMapsLike">
+
+        <include
+            layout="@layout/suggestion_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>

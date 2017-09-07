@@ -1,3 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="anchor_point">130dp</dimen>
+    <dimen name="bottom_sheet_peek_height">80dp</dimen>
+
 </resources>

@@ -2,4 +2,7 @@
     <string name="app_name">Nibo</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_origin_destination_picker">OriginDestinationPickerActivity</string>
+
+    <string name="BottomSheetBehaviorGoogleMapsLike">com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike</string>
+
 </resources>

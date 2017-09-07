@@ -240,14 +240,6 @@ public class NiboPickerFragment extends BaseNiboFragment {
         setUpBackPresses(view);
         initmap();
 
-        Bundle args;
-        if ((args = getArguments()) != null) {
-            mSearchBarTitle = args.getString(NiboConstants.SEARCHBAR_TITLE_ARG);
-            mConfirmButtonTitle = args.getString(NiboConstants.SELECTION_BUTTON_TITLE);
-            mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
-            mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
-            mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
-        }
 
         if (mConfirmButtonTitle != null && !mConfirmButtonTitle.equals("")) {
             mPickLocationTextView.setText(mConfirmButtonTitle);

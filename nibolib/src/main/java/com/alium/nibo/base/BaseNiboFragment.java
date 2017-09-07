@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 
 import com.alium.nibo.R;
@@ -57,7 +58,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
 
     protected String mSearchBarTitle;
     protected String mConfirmButtonTitle;
-    protected NiboStyle mStyleEnum = NiboStyle.HOPPER;
+    protected NiboStyle mStyleEnum = NiboStyle.DEFAULT;
 
     protected
     @RawRes
@@ -277,6 +278,14 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
                 });
 
 
+    }
+
+    public void setMargins(View v, int left, int top, int right, int bottom) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            v.requestLayout();
+        }
     }
 
     @android.support.annotation.NonNull
