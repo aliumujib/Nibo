@@ -1,9 +1,10 @@
-package com.alium.nibo;
+package com.alium.nibo.placepicker;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.alium.nibo.R;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompletePrediction;

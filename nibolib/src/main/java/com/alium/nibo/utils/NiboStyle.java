@@ -1,4 +1,6 @@
-package com.alium.nibo;
+package com.alium.nibo.utils;
+
+import com.alium.nibo.R;
 
 /**
  * Created by abdulmujibaliu on 9/7/17.

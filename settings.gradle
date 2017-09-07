@@ -1,1 +1,1 @@
-include ':nibolib', ':persistentsearchview', ':niboexample'
+include ':nibolib', ':persistentsearchview', ':niboexample', ':slidebottompanel'

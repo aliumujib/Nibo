@@ -1,4 +1,4 @@
-package com.alium.nibo;
+package com.alium.nibo.placepicker;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -19,7 +19,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -33,11 +32,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alium.nibo.R;
+import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.models.NiboSelectedPlace;
 import com.alium.nibo.repo.location.LocationAddress;
 import com.alium.nibo.repo.location.LocationRepository;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.alium.nibo.utils.NiboConstants;
+import com.alium.nibo.utils.NiboStyle;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
@@ -68,39 +69,21 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerDragListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class NiboPickerFragment extends BaseNiboFragment {
 
     private static final int VOICE_RECOGNITION_REQUEST_CODE = 200;
-    private GoogleMap mMap;
-    private boolean hasWiderZoom;
-    private Marker mCurrentMapMarker;
     private Address mGeolocation;
-    private static final int DEFAULT_ZOOM = 16;
-    private static final int WIDER_ZOOM = 6;
     private RelativeLayout mRootLayout;
     private RxPersistentSearchView mSearchView;
     private FloatingActionButton mCenterMyLocationFab;
     private LinearLayout mLocationDetails;
     private TextView mGeocodeAddress;
-
     private View mSearchTintView;
-
     private String TAG = getClass().getSimpleName();
-    private GoogleApiClient mGoogleApiClient;
     private SearchSuggestionsBuilder mSamplesSuggestionsBuilder;
 
-    private boolean isFirstLaunch = true;
-    private String mSearchBarTitle;
-    private String mConfirmButtonTitle;
-    private NiboStyle mStyleEnum = NiboStyle.HOPPER;
     private TextView mPickLocationTextView;
-    private
-    @RawRes
-    int mStyleFileID;
-    private
-    @DrawableRes
-    int mMarkerPinIconRes;
-    private NiboSelectedPlace mCurrentSelection;
+
 
     public NiboPickerFragment() {
 
@@ -274,14 +257,6 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
             mSearchView.setLogoText(mSearchBarTitle);
         }
 
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(getActivity())
-                .enableAutoManage(getActivity(), 0, this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
 
         mPickLocationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,230 +289,39 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         });
     }
 
-    private void initmap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
-        LocationRepository locationRepository = new LocationRepository(getActivity());
-
-        locationRepository.getLocationObservable()
-                .subscribe(new Consumer<Location>() {
-                    @Override
-                    public void accept(@NonNull Location location) throws Exception {
-                        CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                                .zoom(15)
-                                .build();
-                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-                        setNewMapMarker(currentPosition);
-
-                        extractGeocode(location.getLatitude(), location.getLongitude());
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                    }
-                });
-
-
-    }
-
-    private void extractGeocode(double lati, double longi) {
+    @Override
+    protected void extractGeocode(final double lati, final double longi) {
         if ((String.valueOf(lati).equals(null))) {
             Toast.makeText(getContext(), "Invlaid location", Toast.LENGTH_SHORT).show();
         } else {
-            LocationAddress locationAddress = new LocationAddress();
-            mGeolocation = locationAddress.getAddressFromLocation(lati, longi,
-                    getContext());
+            LocationAddress.sharedLocationAddressInstance.getObservableAddressFromLocation(lati, longi,
+                    getContext())
+                    .subscribe(new Consumer<Address>() {
+                        @Override
+                        public void accept(@NonNull Address address) throws Exception {
+                            mGeolocation = address;
+                            if (mGeolocation != null) {
+                                String fullAddress = getAddressHTMLText(address);
+                                mGeocodeAddress.setText(Html.fromHtml(fullAddress));
+                                showAddressWithTransition();
+                                Log.d("mGeolocation", " " + fullAddress);
+                                mCurrentSelection = new NiboSelectedPlace(new LatLng(lati, longi), null, getAddressString(address));
+                            }
+                        }
+                    });
 
-            if (mGeolocation != null) {
-                String fullAddress = getAddressHTMLText();
-                mGeocodeAddress.setText(Html.fromHtml(fullAddress));
-                showAddressWithTransition();
-                Log.d("mGeolocation", " " + fullAddress);
-                mCurrentSelection = new NiboSelectedPlace(new LatLng(lati, longi), null, getAddressString());
-            }
         }
-    }
-
-    @android.support.annotation.NonNull
-    private String getAddressHTMLText() {
-        String address = mGeolocation.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String city = mGeolocation.getLocality();
-        String state = mGeolocation.getAdminArea();
-        String country = mGeolocation.getCountryName();
-        String postalCode = mGeolocation.getPostalCode();
-
-        String part1 = mGeolocation.getFeatureName();
-        String part2 = address + ", " + city + ", " + state + ", " + country + ", " + postalCode;
-
-        return "<b>" + part1 + "</b><label style='color:#ccc'> <br>" + part2 + "</label>";
-    }
-
-    @android.support.annotation.NonNull
-    private String getAddressString() {
-        String address = mGeolocation.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String city = mGeolocation.getLocality();
-        String state = mGeolocation.getAdminArea();
-        String country = mGeolocation.getCountryName();
-        String postalCode = mGeolocation.getPostalCode();
-
-        return address + ", " + city + ", " + state + ", " + country + ", " + postalCode;
-    }
-
-
-    public void addOverlay(LatLng place) {
-        GroundOverlay groundOverlay = mMap.addGroundOverlay(new
-                GroundOverlayOptions()
-                .position(place, 100)
-                .transparency(0.5f)
-                .zIndex(3)
-                .image(BitmapDescriptorFactory.fromBitmap(drawableToBitmap(getActivity().getResources().getDrawable(R.drawable.map_overlay)))));
-
-        startOverlayAnimation(groundOverlay);
-    }
-
-    private Bitmap drawableToBitmap(Drawable drawable) {
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if (bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-
-    private void setNewMapMarker(LatLng latLng) {
-        if (mMap != null) {
-            if (mCurrentMapMarker != null) {
-                mCurrentMapMarker.remove();
-            }
-            CameraPosition cameraPosition =
-                    new CameraPosition.Builder().target(latLng)
-                            .zoom(getDefaultZoom())
-                            .build();
-            hasWiderZoom = false;
-            addOverlay(latLng);
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            mCurrentMapMarker = addMarker(latLng);
-            mMap.setOnMarkerDragListener(this);
-            hideAddressWithTransition();
-            extractGeocode(latLng.latitude, latLng.longitude);
-        }
-    }
-
-    private int getDefaultZoom() {
-        int zoom;
-        if (hasWiderZoom) {
-            zoom = WIDER_ZOOM;
-        } else {
-            zoom = DEFAULT_ZOOM;
-        }
-        return zoom;
-    }
-
-    private Marker addMarker(LatLng latLng) {
-        if (getMarkerIconRes() != 0)
-            return mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(getMarkerIconRes())).draggable(true));
-        else
-            return mMap.addMarker(new MarkerOptions().position(latLng).draggable(true));
-    }
-
-    protected
-    @DrawableRes
-    int getMarkerIconRes() {
-        return mMarkerPinIconRes;
-    }
-
-    private void startOverlayAnimation(final GroundOverlay groundOverlay) {
-
-        AnimatorSet animatorSet = new AnimatorSet();
-
-        ValueAnimator vAnimator = ValueAnimator.ofInt(0, 100);
-        vAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        vAnimator.setRepeatMode(ValueAnimator.RESTART);
-        vAnimator.setInterpolator(new LinearInterpolator());
-        vAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                final Integer val = (Integer) valueAnimator.getAnimatedValue();
-                groundOverlay.setDimensions(val);
-            }
-        });
-
-        ValueAnimator tAnimator = ValueAnimator.ofFloat(0, 1);
-        tAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        tAnimator.setRepeatMode(ValueAnimator.RESTART);
-        tAnimator.setInterpolator(new LinearInterpolator());
-        tAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Float val = (Float) valueAnimator.getAnimatedValue();
-                groundOverlay.setTransparency(val);
-            }
-        });
-
-        animatorSet.setDuration(3000);
-        animatorSet.playTogether(vAnimator, tAnimator);
-        animatorSet.start();
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.setMyLocationEnabled(true);
-        mMap.setMaxZoomPreference(20);
-
-        if (getMapStyle() != null)
-            googleMap.setMapStyle(getMapStyle());
-
+    protected void handleMarkerAddition(LatLng latLng) {
+        addOverlay(latLng);
+        hideAddressWithTransition();
     }
 
-    protected MapStyleOptions getMapStyle() {
-        if (mStyleEnum == NiboStyle.CUSTOM) {
-            if (mStyleFileID != 0) {
-                return MapStyleOptions.loadRawResourceStyle(
-                        getActivity(), mStyleFileID);
-            } else {
-                throw new IllegalStateException("NiboStyle.CUSTOM requires that you supply a custom style file, you can get one at https://snazzymaps.com/explore");
-            }
-        } else if (mStyleEnum == NiboStyle.DEFAULT) {
-            return null;
-        } else {
-            if (mStyleEnum == null) {
-                return null;
-            }
-            {
-                return MapStyleOptions.loadRawResourceStyle(
-                        getActivity(), mStyleEnum.getValue());
-            }
-        }
-    }
 
     void showAddressWithTransition() {
-
-        if (isFirstLaunch) {
-            isFirstLaunch = false;
-            return;
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             TransitionManager.beginDelayedTransition(mRootLayout);
@@ -559,14 +343,9 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     }
 
 
-    private int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
-
     @Override
     public void onMarkerDragStart(Marker marker) {
-        Vibrator myVib = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        myVib.vibrate(50);
+        super.onMarkerDragStart(marker);
         hideAddressWithTransition();
     }
 
@@ -577,7 +356,6 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-
         extractGeocode(marker.getPosition().latitude, marker.getPosition().longitude);
     }
 
@@ -597,14 +375,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
             }
         });
 
-        setUpSearchView(true);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
+        setUpSearchView(false);
     }
 
     @Override
@@ -620,16 +391,5 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     public void onConnected(Bundle bundle) {
         if (mSamplesSuggestionsBuilder != null)
             ((PlaceSuggestionsBuilder) mSamplesSuggestionsBuilder).setGoogleApiClient(mGoogleApiClient);
-    }
-
-    @Override
-    public void onConnectionFailed(@android.support.annotation.NonNull ConnectionResult connectionResult) {
-
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
     }
 }

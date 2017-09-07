@@ -3,7 +3,6 @@ package com.alium.niboexample;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,9 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.alium.nibo.NiboConstants;
-import com.alium.nibo.NiboPickerActivity;
-import com.alium.nibo.NiboStyle;
+import com.alium.nibo.origindestinationpicker.NiboOriginDestinationPickerActivity;
+import com.alium.nibo.utils.NiboConstants;
+import com.alium.nibo.placepicker.NiboPlacePickerActivity;
+import com.alium.nibo.utils.NiboStyle;
 import com.alium.nibo.models.NiboSelectedPlace;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,21 +31,27 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchPickerFragment();
+                launchStartFinishActivity();
             }
         });
     }
 
 
     private void launchPickerFragment() {
-        Intent intent = new Intent(this, NiboPickerActivity.class);
-        NiboPickerActivity.NiboPickerBuilder config = new NiboPickerActivity.NiboPickerBuilder()
+        Intent intent = new Intent(this, NiboPlacePickerActivity.class);
+        NiboPlacePickerActivity.NiboPlacePickerBuilder config = new NiboPlacePickerActivity.NiboPlacePickerBuilder()
                 .setSearchBarTitle("Search for an area")
                 .setConfirmButtonTitle("Pick here bish")
                 .setMarkerPinIconRes(R.drawable.ic_place)
                 .setStyleEnum(NiboStyle.CUSTOM)
                 .setStyleFileID(R.raw.retro);
-        NiboPickerActivity.setBuilder(config);
+        NiboPlacePickerActivity.setBuilder(config);
+        startActivityForResult(intent, 200);
+    }
+
+
+    private void launchStartFinishActivity() {
+        Intent intent = new Intent(this, NiboOriginDestinationPickerActivity.class);
         startActivityForResult(intent, 200);
     }
 

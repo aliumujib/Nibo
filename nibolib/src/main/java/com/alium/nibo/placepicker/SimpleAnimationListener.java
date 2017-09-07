@@ -1,4 +1,4 @@
-package com.alium.nibo;
+package com.alium.nibo.placepicker;
 
 import android.animation.Animator;
 

@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alium.nibo">
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,14 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NiboTheme">
-
-
         <activity
-            android:name=".NiboPickerActivity"
+            android:name=".placepicker.NiboPlacePickerActivity"
             android:label="@string/app_name"
-            android:theme="@style/NiboTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/NiboPlacePickerTheme.NoActionBar"></activity>
+        <activity
+            android:name=".origindestinationpicker.NiboOriginDestinationPickerActivity"
+            android:label="@string/title_activity_origin_destination_picker"
+            android:theme="@style/NiboOrigDestTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

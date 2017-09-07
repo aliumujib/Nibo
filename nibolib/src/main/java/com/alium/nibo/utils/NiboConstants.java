@@ -1,4 +1,4 @@
-package com.alium.nibo;
+package com.alium.nibo.utils;
 
 /**
  * Created by abdulmujibaliu on 9/7/17.

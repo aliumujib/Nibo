@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/niboexample/niboexample.iml" filepath="$PROJECT_DIR$/niboexample/niboexample.iml" />
       <module fileurl="file://$PROJECT_DIR$/nibolib/nibolib.iml" filepath="$PROJECT_DIR$/nibolib/nibolib.iml" />
       <module fileurl="file://$PROJECT_DIR$/persistentsearchview/persistentsearchview.iml" filepath="$PROJECT_DIR$/persistentsearchview/persistentsearchview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/slidebottompanel/slidebottompanel.iml" filepath="$PROJECT_DIR$/slidebottompanel/slidebottompanel.iml" />
     </modules>
   </component>
 </project>

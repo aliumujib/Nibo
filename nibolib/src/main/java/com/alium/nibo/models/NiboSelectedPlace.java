@@ -39,10 +39,6 @@ public class NiboSelectedPlace implements Parcelable {
         }
     };
 
-    public String getPlaceId() {
-        return placeId;
-    }
-
     public String getPlaceAddress() {
         return placeAddress;
     }
