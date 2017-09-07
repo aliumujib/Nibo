@@ -12,4 +12,5 @@ public interface Constants {
     String STYLE_FILE_ID = "STYLE_FILE_ID";
     String MARKER_PIN_ICON_RES = "MARKER_PIN_ICON_RES";
 
+    String _FRAGMENT_TAG = "_FRAGMENT_TAG";
 }

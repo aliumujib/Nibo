@@ -89,7 +89,8 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
     private String mSearchBarTitle;
     private String mConfirmButtonTitle;
-    private NIBO_STYLE_ENUM mStyleEnum;
+    private NiboStyle mStyleEnum = NiboStyle.HOPPER;
+    private TextView mPickLocationTextView;
     private
     @RawRes
     int mStyleFileID;
@@ -101,7 +102,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
     }
 
-    public static NiboPickerFragment newInstance(String searchBarTitle, String confirmButtonTitle, NIBO_STYLE_ENUM styleEnum, @RawRes int styleFileID, @DrawableRes int markerIconRes) {
+    public static NiboPickerFragment newInstance(String searchBarTitle, String confirmButtonTitle, NiboStyle styleEnum, @RawRes int styleFileID, @DrawableRes int markerIconRes) {
         Bundle args = new Bundle();
         NiboPickerFragment fragment = new NiboPickerFragment();
         args.putString(Constants.SEARCHBAR_TITLE_ARG, searchBarTitle);
@@ -111,50 +112,6 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         args.putInt(Constants.MARKER_PIN_ICON_RES, markerIconRes);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public class NiboPickerBuilder {
-        private String searchBarTitle;
-        private String confirmButtonTitle;
-        private NIBO_STYLE_ENUM styleEnum;
-        private
-        @RawRes
-        int styleFileID;
-        private
-        @DrawableRes
-        int markerPinIconRes;
-
-
-        public NiboPickerBuilder setSearchBarTitle(String searchBarTitle) {
-            this.searchBarTitle = searchBarTitle;
-            return this;
-        }
-
-        public NiboPickerBuilder setConfirmButtonTitle(String confirmButtonTitle) {
-            this.confirmButtonTitle = confirmButtonTitle;
-            return this;
-        }
-
-        public NiboPickerBuilder setStyleEnum(NIBO_STYLE_ENUM styleEnum) {
-            this.styleEnum = styleEnum;
-            return this;
-        }
-
-        public NiboPickerBuilder setStyleFileID(int styleFileID) {
-            this.styleFileID = styleFileID;
-            return this;
-        }
-
-        public NiboPickerBuilder setMarkerPinIconRes(int markerPinIconRes) {
-            this.markerPinIconRes = markerPinIconRes;
-            return this;
-        }
-
-
-        public NiboPickerFragment build() {
-            return NiboPickerFragment.newInstance(searchBarTitle, confirmButtonTitle, styleEnum, styleFileID, markerPinIconRes);
-        }
-
     }
 
     public void setUpSearchView(boolean setUpVoice) {
@@ -291,6 +248,18 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         setUpBackPresses(view);
         initmap();
 
+        Bundle args;
+        if ((args = getArguments()) != null) {
+            mSearchBarTitle = args.getString(Constants.SEARCHBAR_TITLE_ARG);
+            mConfirmButtonTitle = args.getString(Constants.SELECTION_BUTTON_TITLE);
+            mStyleEnum = (NiboStyle) args.getSerializable(Constants.STYLE_ENUM_ARG);
+            mMarkerPinIconRes = args.getInt(Constants.MARKER_PIN_ICON_RES);
+            mStyleFileID = args.getInt(Constants.STYLE_FILE_ID);
+        }
+
+        if (mConfirmButtonTitle != null && !mConfirmButtonTitle.equals("")) {
+            mPickLocationTextView.setText(mConfirmButtonTitle);
+        }
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getActivity())
@@ -503,13 +472,25 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         mMap.setMyLocationEnabled(true);
         mMap.setMaxZoomPreference(20);
 
-        googleMap.setMapStyle(getMapStyle());
+        if (getMapStyle() != null)
+            googleMap.setMapStyle(getMapStyle());
 
     }
 
     protected MapStyleOptions getMapStyle() {
-        return MapStyleOptions.loadRawResourceStyle(
-                getActivity(), R.raw.retro);
+        if (mStyleEnum == NiboStyle.CUSTOM) {
+            if(mStyleFileID != 0){
+                return MapStyleOptions.loadRawResourceStyle(
+                        getActivity(), mStyleFileID);
+            }else {
+                throw  new IllegalStateException("NiboStyle.CUSTOM requires that you supply a custom style file, you can get one at https://snazzymaps.com/explore");
+            }
+        } else if (mStyleEnum == NiboStyle.DEFAULT) {
+            return null;
+        } else {
+            return MapStyleOptions.loadRawResourceStyle(
+                    getActivity(), mStyleEnum.getValue());
+        }
     }
 
     void showAddressWithTransition() {
@@ -563,6 +544,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         this.mLocationDetails = (LinearLayout) convertView.findViewById(R.id.location_details);
         this.mGeocodeAddress = (TextView) convertView.findViewById(R.id.geocode_address);
         this.mSearchTintView = convertView.findViewById(R.id.view_search_tint);
+        this.mPickLocationTextView = (TextView) convertView.findViewById(R.id.pick_location_btn);
 
         mCenterMyLocationFab.setOnClickListener(new View.OnClickListener() {
             @Override
