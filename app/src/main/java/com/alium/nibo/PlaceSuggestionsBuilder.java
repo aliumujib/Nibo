@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 
-public class SampleSuggestionsBuilder implements SearchSuggestionsBuilder {
+public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
     private Context mContext;
     private List<SearchItem> mHistorySuggestions = new ArrayList<SearchItem>();
     final List<SearchItem> mPlaceSuggestionItems = new ArrayList<>();
@@ -30,7 +30,7 @@ public class SampleSuggestionsBuilder implements SearchSuggestionsBuilder {
     private String TAG = getClass().getSimpleName();
     private GoogleApiClient mGoogleApiClient;
 
-    public SampleSuggestionsBuilder(Context context) {
+    public PlaceSuggestionsBuilder(Context context) {
         this.mContext = context;
 
     }
@@ -103,7 +103,7 @@ public class SampleSuggestionsBuilder implements SearchSuggestionsBuilder {
                                                 //Add as a new item to avoid IllegalArgumentsException when buffer is released
                                                 SearchItem placeSuggestion = new SearchItem(
                                                         prediction.getFullText(null).toString(),
-                                                        null, SearchItem.TYPE_SEARCH_ITEM_SUGGESTION,
+                                                        prediction.getPlaceId(), SearchItem.TYPE_SEARCH_ITEM_SUGGESTION,
                                                         mContext.getResources().getDrawable(R.drawable.ic_map_marker_grey600_18dp)
                                                 );
 

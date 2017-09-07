@@ -36,6 +36,9 @@ import com.alium.nibo.repo.location.LocationAddress;
 import com.alium.nibo.repo.location.LocationRepository;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -100,7 +103,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
         // Hamburger has been clicked
         //mSearchView.setHomeButtonListener(this::openNavDrawer);
-        mSamplesSuggestionsBuilder = new SampleSuggestionsBuilder(getActivity());
+        mSamplesSuggestionsBuilder = new PlaceSuggestionsBuilder(getActivity());
 
         mSearchView.setSuggestionBuilder(mSamplesSuggestionsBuilder);
 
@@ -176,6 +179,11 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
             @Override
             public boolean onSuggestion(SearchItem searchItem) {
+                Toast.makeText(getContext(), searchItem.getValue(), Toast.LENGTH_LONG).show();
+                mSearchView.setSearchString(searchItem.getTitle(), true);
+                mSearchView.setLogoText(searchItem.getTitle());
+                getPlaceDetailsByID(searchItem.getValue());
+                mSearchView.closeSearch();
                 return false;
             }
 
@@ -186,6 +194,21 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
         });
 
+    }
+
+    private void getPlaceDetailsByID(String placeId) {
+        Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
+                .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(@android.support.annotation.NonNull PlaceBuffer places) {
+                        if (places.getStatus().isSuccess()) {
+                            if (places.getCount() > 0) {
+                               setNewMapMarker(places.get(0).getLatLng());
+                            }
+                        }
+                        places.release();
+                    }
+                });
     }
 
 
@@ -348,6 +371,8 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             mCurrentMapMarker = addMarker(latLng);
             mMap.setOnMarkerDragListener(this);
+            hideAddressWithTransition();
+            extractGeocode(latLng.latitude, latLng.longitude);
         }
     }
 
@@ -494,7 +519,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     @Override
     public void onStop() {
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            ((SampleSuggestionsBuilder) mSamplesSuggestionsBuilder).setGoogleApiClient(null);
+            ((PlaceSuggestionsBuilder) mSamplesSuggestionsBuilder).setGoogleApiClient(null);
             mGoogleApiClient.disconnect();
         }
         super.onStop();
@@ -503,7 +528,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     @Override
     public void onConnected(Bundle bundle) {
         if (mSamplesSuggestionsBuilder != null)
-            ((SampleSuggestionsBuilder) mSamplesSuggestionsBuilder).setGoogleApiClient(mGoogleApiClient);
+            ((PlaceSuggestionsBuilder) mSamplesSuggestionsBuilder).setGoogleApiClient(mGoogleApiClient);
     }
 
     @Override

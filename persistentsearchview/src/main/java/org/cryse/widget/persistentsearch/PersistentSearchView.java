@@ -308,13 +308,16 @@ public class PersistentSearchView extends RevealViewGroup {
                 return false;
             }
         });
+
         micStateChanged();
+
         mMicButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 micClick();
             }
         });
+
         mSearchEditText.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -336,32 +339,31 @@ public class PersistentSearchView extends RevealViewGroup {
         });
 
 
-
         mSearchViewSubject.debounce(1, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<String>() {
-            @Override
-            public void accept(@NonNull String s) throws Exception {
-                Log.d(TAG, "Typed " + s);
-                if (!mAvoidTriggerTextWatcher) {
-                    if (s.length() > 0) {
-                        showClearButton();
-                        buildSearchSuggestions(getSearchText());
-                    } else {
-                        showMicButton();
-                        buildEmptySearchSuggestions();
+                    @Override
+                    public void accept(@NonNull String s) throws Exception {
+                        Log.d(TAG, "Typed " + s);
+                        if (!mAvoidTriggerTextWatcher) {
+                            if (s.length() > 0) {
+                                showClearButton();
+                                buildSearchSuggestions(getSearchText());
+                            } else {
+                                showMicButton();
+                                buildEmptySearchSuggestions();
+                            }
+                        }
+                        if (mSearchListener != null)
+                            mSearchListener.onSearchTermChanged(s);
                     }
-                }
-                if (mSearchListener != null)
-                    mSearchListener.onSearchTermChanged(s);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(@NonNull Throwable throwable) throws Exception {
-
-            }
-        });
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        Log.d(TAG, throwable.getMessage());
+                    }
+                });
 
     }
 
@@ -609,6 +611,10 @@ public class PersistentSearchView extends RevealViewGroup {
         mLogoView.setTextColor(color);
     }
 
+    public void setLogoText(String text) {
+        mLogoView.setText(text);
+    }
+
     /***
      * Get the PersistentSearchView's current text
      *
@@ -657,7 +663,7 @@ public class PersistentSearchView extends RevealViewGroup {
                         Log.d(TAG, "Search suggestions count is" + searchItems.size());
                         mSearchSuggestions.addAll(searchItems);
                     } else {
-                        Log.d(TAG, "Search suggestions is empty" );
+                        Log.d(TAG, "Search suggestions is empty");
                     }
                     mSearchItemAdapter.notifyDataSetChanged();
                 }

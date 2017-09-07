@@ -119,6 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:elevation="4dp"
+        app:persistentSV_logoString="Search"
         app:persistentSV_customToolbarHeight="64dp"
         app:persistentSV_displayMode="toolbar"
         app:persistentSV_editHintText="Search"

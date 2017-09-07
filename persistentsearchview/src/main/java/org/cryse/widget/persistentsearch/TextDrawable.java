@@ -23,7 +23,7 @@ public class TextDrawable extends Drawable {
         this.mText = text;
 
         mTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                24f, resources.getDisplayMetrics());
+                16f, resources.getDisplayMetrics());
 
         this.mPaint = new Paint();
         mPaint.setColor(Color.GRAY);
