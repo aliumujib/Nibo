@@ -24,8 +24,6 @@ import io.reactivex.Observer;
 public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
     private Context mContext;
     private List<SearchItem> mHistorySuggestions = new ArrayList<SearchItem>();
-    final List<SearchItem> mPlaceSuggestionItems = new ArrayList<>();
-
 
     private String TAG = getClass().getSimpleName();
     private GoogleApiClient mGoogleApiClient;
@@ -48,39 +46,6 @@ public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
         return items;
     }
 
-    @Override
-    public Collection<SearchItem> buildSearchSuggestion(int maxCount, String query) {
-
-        Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, query, null, null)
-                .setResultCallback(
-                        new ResultCallback<AutocompletePredictionBuffer>() {
-                            @Override
-                            public void onResult(@NonNull AutocompletePredictionBuffer buffer) {
-                                mPlaceSuggestionItems.clear();
-                                if (buffer.getStatus().isSuccess()) {
-                                    Log.d(TAG, buffer.toString() + " " + buffer.getCount());
-
-                                    for (AutocompletePrediction prediction : buffer) {
-                                        Log.d(TAG, prediction.getFullText(null).toString());
-                                        //Add as a new item to avoid IllegalArgumentsException when buffer is released
-                                        SearchItem placeSuggestion = new SearchItem(
-                                                prediction.getFullText(null).toString(),
-                                                null, SearchItem.TYPE_SEARCH_ITEM_SUGGESTION
-                                        );
-
-                                        mPlaceSuggestionItems.add(placeSuggestion);
-                                    }
-
-                                } else {
-                                    Log.d(TAG, buffer.toString());
-                                }
-                                //Prevent memory leak by releasing buffer
-                                buffer.release();
-                            }
-                        }, 60, TimeUnit.SECONDS);
-
-        return mPlaceSuggestionItems;
-    }
 
     @Override
     public Observable<Collection<SearchItem>> rXbuildSearchSuggestion(int maxCount, final String query) {

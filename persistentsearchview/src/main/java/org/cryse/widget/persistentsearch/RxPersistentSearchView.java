@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -81,6 +82,7 @@ public class RxPersistentSearchView extends RevealViewGroup {
     private ImageView mMicButton;
     private SearchListener mSearchListener;
     private HomeButtonListener mHomeButtonListener;
+    private ProgressBar mProgressBar;
     private FrameLayout mRootLayout;
     private VoiceRecognitionDelegate mVoiceRecognitionDelegate;
     private boolean mAvoidTriggerTextWatcher;
@@ -243,7 +245,17 @@ public class RxPersistentSearchView extends RevealViewGroup {
         this.mSearchEditText = (EditText) findViewById(R.id.edittext_search);
         this.mSuggestionListView = (ListView) findViewById(R.id.listview_suggestions);
         this.mMicButton = (ImageView) findViewById(R.id.button_mic);
+        this.mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
     }
+
+    private void hideProgressBar(){
+        mProgressBar.setVisibility(GONE);
+    }
+
+    private void showProgressBar(){
+        mProgressBar.setVisibility(VISIBLE);
+    }
+
 
     private void setValuesToViews() {
         this.mSearchCardView.setCardElevation(mSearchCardElevation);
@@ -654,10 +666,12 @@ public class RxPersistentSearchView extends RevealViewGroup {
     }
 
     private void buildSearchSuggestions(String query) {
+        showProgressBar();
         if (mSuggestionBuilder != null) {
             mSuggestionBuilder.rXbuildSearchSuggestion(10, query).subscribe(new Consumer<Collection<SearchItem>>() {
                 @Override
                 public void accept(@NonNull Collection<SearchItem> searchItems) throws Exception {
+                    hideProgressBar();
                     mSearchSuggestions.clear();
                     if (searchItems != null && searchItems.size() > 0) {
                         Log.d(TAG, "Search suggestions count is" + searchItems.size());
