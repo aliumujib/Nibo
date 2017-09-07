@@ -61,6 +61,7 @@
                     android:layout_marginLeft="8dp"
                     android:gravity="center"
                     android:id="@+id/pick_location_btn"
+                    android:background="@android:drawable/list_selector_background"
                     android:text="Pick this location"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                     android:textColor="@android:color/primary_text_light"

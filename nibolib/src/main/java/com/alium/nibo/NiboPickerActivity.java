@@ -3,14 +3,11 @@ package com.alium.nibo;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
 import android.support.annotation.RawRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -54,7 +51,7 @@ public class NiboPickerActivity extends AppCompatActivity {
         FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();
 
         FragmentTransaction ft = manager.beginTransaction();
-        ft.replace(R.id.frame_container, fragment, Constants._FRAGMENT_TAG);
+        ft.replace(R.id.frame_container, fragment, NiboConstants._FRAGMENT_TAG);
         ft.commit();
     }
 

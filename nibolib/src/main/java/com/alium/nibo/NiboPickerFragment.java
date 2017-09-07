@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -32,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alium.nibo.models.NiboSelectedPlace;
 import com.alium.nibo.repo.location.LocationAddress;
 import com.alium.nibo.repo.location.LocationRepository;
 import com.google.android.gms.common.ConnectionResult;
@@ -60,6 +62,8 @@ import org.cryse.widget.persistentsearch.VoiceRecognitionDelegate;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -96,6 +100,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     private
     @DrawableRes
     int mMarkerPinIconRes;
+    private NiboSelectedPlace mCurrentSelection;
 
     public NiboPickerFragment() {
 
@@ -104,11 +109,11 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     public static NiboPickerFragment newInstance(String searchBarTitle, String confirmButtonTitle, NiboStyle styleEnum, @RawRes int styleFileID, @DrawableRes int markerIconRes) {
         Bundle args = new Bundle();
         NiboPickerFragment fragment = new NiboPickerFragment();
-        args.putString(Constants.SEARCHBAR_TITLE_ARG, searchBarTitle);
-        args.putString(Constants.SELECTION_BUTTON_TITLE, confirmButtonTitle);
-        args.putSerializable(Constants.STYLE_ENUM_ARG, styleEnum);
-        args.putInt(Constants.STYLE_FILE_ID, styleFileID);
-        args.putInt(Constants.MARKER_PIN_ICON_RES, markerIconRes);
+        args.putString(NiboConstants.SEARCHBAR_TITLE_ARG, searchBarTitle);
+        args.putString(NiboConstants.SELECTION_BUTTON_TITLE, confirmButtonTitle);
+        args.putSerializable(NiboConstants.STYLE_ENUM_ARG, styleEnum);
+        args.putInt(NiboConstants.STYLE_FILE_ID, styleFileID);
+        args.putInt(NiboConstants.MARKER_PIN_ICON_RES, markerIconRes);
         fragment.setArguments(args);
         return fragment;
     }
@@ -123,7 +128,12 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         }
 
         // Hamburger has been clicked
-        //mSearchView.setHomeButtonListener(this::openNavDrawer);
+        mSearchView.setHomeButtonListener(new RxPersistentSearchView.HomeButtonListener() {
+            @Override
+            public void onHomeButtonClick() {
+                getActivity().finish();
+            }
+        });
         mSamplesSuggestionsBuilder = new PlaceSuggestionsBuilder(getActivity());
 
         mSearchView.setSuggestionBuilder(mSamplesSuggestionsBuilder);
@@ -249,11 +259,11 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
         Bundle args;
         if ((args = getArguments()) != null) {
-            mSearchBarTitle = args.getString(Constants.SEARCHBAR_TITLE_ARG);
-            mConfirmButtonTitle = args.getString(Constants.SELECTION_BUTTON_TITLE);
-            mStyleEnum = (NiboStyle) args.getSerializable(Constants.STYLE_ENUM_ARG);
-            mMarkerPinIconRes = args.getInt(Constants.MARKER_PIN_ICON_RES);
-            mStyleFileID = args.getInt(Constants.STYLE_FILE_ID);
+            mSearchBarTitle = args.getString(NiboConstants.SEARCHBAR_TITLE_ARG);
+            mConfirmButtonTitle = args.getString(NiboConstants.SELECTION_BUTTON_TITLE);
+            mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
+            mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
+            mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
         }
 
         if (mConfirmButtonTitle != null && !mConfirmButtonTitle.equals("")) {
@@ -273,6 +283,15 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        mPickLocationTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra(NiboConstants.RESULTS_SELECTED, mCurrentSelection);
+                getActivity().setResult(RESULT_OK, intent);
+                getActivity().finish();
+            }
+        });
 
     }
 
@@ -336,16 +355,17 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
                     getContext());
 
             if (mGeolocation != null) {
-                String fullAddress = getAddressText();
+                String fullAddress = getAddressHTMLText();
                 mGeocodeAddress.setText(Html.fromHtml(fullAddress));
                 showAddressWithTransition();
                 Log.d("mGeolocation", " " + fullAddress);
+                mCurrentSelection = new NiboSelectedPlace(new LatLng(lati, longi), null, getAddressString());
             }
         }
     }
 
     @android.support.annotation.NonNull
-    private String getAddressText() {
+    private String getAddressHTMLText() {
         String address = mGeolocation.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
         String city = mGeolocation.getLocality();
         String state = mGeolocation.getAdminArea();
@@ -356,6 +376,17 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         String part2 = address + ", " + city + ", " + state + ", " + country + ", " + postalCode;
 
         return "<b>" + part1 + "</b><label style='color:#ccc'> <br>" + part2 + "</label>";
+    }
+
+    @android.support.annotation.NonNull
+    private String getAddressString() {
+        String address = mGeolocation.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+        String city = mGeolocation.getLocality();
+        String state = mGeolocation.getAdminArea();
+        String country = mGeolocation.getCountryName();
+        String postalCode = mGeolocation.getPostalCode();
+
+        return address + ", " + city + ", " + state + ", " + country + ", " + postalCode;
     }
 
 
@@ -503,7 +534,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
     void showAddressWithTransition() {
 
-        if(isFirstLaunch){
+        if (isFirstLaunch) {
             isFirstLaunch = false;
             return;
         }

@@ -4,7 +4,7 @@ package com.alium.nibo;
  * Created by abdulmujibaliu on 9/7/17.
  */
 
-public interface Constants {
+public interface NiboConstants {
 
     String SEARCHBAR_TITLE_ARG = "SEARCHBAR_TITLE";
     String SELECTION_BUTTON_TITLE = "SELECTION_BUTTON_TITLE";
@@ -13,4 +13,7 @@ public interface Constants {
     String MARKER_PIN_ICON_RES = "MARKER_PIN_ICON_RES";
 
     String _FRAGMENT_TAG = "_FRAGMENT_TAG";
+
+    String RESULTS_SELECTED = "RESULTS_SELECTED";
+
 }
