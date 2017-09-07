@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.RawRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.Html;
@@ -53,7 +54,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.cryse.widget.persistentsearch.DefaultVoiceRecognizerDelegate;
-import org.cryse.widget.persistentsearch.PersistentSearchView;
+import org.cryse.widget.persistentsearch.RxPersistentSearchView;
 import org.cryse.widget.persistentsearch.SearchItem;
 import org.cryse.widget.persistentsearch.SearchSuggestionsBuilder;
 import org.cryse.widget.persistentsearch.VoiceRecognitionDelegate;
@@ -74,7 +75,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     private static final int DEFAULT_ZOOM = 16;
     private static final int WIDER_ZOOM = 6;
     private RelativeLayout mRootLayout;
-    private PersistentSearchView mSearchView;
+    private RxPersistentSearchView mSearchView;
     private FloatingActionButton mCenterMyLocationFab;
     private LinearLayout mLocationDetails;
     private TextView mGeocodeAddress;
@@ -86,10 +87,75 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     private GoogleApiClient mGoogleApiClient;
     private SearchSuggestionsBuilder mSamplesSuggestionsBuilder;
 
+    private String mSearchBarTitle;
+    private String mConfirmButtonTitle;
+    private NIBO_STYLE_ENUM mStyleEnum;
+    private
+    @RawRes
+    int mStyleFileID;
+    private
+    @DrawableRes
+    int mMarkerPinIconRes;
+
     public NiboPickerFragment() {
 
     }
 
+    public static NiboPickerFragment newInstance(String searchBarTitle, String confirmButtonTitle, NIBO_STYLE_ENUM styleEnum, @RawRes int styleFileID, @DrawableRes int markerIconRes) {
+        Bundle args = new Bundle();
+        NiboPickerFragment fragment = new NiboPickerFragment();
+        args.putString(Constants.SEARCHBAR_TITLE_ARG, searchBarTitle);
+        args.putString(Constants.SELECTION_BUTTON_TITLE, confirmButtonTitle);
+        args.putSerializable(Constants.STYLE_ENUM_ARG, styleEnum);
+        args.putInt(Constants.STYLE_FILE_ID, styleFileID);
+        args.putInt(Constants.MARKER_PIN_ICON_RES, markerIconRes);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public class NiboPickerBuilder {
+        private String searchBarTitle;
+        private String confirmButtonTitle;
+        private NIBO_STYLE_ENUM styleEnum;
+        private
+        @RawRes
+        int styleFileID;
+        private
+        @DrawableRes
+        int markerPinIconRes;
+
+
+        public NiboPickerBuilder setSearchBarTitle(String searchBarTitle) {
+            this.searchBarTitle = searchBarTitle;
+            return this;
+        }
+
+        public NiboPickerBuilder setConfirmButtonTitle(String confirmButtonTitle) {
+            this.confirmButtonTitle = confirmButtonTitle;
+            return this;
+        }
+
+        public NiboPickerBuilder setStyleEnum(NIBO_STYLE_ENUM styleEnum) {
+            this.styleEnum = styleEnum;
+            return this;
+        }
+
+        public NiboPickerBuilder setStyleFileID(int styleFileID) {
+            this.styleFileID = styleFileID;
+            return this;
+        }
+
+        public NiboPickerBuilder setMarkerPinIconRes(int markerPinIconRes) {
+            this.markerPinIconRes = markerPinIconRes;
+            return this;
+        }
+
+
+        public NiboPickerFragment build() {
+            return NiboPickerFragment.newInstance(searchBarTitle, confirmButtonTitle, styleEnum, styleFileID, markerPinIconRes);
+        }
+
+    }
 
     public void setUpSearchView(boolean setUpVoice) {
 
@@ -106,7 +172,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
         mSearchView.setSuggestionBuilder(mSamplesSuggestionsBuilder);
 
-        mSearchView.setSearchListener(new PersistentSearchView.SearchListener() {
+        mSearchView.setSearchListener(new RxPersistentSearchView.SearchListener() {
 
 
             @Override
@@ -182,6 +248,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
                 mSearchView.setSearchString(searchItem.getTitle(), true);
                 mSearchView.setLogoText(searchItem.getTitle());
                 getPlaceDetailsByID(searchItem.getValue());
+                hideAddressWithTransition();
                 mSearchView.closeSearch();
                 return false;
             }
@@ -202,7 +269,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
                     public void onResult(@android.support.annotation.NonNull PlaceBuffer places) {
                         if (places.getStatus().isSuccess()) {
                             if (places.getCount() > 0) {
-                               setNewMapMarker(places.get(0).getLatLng());
+                                setNewMapMarker(places.get(0).getLatLng());
                             }
                         }
                         places.release();
@@ -223,8 +290,6 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         initView(view);
         setUpBackPresses(view);
         initmap();
-
-        mAutoCompleteRepository = new AutoCompleteRepository(getResources().getString(R.string.google_places_key));
 
 
         mGoogleApiClient = new GoogleApiClient
@@ -275,7 +340,6 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
                                 .build();
                         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-                        addOverlay(currentPosition);
                         setNewMapMarker(currentPosition);
 
                         extractGeocode(location.getLatitude(), location.getLongitude());
@@ -367,6 +431,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
                             .zoom(getDefaultZoom())
                             .build();
             hasWiderZoom = false;
+            addOverlay(latLng);
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             mCurrentMapMarker = addMarker(latLng);
             mMap.setOnMarkerDragListener(this);
@@ -395,7 +460,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     protected
     @DrawableRes
     int getMarkerIconRes() {
-        return 0;
+        return mMarkerPinIconRes;
     }
 
     private void startOverlayAnimation(final GroundOverlay groundOverlay) {
@@ -437,17 +502,15 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.setMyLocationEnabled(true);
         mMap.setMaxZoomPreference(20);
-      
-        googleMap.setMapStyle(getMapStyleOptions());
+
+        googleMap.setMapStyle(getMapStyle());
 
     }
 
-    protected MapStyleOptions getMapStyleOptions(){
+    protected MapStyleOptions getMapStyle() {
         return MapStyleOptions.loadRawResourceStyle(
                 getActivity(), R.raw.retro);
     }
-
-
 
     void showAddressWithTransition() {
 
@@ -495,7 +558,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
     private void initView(View convertView) {
         this.mRootLayout = (RelativeLayout) convertView.findViewById(R.id.root_layout);
-        this.mSearchView = (PersistentSearchView) convertView.findViewById(R.id.searchview);
+        this.mSearchView = (RxPersistentSearchView) convertView.findViewById(R.id.searchview);
         this.mCenterMyLocationFab = (FloatingActionButton) convertView.findViewById(R.id.center_my_location_fab);
         this.mLocationDetails = (LinearLayout) convertView.findViewById(R.id.location_details);
         this.mGeocodeAddress = (TextView) convertView.findViewById(R.id.geocode_address);

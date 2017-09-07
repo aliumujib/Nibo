@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="PersistentSearchView">
+    <declare-styleable name="RxPersistentSearchView">
         <attr name="persistentSV_searchTextColor" format="color"/>
         <attr name="persistentSV_logoDrawable" format="reference"/>
         <attr name="persistentSV_logoString" format="string"/>

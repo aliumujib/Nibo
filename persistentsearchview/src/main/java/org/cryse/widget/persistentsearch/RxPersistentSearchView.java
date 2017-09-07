@@ -51,7 +51,7 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 @SuppressWarnings("unused")
-public class PersistentSearchView extends RevealViewGroup {
+public class RxPersistentSearchView extends RevealViewGroup {
     public static final int VOICE_RECOGNITION_CODE = 8185102;
     final static double COS_45 = Math.cos(Math.toRadians(45));
     private static final int[] RES_IDS_ACTION_BAR_SIZE = {R.attr.actionBarSize};
@@ -100,17 +100,17 @@ public class PersistentSearchView extends RevealViewGroup {
     private String TAG = getClass().getSimpleName();
     private PublishSubject<String> mSearchViewSubject = PublishSubject.create();
 
-    public PersistentSearchView(Context context) {
+    public RxPersistentSearchView(Context context) {
         super(context);
         init(null);
     }
 
-    public PersistentSearchView(Context context, AttributeSet attrs) {
+    public RxPersistentSearchView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public PersistentSearchView(Context context, AttributeSet attrs, int defStyle) {
+    public RxPersistentSearchView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs);
     }
@@ -174,18 +174,18 @@ public class PersistentSearchView extends RevealViewGroup {
         LayoutInflater.from(getContext()).inflate(R.layout.layout_searchview, this, true);
         if (attrs != null) {
             TypedArray attrsValue = getContext().obtainStyledAttributes(attrs,
-                    R.styleable.PersistentSearchView);
-            mDisplayMode = DisplayMode.fromInt(attrsValue.getInt(R.styleable.PersistentSearchView_persistentSV_displayMode, DisplayMode.MENUITEM.toInt()));
-            mSearchCardElevation = attrsValue.getDimensionPixelSize(R.styleable.PersistentSearchView_persistentSV_searchCardElevation, -1);
-            mSearchTextColor = attrsValue.getColor(R.styleable.PersistentSearchView_persistentSV_searchTextColor, Color.BLACK);
-            mLogoDrawable = attrsValue.getDrawable(R.styleable.PersistentSearchView_persistentSV_logoDrawable);
-            mStringLogoDrawable = attrsValue.getString(R.styleable.PersistentSearchView_persistentSV_logoString);
-            mSearchEditTextColor = attrsValue.getColor(R.styleable.PersistentSearchView_persistentSV_editTextColor, Color.BLACK);
-            mSearchEditTextHint = attrsValue.getString(R.styleable.PersistentSearchView_persistentSV_editHintText);
-            mSearchEditTextHintColor = attrsValue.getColor(R.styleable.PersistentSearchView_persistentSV_editHintTextColor, Color.BLACK);
-            mArrorButtonColor = attrsValue.getColor(R.styleable.PersistentSearchView_persistentSV_homeButtonColor, Color.BLACK);
-            mCustomToolbarHeight = attrsValue.getDimensionPixelSize(R.styleable.PersistentSearchView_persistentSV_customToolbarHeight, calculateToolbarSize(getContext()));
-            mHomeButtonMode = attrsValue.getInt(R.styleable.PersistentSearchView_persistentSV_homeButtonMode, 0);
+                    R.styleable.RxPersistentSearchView);
+            mDisplayMode = DisplayMode.fromInt(attrsValue.getInt(R.styleable.RxPersistentSearchView_persistentSV_displayMode, DisplayMode.MENUITEM.toInt()));
+            mSearchCardElevation = attrsValue.getDimensionPixelSize(R.styleable.RxPersistentSearchView_persistentSV_searchCardElevation, -1);
+            mSearchTextColor = attrsValue.getColor(R.styleable.RxPersistentSearchView_persistentSV_searchTextColor, Color.BLACK);
+            mLogoDrawable = attrsValue.getDrawable(R.styleable.RxPersistentSearchView_persistentSV_logoDrawable);
+            mStringLogoDrawable = attrsValue.getString(R.styleable.RxPersistentSearchView_persistentSV_logoString);
+            mSearchEditTextColor = attrsValue.getColor(R.styleable.RxPersistentSearchView_persistentSV_editTextColor, Color.BLACK);
+            mSearchEditTextHint = attrsValue.getString(R.styleable.RxPersistentSearchView_persistentSV_editHintText);
+            mSearchEditTextHintColor = attrsValue.getColor(R.styleable.RxPersistentSearchView_persistentSV_editHintTextColor, Color.BLACK);
+            mArrorButtonColor = attrsValue.getColor(R.styleable.RxPersistentSearchView_persistentSV_homeButtonColor, Color.BLACK);
+            mCustomToolbarHeight = attrsValue.getDimensionPixelSize(R.styleable.RxPersistentSearchView_persistentSV_customToolbarHeight, calculateToolbarSize(getContext()));
+            mHomeButtonMode = attrsValue.getInt(R.styleable.RxPersistentSearchView_persistentSV_homeButtonMode, 0);
             attrsValue.recycle();
         }
 
@@ -289,8 +289,8 @@ public class PersistentSearchView extends RevealViewGroup {
             public boolean onEditorAction(TextView v, int actionId,
                                           KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    clearSuggestions();
-                    fromEditingToSearch(true, false);
+//                    clearSuggestions();
+//                    fromEditingToSearch(true, false);
                     return true;
                 }
                 return false;

@@ -113,7 +113,7 @@
         android:layerType="hardware"/>
 
 
-    <org.cryse.widget.persistentsearch.PersistentSearchView
+    <org.cryse.widget.persistentsearch.RxPersistentSearchView
         android:id="@+id/searchview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
