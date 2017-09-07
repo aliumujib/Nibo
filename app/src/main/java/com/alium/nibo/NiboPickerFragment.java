@@ -37,7 +37,6 @@ import com.alium.nibo.repo.location.LocationRepository;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -438,13 +437,16 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.setMyLocationEnabled(true);
         mMap.setMaxZoomPreference(20);
-        //mMap.setPadding(0, 0, 0, dpToPx(100));
-        MapStyleOptions style = MapStyleOptions.loadRawResourceStyle(
-                getActivity(), R.raw.maps_style);
-        googleMap.setMapStyle(style);
-
+      
+        googleMap.setMapStyle(getMapStyleOptions());
 
     }
+
+    protected MapStyleOptions getMapStyleOptions(){
+        return MapStyleOptions.loadRawResourceStyle(
+                getActivity(), R.raw.retro);
+    }
+
 
 
     void showAddressWithTransition() {
