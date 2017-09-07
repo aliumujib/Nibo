@@ -260,6 +260,10 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
             mPickLocationTextView.setText(mConfirmButtonTitle);
         }
 
+        if (mSearchBarTitle != null && !mSearchBarTitle.equals("")) {
+            mSearchView.setLogoText(mSearchBarTitle);
+        }
+
         mGoogleApiClient = new GoogleApiClient
                 .Builder(getActivity())
                 .enableAutoManage(getActivity(), 0, this)
