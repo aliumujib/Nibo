@@ -17,7 +17,7 @@ import android.view.MenuItem;
 public class NiboPickerActivity extends AppCompatActivity {
 
 
-    private static NiboPickerBuilder mConfig;
+    private static NiboPickerBuilder mConfig = new NiboPickerBuilder();
 
     public static void setBuilder(NiboPickerBuilder config) {
 
@@ -58,7 +58,7 @@ public class NiboPickerActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    public class NiboPickerBuilder {
+    public static class NiboPickerBuilder {
         private String searchBarTitle;
         private String confirmButtonTitle;
         private NiboStyle styleEnum;

@@ -32,7 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alium.nibo.repo.location.AutoCompleteRepository;
 import com.alium.nibo.repo.location.LocationAddress;
 import com.alium.nibo.repo.location.LocationRepository;
 import com.google.android.gms.common.ConnectionResult;
@@ -80,13 +79,13 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     private LinearLayout mLocationDetails;
     private TextView mGeocodeAddress;
 
-    private AutoCompleteRepository mAutoCompleteRepository;
     private View mSearchTintView;
 
     private String TAG = getClass().getSimpleName();
     private GoogleApiClient mGoogleApiClient;
     private SearchSuggestionsBuilder mSamplesSuggestionsBuilder;
 
+    private boolean isFirstLaunch = true;
     private String mSearchBarTitle;
     private String mConfirmButtonTitle;
     private NiboStyle mStyleEnum = NiboStyle.HOPPER;
@@ -196,7 +195,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
             @Override
             public void onSearch(String string) {
-                mAutoCompleteRepository.autocomplete(string);
+
             }
 
             @Override
@@ -205,8 +204,8 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
                 mSearchView.setSearchString(searchItem.getTitle(), true);
                 mSearchView.setLogoText(searchItem.getTitle());
                 getPlaceDetailsByID(searchItem.getValue());
-                hideAddressWithTransition();
                 mSearchView.closeSearch();
+                hideAddressWithTransition();
                 return false;
             }
 
@@ -479,21 +478,31 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
 
     protected MapStyleOptions getMapStyle() {
         if (mStyleEnum == NiboStyle.CUSTOM) {
-            if(mStyleFileID != 0){
+            if (mStyleFileID != 0) {
                 return MapStyleOptions.loadRawResourceStyle(
                         getActivity(), mStyleFileID);
-            }else {
-                throw  new IllegalStateException("NiboStyle.CUSTOM requires that you supply a custom style file, you can get one at https://snazzymaps.com/explore");
+            } else {
+                throw new IllegalStateException("NiboStyle.CUSTOM requires that you supply a custom style file, you can get one at https://snazzymaps.com/explore");
             }
         } else if (mStyleEnum == NiboStyle.DEFAULT) {
             return null;
         } else {
-            return MapStyleOptions.loadRawResourceStyle(
-                    getActivity(), mStyleEnum.getValue());
+            if (mStyleEnum == null) {
+                return null;
+            }
+            {
+                return MapStyleOptions.loadRawResourceStyle(
+                        getActivity(), mStyleEnum.getValue());
+            }
         }
     }
 
     void showAddressWithTransition() {
+
+        if(isFirstLaunch){
+            isFirstLaunch = false;
+            return;
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             TransitionManager.beginDelayedTransition(mRootLayout);
@@ -515,7 +524,7 @@ public class NiboPickerFragment extends Fragment implements OnMapReadyCallback, 
     }
 
 
-    public int dpToPx(int dp) {
+    private int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
