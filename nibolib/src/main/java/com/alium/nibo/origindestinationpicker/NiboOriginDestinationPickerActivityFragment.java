@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -17,10 +16,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.alium.nibo.R;
 import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike;
+import com.alium.nibo.origindestinationpicker.adapter.OrigDestSuggestionAdapter;
 import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
@@ -30,7 +31,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import org.cryse.widget.persistentsearch.SearchItem;
-import org.cryse.widget.persistentsearch.SearchItemAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,8 +57,8 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
     private NestedScrollView mBottomSheet;
     private CardView mContentCardView;
     private ListView mSuggestionsListView;
-
-    private SearchItemAdapter mSearchItemAdapter;
+    private ProgressBar mProgressBar;
+    private OrigDestSuggestionAdapter mSearchItemAdapter;
     private ArrayList<SearchItem> mSearchSuggestions;
     private BottomSheetBehaviorGoogleMapsLike<View> mBehavior;
 
@@ -88,7 +88,7 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
         }
 
         mSearchSuggestions = new ArrayList<>();
-        mSearchItemAdapter = new SearchItemAdapter(getContext(), mSearchSuggestions);
+        mSearchItemAdapter = new OrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
 
 
         initView(view);
@@ -131,9 +131,9 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
         this.mContentCardView = (CardView) convertView.findViewById(R.id.content_card_view);
         this.mSuggestionsListView = (ListView) convertView.findViewById(R.id.suggestions_recyclerview);
         this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
+        this.mProgressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 
         this.mRoundedIndicatorDestination.setChecked(true);
-
         /**
          * If we want to listen for states callback
          */
@@ -145,7 +145,6 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
-                        addMargins();
                         Log.d("bottomsheet-", "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
@@ -156,7 +155,6 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
                         mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
-                        removeMargins();
                         Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN:
@@ -177,6 +175,15 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
         mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
 
 
+    }
+
+    private void showLoading() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+
+    private void hideLoading() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     private void removeMargins() {
@@ -209,7 +216,6 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    addMargins();
                     mRoundedIndicatorOrigin.setChecked(true);
                     mRoundedIndicatorDestination.setChecked(false);
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
@@ -223,7 +229,6 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    addMargins();
                     mRoundedIndicatorDestination.setChecked(true);
                     mRoundedIndicatorOrigin.setChecked(false);
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
@@ -270,19 +275,28 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
     }
 
     private void closeSuggestions() {
-        mSearchSuggestions.clear();
-        mSearchItemAdapter.clear();
-        hideKeyboard(mCoordinatorlayout);
-        mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSearchSuggestions.clear();
+                mSearchItemAdapter.clear();
+                mSearchItemAdapter.notifyDataSetChanged();
+                hideKeyboard();
+                mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+            }
+        });
+
     }
 
     private void findResults(String s) {
+        showLoading();
         SuggestionsRepository.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<SearchItem>>() {
             @Override
             public void accept(@io.reactivex.annotations.NonNull Collection<SearchItem> searchItems) throws Exception {
                 mSearchSuggestions.clear();
                 mSearchSuggestions.addAll(searchItems);
                 mSearchItemAdapter.notifyDataSetChanged();
+                hideLoading();
             }
         });
     }

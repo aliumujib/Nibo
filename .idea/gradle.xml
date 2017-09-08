@@ -5,6 +5,15 @@
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/niboexample" />
+            <option value="$PROJECT_DIR$/nibolib" />
+            <option value="$PROJECT_DIR$/persistentsearchview" />
+            <option value="$PROJECT_DIR$/slidebottompanel" />
+          </set>
+        </option>
         <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>

@@ -5,7 +5,6 @@
     android:id="@+id/coordinatorlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
     android:fitsSystemWindows="true">
 
     <fragment
@@ -24,8 +23,8 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="132dp"
-            android:background="@color/white"
+            android:layout_height="136dp"
+            android:background="?attr/colorPrimary"
             android:theme="@style/NiboTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
@@ -51,8 +50,8 @@
                     android:orientation="vertical">
 
                     <com.alium.nibo.utils.customviews.RoundedView
-                        android:layout_width="8dp"
                         android:id="@+id/rounded_indicator_source"
+                        android:layout_width="8dp"
                         android:layout_height="8dp" />
 
                     <View
@@ -65,8 +64,8 @@
                         android:background="@color/circle_color_default_gray" />
 
                     <com.alium.nibo.utils.customviews.RoundedView
-                        android:layout_width="8dp"
                         android:id="@+id/rounded_indicator_destination"
+                        android:layout_width="8dp"
                         android:layout_height="8dp" />
 
                 </LinearLayout>
@@ -79,34 +78,41 @@
                     android:orientation="vertical">
 
                     <EditText
+                        android:id="@+id/origin_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:id="@+id/origin_edit_text"
                         android:layout_weight="1"
                         android:background="@drawable/rectangle_rounded"
-                        android:hint="Select origin"
-                        android:paddingLeft="8dp"
-                        android:maxLines="1"
                         android:ellipsize="end"
+                        android:hint="Select origin"
+                        android:maxLines="1"
+
+                        android:paddingLeft="8dp"
+
+                        android:singleLine="true"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
 
                     <EditText
+                        android:id="@+id/destination_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/rectangle_rounded"
-                        android:hint="Select destination"
-                        android:id="@+id/destination_edit_text"
-                        android:maxLines="1"
                         android:ellipsize="end"
+                        android:focusableInTouchMode="true"
+
+                        android:hint="Select destination"
+                        android:maxLines="1"
                         android:paddingLeft="8dp"
+                        android:singleLine="true"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
                 </LinearLayout>
 
 
             </LinearLayout>
+
 
         </android.support.design.widget.AppBarLayout>
 

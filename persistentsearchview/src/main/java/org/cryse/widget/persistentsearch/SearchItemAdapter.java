@@ -1,6 +1,7 @@
 package org.cryse.widget.persistentsearch;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,18 @@ public class SearchItemAdapter extends ArrayAdapter<SearchItem> {
         super(context, 0, options);
     }
 
+    protected
+    @LayoutRes
+    int getLayoutRes() {
+        return R.layout.layout_searchitem;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SearchItem searchItem = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.layout_searchitem, parent, false);
+                    getLayoutRes(), parent, false);
         }
 
         View border = convertView.findViewById(R.id.view_border);
@@ -32,9 +39,11 @@ public class SearchItemAdapter extends ArrayAdapter<SearchItem> {
         }
         final TextView title = (TextView) convertView
                 .findViewById(R.id.textview_title);
+
         title.setText(searchItem.getTitle());
+
         ImageView icon = (ImageView) convertView.findViewById(R.id.imageview_icon);
-        if(searchItem.getIcon() == null) {
+        if (searchItem.getIcon() == null) {
             switch (searchItem.getType()) {
                 case SearchItem.TYPE_SEARCH_ITEM_HISTORY:
                     icon.setImageResource(R.drawable.ic_history_black);

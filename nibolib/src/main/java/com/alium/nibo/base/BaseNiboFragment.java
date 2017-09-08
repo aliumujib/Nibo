@@ -103,9 +103,9 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
         }
     }
 
-    protected void hideKeyboard(View view){
+    protected void hideKeyboard(){
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
     @Override
