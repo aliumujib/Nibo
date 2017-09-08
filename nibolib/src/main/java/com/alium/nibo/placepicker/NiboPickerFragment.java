@@ -198,6 +198,7 @@ public class NiboPickerFragment extends BaseNiboFragment {
                 mSearchView.setLogoText(searchItem.getTitle());
                 getPlaceDetailsByID(searchItem.getValue());
                 mSearchView.closeSearch();
+                hideKeyboard(mSearchView);
                 hideAddressWithTransition();
                 return false;
             }
@@ -372,16 +373,13 @@ public class NiboPickerFragment extends BaseNiboFragment {
 
     @Override
     public void onStop() {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            ((PlaceSuggestionsBuilder) mSamplesSuggestionsBuilder).setGoogleApiClient(null);
-            mGoogleApiClient.disconnect();
-        }
+
         super.onStop();
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (mSamplesSuggestionsBuilder != null)
-            ((PlaceSuggestionsBuilder) mSamplesSuggestionsBuilder).setGoogleApiClient(mGoogleApiClient);
+        super.onConnected(bundle);
+
     }
 }

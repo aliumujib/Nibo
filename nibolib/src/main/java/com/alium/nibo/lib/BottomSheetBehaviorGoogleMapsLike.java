@@ -165,9 +165,6 @@ public class BottomSheetBehaviorGoogleMapsLike<V extends View> extends Coordinat
         mMinimumVelocity = configuration.getScaledMinimumFlingVelocity();
     }
 
-    public void setmAnchorPoint(int mAnchorPoint) {
-        this.mAnchorPoint = mAnchorPoint;
-    }
 
     @Override
     public Parcelable onSaveInstanceState(CoordinatorLayout parent, V child) {

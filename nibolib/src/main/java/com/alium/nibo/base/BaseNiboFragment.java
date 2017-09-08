@@ -19,11 +19,13 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.view.inputmethod.InputMethodManager;
 
 import com.alium.nibo.R;
 import com.alium.nibo.models.NiboSelectedPlace;
 import com.alium.nibo.placepicker.PlaceSuggestionsBuilder;
 import com.alium.nibo.repo.location.LocationRepository;
+import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.alium.nibo.utils.NiboStyle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -82,11 +84,29 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
                 .build();
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        SuggestionsRepository.setmContext(getContext());
+        SuggestionsRepository.setmGoogleApiClient(mGoogleApiClient);
+    }
 
     public int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+            SuggestionsRepository.setmGoogleApiClient(null);
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    protected void hideKeyboard(View view){
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     @Override
     public void onStart() {

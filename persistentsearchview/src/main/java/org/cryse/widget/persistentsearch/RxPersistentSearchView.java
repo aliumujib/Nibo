@@ -39,17 +39,25 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
+import com.jakewharton.rxbinding2.widget.RxTextView;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
+
 
 @SuppressWarnings("unused")
 public class RxPersistentSearchView extends RevealViewGroup {
@@ -100,7 +108,6 @@ public class RxPersistentSearchView extends RevealViewGroup {
     private KeyboardView mCustomKeyboardView;
     private boolean showCustomKeyboard;
     private String TAG = getClass().getSimpleName();
-    private PublishSubject<String> mSearchViewSubject = PublishSubject.create();
 
     public RxPersistentSearchView(Context context) {
         super(context);
@@ -248,11 +255,11 @@ public class RxPersistentSearchView extends RevealViewGroup {
         this.mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
     }
 
-    private void hideProgressBar(){
+    private void hideProgressBar() {
         mProgressBar.setVisibility(GONE);
     }
 
-    private void showProgressBar(){
+    private void showProgressBar() {
         mProgressBar.setVisibility(VISIBLE);
     }
 
@@ -330,34 +337,41 @@ public class RxPersistentSearchView extends RevealViewGroup {
             }
         });
 
-        mSearchEditText.addTextChangedListener(new TextWatcher() {
 
+        Observable<String> obs = RxTextView.textChanges(mSearchEditText).filter(new Predicate<CharSequence>() {
             @Override
-            public void afterTextChanged(Editable s) {
-                mSearchViewSubject.onNext(s.toString());
+            public boolean test(@NonNull CharSequence charSequence) throws Exception {
+                return charSequence.length() > 1;
             }
-
+        }).debounce(300, TimeUnit.MILLISECONDS).map(new Function<CharSequence, String>() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public String apply(@NonNull CharSequence charSequence) throws Exception {
+                return charSequence.toString();
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
-            }
-
         });
 
-
-        mSearchViewSubject.debounce(1, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
+        obs.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
+                .subscribe(new Observer<String>() {
+
+
                     @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        Log.d(TAG, "Typed " + s);
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
                         if (!mAvoidTriggerTextWatcher) {
                             if (s.length() > 0) {
                                 showClearButton();
@@ -369,11 +383,6 @@ public class RxPersistentSearchView extends RevealViewGroup {
                         }
                         if (mSearchListener != null)
                             mSearchListener.onSearchTermChanged(s);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        Log.d(TAG, throwable.getMessage());
                     }
                 });
 

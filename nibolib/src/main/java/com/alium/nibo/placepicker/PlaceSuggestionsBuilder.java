@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.alium.nibo.R;
+import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompletePrediction;
@@ -27,17 +28,13 @@ public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
     private List<SearchItem> mHistorySuggestions = new ArrayList<SearchItem>();
 
     private String TAG = getClass().getSimpleName();
-    private GoogleApiClient mGoogleApiClient;
 
     public PlaceSuggestionsBuilder(Context context) {
         this.mContext = context;
-
     }
 
 
-    public void setGoogleApiClient(GoogleApiClient mGoogleApiClient) {
-        this.mGoogleApiClient = mGoogleApiClient;
-    }
+
 
 
     @Override
@@ -50,43 +47,7 @@ public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
 
     @Override
     public Observable<Collection<SearchItem>> rXbuildSearchSuggestion(int maxCount, final String query) {
-        final List<SearchItem> placeSuggestionItems = new ArrayList<>();
 
-        return new Observable<Collection<SearchItem>>() {
-            @Override
-            protected void subscribeActual(final Observer<? super Collection<SearchItem>> observer) {
-                Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, query, null, null)
-                        .setResultCallback(
-                                new ResultCallback<AutocompletePredictionBuffer>() {
-                                    @Override
-                                    public void onResult(@NonNull AutocompletePredictionBuffer buffer) {
-                                        placeSuggestionItems.clear();
-                                        if (buffer.getStatus().isSuccess()) {
-                                            Log.d(TAG, buffer.toString() + " " + buffer.getCount());
-
-                                            for (AutocompletePrediction prediction : buffer) {
-                                                Log.d(TAG, prediction.getFullText(null).toString());
-                                                //Add as a new item to avoid IllegalArgumentsException when buffer is released
-                                                SearchItem placeSuggestion = new SearchItem(
-                                                        prediction.getFullText(null).toString(),
-                                                        prediction.getPlaceId(), SearchItem.TYPE_SEARCH_ITEM_SUGGESTION,
-                                                        mContext.getResources().getDrawable(R.drawable.ic_map_marker_grey600_18dp)
-                                                );
-
-                                                placeSuggestionItems.add(placeSuggestion);
-                                            }
-
-                                            observer.onNext(placeSuggestionItems);
-
-                                        } else {
-                                            Log.d(TAG, buffer.toString());
-                                        }
-                                        //Prevent memory leak by releasing buffer
-                                        buffer.release();
-                                    }
-                                }, 60, TimeUnit.SECONDS);
-
-            }
-        };
+        return SuggestionsRepository.sharedInstance.getSuggestions(query);
     }
 }

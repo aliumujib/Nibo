@@ -1,38 +1,66 @@
 package com.alium.nibo.origindestinationpicker;
 
-import android.location.Location;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.TransitionManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;
 
 import com.alium.nibo.R;
 import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike;
-import com.alium.nibo.repo.location.LocationRepository;
+import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.alium.nibo.utils.customviews.RoundedView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
-import io.reactivex.annotations.NonNull;
+import org.cryse.widget.persistentsearch.SearchItem;
+import org.cryse.widget.persistentsearch.SearchItemAdapter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragment {
+
+    private CoordinatorLayout mCoordinatorlayout;
+    private Toolbar mToolbar;
+    private RoundedView mRoundedIndicatorOrigin;
+    private RoundedView mRoundedIndicatorDestination;
+    private EditText mOriginEditText;
+    private EditText mDestinationEditText;
+    private NestedScrollView mBottomSheet;
+    private CardView mContentCardView;
+    private ListView mSuggestionsListView;
+
+    private SearchItemAdapter mSearchItemAdapter;
+    private ArrayList<SearchItem> mSearchSuggestions;
+    private BottomSheetBehaviorGoogleMapsLike<View> mBehavior;
 
     public NiboOriginDestinationPickerActivityFragment() {
     }
@@ -59,58 +87,12 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
             mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
         }
 
-        /**
-         * If we want to listen for states callback
-         */
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorlayout);
-        View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
-        final CardView contentCard = (CardView) view.findViewById(R.id.content_card_view);
-
-        final BottomSheetBehaviorGoogleMapsLike behavior = BottomSheetBehaviorGoogleMapsLike.from(bottomSheet);
-        behavior.addBottomSheetCallback(new BottomSheetBehaviorGoogleMapsLike.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@android.support.annotation.NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            TransitionManager.beginDelayedTransition(contentCard);
-                        }
-                        setMargins(contentCard, dpToPx(16), 0, dpToPx(16), 0);
-                        Log.d("bottomsheet-", "STATE_COLLAPSED");
-                        break;
-                    case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
-                        Log.d("bottomsheet-", "STATE_DRAGGING");
-                        break;
-                    case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
-                        Log.d("bottomsheet-", "STATE_EXPANDED");
-                        behavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
-                        break;
-                    case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            TransitionManager.beginDelayedTransition(contentCard);
-                        }
-                        setMargins(contentCard, 0, 0, 0, 0);
-                        Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
-                        break;
-                    case BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN:
-                        Log.d("bottomsheet-", "STATE_HIDDEN");
-                        break;
-                    default:
-                        Log.d("bottomsheet-", "STATE_SETTLING");
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@android.support.annotation.NonNull View bottomSheet, float slideOffset) {
-                Log.d("bottomsheet-", "SLIDER: " + slideOffset);
-
-            }
-        });
+        mSearchSuggestions = new ArrayList<>();
+        mSearchItemAdapter = new SearchItemAdapter(getContext(), mSearchSuggestions);
 
 
-        behavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
-
+        initView(view);
+        initListeners();
 
         initmap();
     }
@@ -121,10 +103,6 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
         return inflater.inflate(R.layout.fragment_origin_destination_picker, container, false);
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
 
     @Override
     public void onMarkerDragStart(Marker marker) {
@@ -139,5 +117,187 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
     @Override
     public void onMarkerDragEnd(Marker marker) {
 
+    }
+
+    private void initView(View convertView) {
+
+        this.mCoordinatorlayout = (CoordinatorLayout) convertView.findViewById(R.id.coordinatorlayout);
+        this.mToolbar = (Toolbar) convertView.findViewById(R.id.toolbar);
+        this.mRoundedIndicatorOrigin = (RoundedView) convertView.findViewById(R.id.rounded_indicator_source);
+        this.mRoundedIndicatorDestination = (RoundedView) convertView.findViewById(R.id.rounded_indicator_destination);
+        this.mOriginEditText = (EditText) convertView.findViewById(R.id.origin_edit_text);
+        this.mDestinationEditText = (EditText) convertView.findViewById(R.id.destination_edit_text);
+        this.mBottomSheet = (NestedScrollView) convertView.findViewById(R.id.bottom_sheet);
+        this.mContentCardView = (CardView) convertView.findViewById(R.id.content_card_view);
+        this.mSuggestionsListView = (ListView) convertView.findViewById(R.id.suggestions_recyclerview);
+        this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
+
+        this.mRoundedIndicatorDestination.setChecked(true);
+
+        /**
+         * If we want to listen for states callback
+         */
+        View bottomSheet = mCoordinatorlayout.findViewById(R.id.bottom_sheet);
+
+        mBehavior = BottomSheetBehaviorGoogleMapsLike.from(bottomSheet);
+        mBehavior.addBottomSheetCallback(new BottomSheetBehaviorGoogleMapsLike.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
+                        addMargins();
+                        Log.d("bottomsheet-", "STATE_COLLAPSED");
+                        break;
+                    case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
+                        Log.d("bottomsheet-", "STATE_DRAGGING");
+                        break;
+                    case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
+                        Log.d("bottomsheet-", "STATE_EXPANDED");
+                        mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
+                        break;
+                    case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
+                        removeMargins();
+                        Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
+                        break;
+                    case BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN:
+                        Log.d("bottomsheet-", "STATE_HIDDEN");
+                        break;
+                    default:
+                        Log.d("bottomsheet-", "STATE_SETTLING");
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+        mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+
+
+    }
+
+    private void removeMargins() {
+        mContentCardView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    TransitionManager.beginDelayedTransition(mContentCardView);
+                }
+                setMargins(mContentCardView, 0, 0, 0, 0);
+            }
+        }, 200);
+    }
+
+    private void addMargins() {
+        mContentCardView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    TransitionManager.beginDelayedTransition(mContentCardView);
+                }
+                setMargins(mContentCardView, dpToPx(16), 0, dpToPx(16), 0);
+            }
+        }, 200);
+    }
+
+
+    private void initListeners() {
+        mOriginEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    addMargins();
+                    mRoundedIndicatorOrigin.setChecked(true);
+                    mRoundedIndicatorDestination.setChecked(false);
+                    mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
+                } else {
+                    mRoundedIndicatorOrigin.setChecked(false);
+                }
+            }
+        });
+
+        mDestinationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    addMargins();
+                    mRoundedIndicatorDestination.setChecked(true);
+                    mRoundedIndicatorOrigin.setChecked(false);
+                    mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
+                } else {
+                    mRoundedIndicatorDestination.setChecked(false);
+                }
+            }
+        });
+
+
+        Observable<String> originObservable = getObservableForEditext(mOriginEditText);
+        Observable<String> destinationObservable = getObservableForEditext(mDestinationEditText);
+
+        originObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
+                        findResults(s);
+                    }
+                });
+
+        destinationObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
+                        findResults(s);
+                    }
+                });
+
+        mSuggestionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mRoundedIndicatorOrigin.isChecked()) {
+                    mOriginEditText.setText(mSearchSuggestions.get(position).getTitle());
+                    closeSuggestions();
+                } else if (mRoundedIndicatorDestination.isChecked()) {
+                    mDestinationEditText.setText(mSearchSuggestions.get(position).getTitle());
+                    closeSuggestions();
+                }
+            }
+        });
+    }
+
+    private void closeSuggestions() {
+        mSearchSuggestions.clear();
+        mSearchItemAdapter.clear();
+        hideKeyboard(mCoordinatorlayout);
+        mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+    }
+
+    private void findResults(String s) {
+        SuggestionsRepository.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<SearchItem>>() {
+            @Override
+            public void accept(@io.reactivex.annotations.NonNull Collection<SearchItem> searchItems) throws Exception {
+                mSearchSuggestions.clear();
+                mSearchSuggestions.addAll(searchItems);
+                mSearchItemAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private Observable<String> getObservableForEditext(EditText editText) {
+        return RxTextView.textChanges(editText).filter(new Predicate<CharSequence>() {
+            @Override
+            public boolean test(@io.reactivex.annotations.NonNull CharSequence charSequence) throws Exception {
+                return charSequence.length() > 3;
+            }
+        }).debounce(300, TimeUnit.MILLISECONDS).map(new Function<CharSequence, String>() {
+            @Override
+            public String apply(@io.reactivex.annotations.NonNull CharSequence charSequence) throws Exception {
+                return charSequence.toString();
+            }
+        });
     }
 }
