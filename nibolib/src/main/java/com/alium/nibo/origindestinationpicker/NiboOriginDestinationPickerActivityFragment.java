@@ -19,9 +19,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.alium.nibo.R;
+import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike;
-import com.alium.nibo.origindestinationpicker.adapter.OrigDestSuggestionAdapter;
+import com.alium.nibo.origindestinationpicker.adapter.OrigDestSuggestionAdapterNiboBase;
 import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
@@ -30,7 +31,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
-import org.cryse.widget.persistentsearch.SearchItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,8 +58,8 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
     private CardView mContentCardView;
     private ListView mSuggestionsListView;
     private ProgressBar mProgressBar;
-    private OrigDestSuggestionAdapter mSearchItemAdapter;
-    private ArrayList<SearchItem> mSearchSuggestions;
+    private OrigDestSuggestionAdapterNiboBase mSearchItemAdapter;
+    private ArrayList<NiboSearchSuggestionItem> mSearchSuggestions;
     private BottomSheetBehaviorGoogleMapsLike<View> mBehavior;
 
     public NiboOriginDestinationPickerActivityFragment() {
@@ -88,7 +88,7 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
         }
 
         mSearchSuggestions = new ArrayList<>();
-        mSearchItemAdapter = new OrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
+        mSearchItemAdapter = new OrigDestSuggestionAdapterNiboBase(getContext(), mSearchSuggestions);
 
 
         initView(view);
@@ -290,11 +290,11 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
 
     private void findResults(String s) {
         showLoading();
-        SuggestionsRepository.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<SearchItem>>() {
+        SuggestionsRepository.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<NiboSearchSuggestionItem>>() {
             @Override
-            public void accept(@io.reactivex.annotations.NonNull Collection<SearchItem> searchItems) throws Exception {
+            public void accept(@io.reactivex.annotations.NonNull Collection<NiboSearchSuggestionItem> niboSearchSuggestionItems) throws Exception {
                 mSearchSuggestions.clear();
-                mSearchSuggestions.addAll(searchItems);
+                mSearchSuggestions.addAll(niboSearchSuggestionItems);
                 mSearchItemAdapter.notifyDataSetChanged();
                 hideLoading();
             }

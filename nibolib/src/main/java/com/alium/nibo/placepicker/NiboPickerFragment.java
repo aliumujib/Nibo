@@ -1,6 +1,5 @@
 package com.alium.nibo.placepicker;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.location.Address;
 import android.os.Build;
@@ -22,22 +21,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alium.nibo.R;
+import com.alium.nibo.autocompletesearchbar.NiboAutocompleteSVProvider;
+import com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView;
+import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.models.NiboSelectedPlace;
 import com.alium.nibo.repo.location.LocationAddress;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import org.cryse.widget.persistentsearch.DefaultVoiceRecognizerDelegate;
-import org.cryse.widget.persistentsearch.RxPersistentSearchView;
-import org.cryse.widget.persistentsearch.SearchItem;
-import org.cryse.widget.persistentsearch.SearchSuggestionsBuilder;
-import org.cryse.widget.persistentsearch.VoiceRecognitionDelegate;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -47,19 +45,15 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class NiboPickerFragment extends BaseNiboFragment {
+public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocompleteSVProvider {
 
-    private static final int VOICE_RECOGNITION_REQUEST_CODE = 200;
     private Address mGeolocation;
     private RelativeLayout mRootLayout;
-    private RxPersistentSearchView mSearchView;
+    private NiboPlacesAutoCompleteSearchView mSearchView;
     private FloatingActionButton mCenterMyLocationFab;
     private LinearLayout mLocationDetails;
     private TextView mGeocodeAddress;
-    private View mSearchTintView;
     private String TAG = getClass().getSimpleName();
-    private SearchSuggestionsBuilder mSamplesSuggestionsBuilder;
-
     private TextView mPickLocationTextView;
 
 
@@ -79,116 +73,6 @@ public class NiboPickerFragment extends BaseNiboFragment {
         return fragment;
     }
 
-    public void setUpSearchView(boolean setUpVoice) {
-
-        if (setUpVoice) {
-            VoiceRecognitionDelegate delegate = new DefaultVoiceRecognizerDelegate(this, VOICE_RECOGNITION_REQUEST_CODE);
-            if (delegate.isVoiceRecognitionAvailable()) {
-                mSearchView.setVoiceRecognitionDelegate(delegate);
-            }
-        }
-
-        // Hamburger has been clicked
-        mSearchView.setHomeButtonListener(new RxPersistentSearchView.HomeButtonListener() {
-            @Override
-            public void onHomeButtonClick() {
-                getActivity().finish();
-            }
-        });
-        mSamplesSuggestionsBuilder = new PlaceSuggestionsBuilder(getActivity());
-
-        mSearchView.setSuggestionBuilder(mSamplesSuggestionsBuilder);
-
-        mSearchView.setSearchListener(new RxPersistentSearchView.SearchListener() {
-
-
-            @Override
-            public void onSearchEditOpened() {
-                hideAddressWithTransition();
-
-                //Use this to tint the screen
-                if (mSearchTintView != null) {
-                    mSearchTintView.setVisibility(View.VISIBLE);
-                    mSearchTintView
-                            .animate()
-                            .alpha(1.0f)
-                            .setDuration(300)
-                            .setListener(new SimpleAnimationListener())
-                            .start();
-                }
-
-
-            }
-
-            @Override
-            public void onSearchEditClosed() {
-                if (mGeolocation != null) {
-                    showAddressWithTransition();
-                }
-
-                if (mSearchTintView != null) {
-                    mSearchTintView
-                            .animate()
-                            .alpha(0.0f)
-                            .setDuration(300)
-                            .setListener(new SimpleAnimationListener() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    mSearchTintView.setVisibility(View.GONE);
-                                }
-                            })
-                            .start();
-                }
-
-            }
-
-
-            @Override
-            public boolean onSearchEditBackPressed() {
-                if (mSearchView.isEditing()) {
-                    mSearchView.cancelEditing();
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onSearchExit() {
-
-            }
-
-            @Override
-            public void onSearchTermChanged(String term) {
-
-
-            }
-
-            @Override
-            public void onSearch(String string) {
-
-            }
-
-            @Override
-            public boolean onSuggestion(SearchItem searchItem) {
-                Toast.makeText(getContext(), searchItem.getValue(), Toast.LENGTH_LONG).show();
-                mSearchView.setSearchString(searchItem.getTitle(), true);
-                mSearchView.setLogoText(searchItem.getTitle());
-                getPlaceDetailsByID(searchItem.getValue());
-                mSearchView.closeSearch();
-                hideKeyboard();
-                hideAddressWithTransition();
-                return false;
-            }
-
-            @Override
-            public void onSearchCleared() {
-
-            }
-
-        });
-
-    }
 
     private void getPlaceDetailsByID(String placeId) {
         Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
@@ -332,11 +216,11 @@ public class NiboPickerFragment extends BaseNiboFragment {
 
     private void initView(View convertView) {
         this.mRootLayout = (RelativeLayout) convertView.findViewById(R.id.root_layout);
-        this.mSearchView = (RxPersistentSearchView) convertView.findViewById(R.id.searchview);
+        this.mSearchView = (NiboPlacesAutoCompleteSearchView) convertView.findViewById(R.id.searchview);
         this.mCenterMyLocationFab = (FloatingActionButton) convertView.findViewById(R.id.center_my_location_fab);
         this.mLocationDetails = (LinearLayout) convertView.findViewById(R.id.location_details);
         this.mGeocodeAddress = (TextView) convertView.findViewById(R.id.geocode_address);
-        this.mSearchTintView = convertView.findViewById(R.id.view_search_tint);
+        //this.mSearchTintView = convertView.findViewById(R.id.view_search_tint);
         this.mPickLocationTextView = (TextView) convertView.findViewById(R.id.pick_location_btn);
 
         mCenterMyLocationFab.setOnClickListener(new View.OnClickListener() {
@@ -346,7 +230,8 @@ public class NiboPickerFragment extends BaseNiboFragment {
             }
         });
 
-        setUpSearchView(false);
+        mSearchView.setmProvider(this);
+        //setUpSearchView(false);
     }
 
     @Override
@@ -359,5 +244,86 @@ public class NiboPickerFragment extends BaseNiboFragment {
     public void onConnected(Bundle bundle) {
         super.onConnected(bundle);
 
+    }
+
+    @Override
+    public GoogleApiClient getGoogleApiClient() {
+        return mGoogleApiClient;
+    }
+
+    @Override
+    public void onHomeButtonClicked() {
+        getActivity().finish();
+    }
+
+    @Override
+    public NiboPlacesAutoCompleteSearchView.SearchListener getSearchListener() {
+        return new NiboPlacesAutoCompleteSearchView.SearchListener() {
+
+
+            @Override
+            public void onSearchEditOpened() {
+                hideAddressWithTransition();
+
+            }
+
+            @Override
+            public void onSearchEditClosed() {
+                if (mGeolocation != null) {
+                    showAddressWithTransition();
+                }
+
+
+            }
+
+
+            @Override
+            public boolean onSearchEditBackPressed() {
+                if (mSearchView.isEditing()) {
+                    mSearchView.cancelEditing();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onSearchExit() {
+
+            }
+
+            @Override
+            public void onSearchTermChanged(String term) {
+
+
+            }
+
+            @Override
+            public void onSearch(String string) {
+
+            }
+
+            @Override
+            public boolean onSuggestion(NiboSearchSuggestionItem niboSearchSuggestionItem) {
+                Toast.makeText(getContext(), niboSearchSuggestionItem.getValue(), Toast.LENGTH_LONG).show();
+                mSearchView.setSearchString(niboSearchSuggestionItem.getTitle(), true);
+                mSearchView.setLogoText(niboSearchSuggestionItem.getTitle());
+                getPlaceDetailsByID(niboSearchSuggestionItem.getValue());
+                mSearchView.closeSearch();
+                hideKeyboard();
+                hideAddressWithTransition();
+                return false;
+            }
+
+            @Override
+            public void onSearchCleared() {
+
+            }
+
+        };
+    }
+
+    @Override
+    public boolean getShouldUseVoice() {
+        return false;
     }
 }

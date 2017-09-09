@@ -104,33 +104,23 @@
         </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:id="@+id/view_search_tint"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="2dp"
-        android:visibility="gone"
-        android:background="#88000000"
-        android:alpha="0.0"
-        android:layerType="hardware"/>
 
-
-    <org.cryse.widget.persistentsearch.RxPersistentSearchView
+    <com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView
         android:id="@+id/searchview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
         android:layout_alignParentTop="true"
         android:elevation="4dp"
-        app:persistentSV_logoString="Search"
-        app:persistentSV_customToolbarHeight="64dp"
-        app:persistentSV_displayMode="toolbar"
-        app:persistentSV_editHintText="Search"
-        app:persistentSV_editHintTextColor="?android:textColorHint"
-        app:persistentSV_editTextColor="?android:textColorPrimary"
-        app:persistentSV_homeButtonMode="arrow"
-        app:persistentSV_searchCardElevation="2dp"
-        app:persistentSV_searchTextColor="?android:textColorPrimary" />
+        app:niboSV_logoString="Search"
+        app:niboSV_customToolbarHeight="64dp"
+        app:niboSV_displayMode="toolbar"
+        app:niboSV_editHintText="Search"
+        app:niboSV_editHintTextColor="?android:textColorHint"
+        app:niboSV_editTextColor="?android:textColorPrimary"
+        app:niboSV_homeButtonMode="arrow"
+        app:niboSV_searchCardElevation="2dp"
+        app:niboSV_searchTextColor="?android:textColorPrimary" />
 
 
 </RelativeLayout>

@@ -3,4 +3,25 @@
     <declare-styleable name="CustomBottomSheetBehavior">
         <attr name="anchorPoint" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="NiboPlacesAutoCompleteSearchView">
+        <attr name="niboSV_searchTextColor" format="color"/>
+        <attr name="niboSV_logoDrawable" format="reference"/>
+        <attr name="niboSV_logoString" format="string"/>
+        <attr name="niboSV_editTextColor" format="color"/>
+        <attr name="niboSV_editHintText" format="string"/>
+        <attr name="niboSV_editHintTextColor" format="color"/>
+        <attr name="niboSV_searchCardElevation" format="dimension"/>
+        <attr name="niboSV_displayMode" format="enum">
+            <enum name="menuItem" value="0" />
+            <enum name="toolbar" value="1" />
+        </attr>
+        <attr name="niboSV_homeButtonColor" format="color"/>
+        <attr name="niboSV_customToolbarHeight" format="dimension"/>
+        <attr name="niboSV_homeButtonMode" format="enum">
+            <enum name="arrow" value="0" />
+            <enum name="burger" value="1" />
+        </attr>
+    </declare-styleable>
+
 </resources>

@@ -5,13 +5,13 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.alium.nibo.R;
+import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 
-import org.cryse.widget.persistentsearch.SearchItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,12 +42,12 @@ public class SuggestionsRepository {
         SuggestionsRepository.mGoogleApiClient = mGoogleApiClient;
     }
 
-    public Observable<Collection<SearchItem>> getSuggestions(final String query) {
-        final List<SearchItem> placeSuggestionItems = new ArrayList<>();
+    public Observable<Collection<NiboSearchSuggestionItem>> getSuggestions(final String query) {
+        final List<NiboSearchSuggestionItem> placeSuggestionItems = new ArrayList<>();
 
-        return new Observable<Collection<SearchItem>>() {
+        return new Observable<Collection<NiboSearchSuggestionItem>>() {
             @Override
-            protected void subscribeActual(final Observer<? super Collection<SearchItem>> observer) {
+            protected void subscribeActual(final Observer<? super Collection<NiboSearchSuggestionItem>> observer) {
                 Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, query, null, null)
                         .setResultCallback(
                                 new ResultCallback<AutocompletePredictionBuffer>() {
@@ -60,9 +60,9 @@ public class SuggestionsRepository {
                                             for (AutocompletePrediction prediction : buffer) {
                                                 Log.d(TAG, prediction.getFullText(null).toString());
                                                 //Add as a new item to avoid IllegalArgumentsException when buffer is released
-                                                SearchItem placeSuggestion = new SearchItem(
+                                                NiboSearchSuggestionItem placeSuggestion = new NiboSearchSuggestionItem(
                                                         prediction.getFullText(null).toString(),
-                                                        prediction.getPlaceId(), SearchItem.TYPE_SEARCH_ITEM_SUGGESTION,
+                                                        prediction.getPlaceId(), NiboSearchSuggestionItem.TYPE_SEARCH_ITEM_SUGGESTION,
                                                         mContext.getResources().getDrawable(R.drawable.ic_map_marker_grey600_18dp)
                                                 );
 
