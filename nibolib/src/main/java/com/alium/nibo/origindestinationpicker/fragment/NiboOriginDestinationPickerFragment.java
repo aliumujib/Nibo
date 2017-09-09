@@ -99,6 +99,36 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     private NiboSearchSuggestionItem mDestinationSuggestion;
 
 
+    public static NiboOriginDestinationPickerFragment newInstance(String originEditTextHint, String destinationEditTextHint, NiboStyle mapStyle,
+                                                                  int styleFileID, int originMarkerPinIconRes, int destinationMarkerPinIconRes, int backButtonIconRes,
+                                                                  int textFieldClearIconRes, int doneFabIconRes, int backButtonColorRes, int originCircleViewColorRes,
+                                                                  int destinationCircleViewColorRes, int originDestinationSeperatorLineColorRes, int doneFabColorRes) {
+
+        Bundle args = new Bundle();
+        args.putString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG, originEditTextHint);
+        args.putString(NiboConstants.DEST_EDIT_TEXT_HINT_ARG, destinationEditTextHint);
+        args.putSerializable(NiboConstants.STYLE_ENUM_ARG, mapStyle);
+        args.putInt(NiboConstants.STYLE_FILE_ID, styleFileID);
+
+        args.putInt(NiboConstants.ORIGIN_MARKER_ICON_RES_ARG, originMarkerPinIconRes);
+        args.putInt(NiboConstants.DEST_MARKER_ICON_RES_ARG, destinationMarkerPinIconRes);
+        args.putInt(NiboConstants.BACK_BUTTON_ICON_RES_ARG, backButtonIconRes);
+        args.putInt(NiboConstants.TEXT_FIELD_CLEAR_ICON_RES_ARG, textFieldClearIconRes);
+        args.putInt(NiboConstants.DONE_FAB_ICON_RES_ARG, doneFabIconRes);
+        args.putInt(NiboConstants.BACK_BTN_COLOR_RES_ARG, backButtonColorRes);
+        args.putInt(NiboConstants.ORIGIN_CIRCLE_VIEW_COLOR_RES_ARG, originCircleViewColorRes);
+        args.putInt(NiboConstants.DEST_CIRCLE_VIEW_COLOR_RES_ARG, destinationCircleViewColorRes);
+
+        args.putInt(NiboConstants.ORIG_DEST_SEPERATOR_LINE_COLOR_RES_ARG, originDestinationSeperatorLineColorRes);
+        args.putInt(NiboConstants.DONE_FAB_COLOR_RES_ARG, doneFabColorRes);
+
+
+        NiboOriginDestinationPickerFragment fragment = new NiboOriginDestinationPickerFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
     public NiboOriginDestinationPickerFragment() {
     }
 
@@ -130,7 +160,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
 
         Bundle args;
         if ((args = getArguments()) != null) {
-            mConfirmButtonTitle = args.getString(NiboConstants.SELECTION_BUTTON_TITLE);
             mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
             mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
             mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);

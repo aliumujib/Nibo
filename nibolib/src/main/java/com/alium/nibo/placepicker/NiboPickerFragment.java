@@ -52,6 +52,8 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
     private TextView mGeocodeAddress;
     private TextView mPickLocationTextView;
 
+    protected String mSearchBarTitle;
+    protected String mConfirmButtonTitle;
 
     public NiboPickerFragment() {
 

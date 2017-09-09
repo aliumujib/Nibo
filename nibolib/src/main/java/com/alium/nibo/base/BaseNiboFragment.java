@@ -61,8 +61,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     protected static final int WIDER_ZOOM = 6;
     protected GoogleApiClient mGoogleApiClient;
 
-    protected String mSearchBarTitle;
-    protected String mConfirmButtonTitle;
+
     protected NiboStyle mStyleEnum = NiboStyle.DEFAULT;
     protected String TAG = getClass().getSimpleName();
 
