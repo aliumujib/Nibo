@@ -419,11 +419,13 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         if (mMap != null) {
             if (mOriginMapMarker != null) {
                 mOriginMapMarker.remove();
+                mOriginMapMarker = null;
             }
             CameraPosition cameraPosition =
                     new CameraPosition.Builder().target(latLng)
                             .zoom(getDefaultZoom())
                             .build();
+
             hasWiderZoom = false;
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             mOriginMapMarker = addMarker(latLng);
@@ -438,6 +440,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         if (mMap != null) {
             if (mDestinationMarker != null) {
                 mDestinationMarker.remove();
+                mDestinationMarker = null;
             }
             hasWiderZoom = false;
             mDestinationMarker = addMarker(latLng);
@@ -480,7 +483,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 mCoordinatorlayout.requestLayout();
             }
         });
-
     }
 
     private void findResults(String s) {
@@ -523,10 +525,13 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
 
         this.listLatLng.clear();
 
+        showLoading();
+
     }
 
     @Override
     public void onDirectionFinderSuccess(List<Route> route) {
+        hideLoading();
         Log.d(TAG, "DONE");
         if (!route.isEmpty()) {
             drawPolyline(route);
@@ -548,6 +553,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
 
     @Override
     public void onDirectionFinderError(String errorMessage) {
+        hideLoading();
         Log.d(TAG, errorMessage);
     }
 
@@ -622,7 +628,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         @Override
         public void onAnimationStart(Animator animator) {
 
-            addMarker(listLatLng.get(listLatLng.size() - 1));
         }
 
         @Override

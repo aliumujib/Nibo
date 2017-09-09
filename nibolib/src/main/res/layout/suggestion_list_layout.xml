@@ -2,8 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   >
+    android:layout_height="match_parent">
 
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,59 +21,49 @@
             android:layout_height="wrap_content">
 
             <View
-                android:layout_width="wrap_content"
-                android:layout_marginTop="24dp"
                 android:id="@+id/anchor_dummy"
-                android:visibility="invisible"
-                android:layout_height="wrap_content"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:visibility="invisible" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/title_distance_ll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="16dp"
-                android:id="@+id/title_distance_ll"
-                android:visibility="invisible"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="invisible">
 
                 <TextView
                     android:id="@+id/time_taken"
-                    android:textColor="#80000000"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                    android:textColor="#80000000" />
 
                 <TextView
                     android:id="@+id/origin_to_destination_tv"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                     android:layout_width="wrap_content"
-                    android:textColor="#80000000"
-                    android:maxLines="1"
+                    android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:layout_height="wrap_content" />
+                    android:maxLines="1"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="#80000000" />
 
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:visibility="visible"
                 android:id="@+id/suggestions_progress_ll"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="bottom"
-                    android:indeterminate="true"
-                    android:visibility="gone" />
 
                 <ListView
                     android:id="@+id/suggestions_recyclerview"
@@ -84,6 +73,17 @@
                     android:scrollbars="vertical" />
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_alignParentTop="true"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="bottom"
+                android:indeterminate="true"
+                android:visibility="gone" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
