@@ -155,6 +155,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mDestinationEditText.setCompoundDrawables(drawable, null, null, null);
         }
 
+        if (mDoneFabIconRes != 0) {
+            mDoneFab.setImageResource(mDoneFabIconRes);
+        }
+
 
         mSearchSuggestions = new ArrayList<>();
         mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
