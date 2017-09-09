@@ -3,6 +3,8 @@ package com.alium.nibo.base;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,6 +18,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -60,6 +63,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     protected String mSearchBarTitle;
     protected String mConfirmButtonTitle;
     protected NiboStyle mStyleEnum = NiboStyle.DEFAULT;
+    protected String TAG = getClass().getSimpleName();
 
     protected
     @RawRes
@@ -92,6 +96,19 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
 
     public int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    protected String getMapsAPIKeyFromManifest() {
+        try {
+            ApplicationInfo ai = getActivity().getPackageManager().getApplicationInfo(getActivity().getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            return bundle.getString("com.google.android.geo.API_KEY");
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+        }
+        return null;
     }
 
     @Override
@@ -133,7 +150,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     }
 
     protected Marker addMarker(LatLng latLng, @DrawableRes int markerPinRes) {
-            return mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(markerPinRes)).draggable(true));
+        return mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(markerPinRes)).draggable(true));
     }
 
     protected

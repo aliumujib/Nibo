@@ -51,7 +51,6 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
     private FloatingActionButton mCenterMyLocationFab;
     private LinearLayout mLocationDetails;
     private TextView mGeocodeAddress;
-    private String TAG = getClass().getSimpleName();
     private TextView mPickLocationTextView;
 
 

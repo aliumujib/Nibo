@@ -1,5 +1,8 @@
 package com.alium.nibo.origindestinationpicker.fragment;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,17 +16,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.alium.nibo.R;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike;
 import com.alium.nibo.origindestinationpicker.adapter.OrigDestSuggestionAdapterNiboBase;
+import com.alium.nibo.repo.directions.DirectionFinder;
+import com.alium.nibo.repo.directions.DirectionFinderListener;
+import com.alium.nibo.repo.directions.Route;
 import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
@@ -35,11 +41,17 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -49,10 +61,12 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.google.android.gms.maps.model.JointType.ROUND;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
+public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implements DirectionFinderListener {
 
     private CoordinatorLayout mCoordinatorlayout;
     private Toolbar mToolbar;
@@ -71,6 +85,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
     private boolean mAvoidTriggerTextWatcher = false;
     private Marker mOriginMapMarker;
     private Marker mDestinationMarker;
+    private ArrayList<LatLng> listLatLng = new ArrayList<>();
+    private Polyline blackPolyLine;
+    private Polyline greyPolyLine;
 
     public NiboOriginDestinationPickerFragment() {
     }
@@ -83,6 +100,18 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
     @Override
     protected void handleMarkerAddition(LatLng latLng) {
 
+    }
+
+
+    private void sendRequest(LatLng origin, LatLng destination) {
+        try {
+            String destinationString = "" + destination.latitude + "," + destination.longitude;
+            String originString = "" + origin.latitude + ","
+                    + origin.longitude;
+            new DirectionFinder(getMapsAPIKeyFromManifest(), this, originString, destinationString).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -262,8 +291,13 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        if (!mAvoidTriggerTextWatcher)
+                        if (!mAvoidTriggerTextWatcher) {
+                            if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
+                                mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
+                            }
                             findResults(s);
+                        } else
+                            Log.e(TAG, "Avoiding text triggers");
                     }
                 });
 
@@ -272,8 +306,14 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        if (!mAvoidTriggerTextWatcher)
+                        if (!mAvoidTriggerTextWatcher) {
+                            if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
+                                mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
+                            }
                             findResults(s);
+                        } else
+                            Log.e(TAG, "Avoiding text triggers");
+
                     }
                 });
 
@@ -322,7 +362,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
             mOriginMapMarker = addMarker(latLng);
             mMap.setOnMarkerDragListener(this);
 
-            showBothMarkers();
+            showBothMarkersAndGetDirections();
         }
     }
 
@@ -335,19 +375,22 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
             hasWiderZoom = false;
             mDestinationMarker = addMarker(latLng);
 
-            showBothMarkers();
+            showBothMarkersAndGetDirections();
         }
     }
 
-    private void showBothMarkers() {
+    private void showBothMarkersAndGetDirections() {
         if (mOriginMapMarker != null && mDestinationMarker != null) {
             int width = getResources().getDisplayMetrics().widthPixels;
             int padding = (int) (width * 0.10); //
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(getLatLngBoundsForMarkers(), padding);
             mMap.moveCamera(cu);
             mMap.animateCamera(cu);
+
+            sendRequest(mOriginMapMarker.getPosition(), mDestinationMarker.getPosition());
+
         } else {
-            Toast.makeText(getContext(), "ONE MARKER IS NULL " + mDestinationMarker + " ORIGIN " + mOriginMapMarker, Toast.LENGTH_LONG).show();
+
         }
     }
 
@@ -398,4 +441,115 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
             }
         });
     }
+
+    @Override
+    public void onDirectionFinderStart() {
+        Log.d(TAG, "STARTED");
+    }
+
+    @Override
+    public void onDirectionFinderSuccess(List<Route> route) {
+        Log.d(TAG, "DONE");
+        drawPolyline(route);
+    }
+
+    @Override
+    public void onDirectionFinderError(String errorMessage) {
+        Log.d(TAG, errorMessage);
+    }
+
+
+    void drawPolyline(List<Route> routes) {
+
+        ArrayList<LatLng> points = null;
+        PolylineOptions lineOptions =  new PolylineOptions();
+
+        for (int i = 0; i < routes.size(); i++) {
+            this.listLatLng.addAll(routes.get(i).points);
+        }
+
+        lineOptions.width(10);
+        lineOptions.color(Color.BLACK);
+        lineOptions.startCap(new SquareCap());
+        lineOptions.endCap(new SquareCap());
+        lineOptions.jointType(ROUND);
+        blackPolyLine = mMap.addPolyline(lineOptions);
+
+        PolylineOptions greyOptions = new PolylineOptions();
+        greyOptions.width(10);
+        greyOptions.color(Color.GRAY);
+        greyOptions.startCap(new SquareCap());
+        greyOptions.endCap(new SquareCap());
+        greyOptions.jointType(ROUND);
+        greyPolyLine = mMap.addPolyline(greyOptions);
+
+        animatePolyLine();
+    }
+
+    private void animatePolyLine() {
+
+        ValueAnimator animator = ValueAnimator.ofInt(0, 100);
+        animator.setDuration(1000);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+
+                List<LatLng> latLngList = blackPolyLine.getPoints();
+                int initialPointSize = latLngList.size();
+                int animatedValue = (int) animator.getAnimatedValue();
+                int newPoints = (animatedValue * listLatLng.size()) / 100;
+
+                if (initialPointSize < newPoints ) {
+                    latLngList.addAll(listLatLng.subList(initialPointSize, newPoints));
+                    blackPolyLine.setPoints(latLngList);
+                }
+
+
+            }
+        });
+
+        animator.addListener(polyLineAnimationListener);
+        animator.start();
+
+    }
+
+    Animator.AnimatorListener polyLineAnimationListener = new Animator.AnimatorListener() {
+        @Override
+        public void onAnimationStart(Animator animator) {
+
+            addMarker(listLatLng.get(listLatLng.size()-1));
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animator) {
+
+            List<LatLng> blackLatLng = blackPolyLine.getPoints();
+            List<LatLng> greyLatLng = greyPolyLine.getPoints();
+
+            greyLatLng.clear();
+            greyLatLng.addAll(blackLatLng);
+            blackLatLng.clear();
+
+            blackPolyLine.setPoints(blackLatLng);
+            greyPolyLine.setPoints(greyLatLng);
+
+            blackPolyLine.setZIndex(2);
+
+            animator.start();
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animator) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animator) {
+
+
+        }
+    };
+
+
 }

@@ -18,32 +18,64 @@
         app:cardPreventCornerOverlap="false"
         app:contentPadding="0dp">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context="com.alium.nibo.origindestinationpicker.fragment.NiboOriginDestinationPickerFragment">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"
-                android:layout_centerVertical="true"
-                android:layout_gravity="bottom"
-                android:indeterminate="true" />
-
-            <ListView
-                android:id="@+id/suggestions_recyclerview"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@color/transparent"
-                android:scrollbars="vertical" />
-        </LinearLayout>
+                android:layout_margin="16dp"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="15 minutes"
+                    android:textColor="#80000000"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="Ikeja - Oworonshoki"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:layout_width="wrap_content"
+                    android:textColor="#80000000"
+                    android:maxLines="2"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:visibility="visible"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="bottom"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+
+                <ListView
+                    android:id="@+id/suggestions_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:divider="@color/transparent"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
 
 </LinearLayout>
