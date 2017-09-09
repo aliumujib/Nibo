@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -81,7 +82,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     private OrigDestSuggestionAdapterNiboBase mSearchItemAdapter;
     private ArrayList<NiboSearchSuggestionItem> mSearchSuggestions;
     private BottomSheetBehaviorGoogleMapsLike<View> mBehavior;
-
+    private FloatingActionButton mDoneFab;
     private boolean mAvoidTriggerTextWatcher = false;
     private Marker mOriginMapMarker;
     private Marker mDestinationMarker;
@@ -171,6 +172,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         this.mSuggestionsListView = (ListView) convertView.findViewById(R.id.suggestions_recyclerview);
         this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
         this.mProgressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+        this.mDoneFab = (FloatingActionButton) convertView.findViewById(R.id.done_fab);
 
         this.mRoundedIndicatorDestination.setChecked(true);
         /**
@@ -184,9 +186,11 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
+                        mDoneFab.animate().scaleX(1).scaleY(1).setDuration(300).start();
                         Log.d("bottomsheet-", "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
+                        mDoneFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
                         Log.d("bottomsheet-", "STATE_DRAGGING");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
@@ -462,7 +466,15 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     void drawPolyline(List<Route> routes) {
 
         ArrayList<LatLng> points = null;
-        PolylineOptions lineOptions =  new PolylineOptions();
+        PolylineOptions lineOptions = new PolylineOptions();
+
+        if (blackPolyLine != null) {
+            blackPolyLine.remove();
+        }
+
+        if (greyPolyLine != null) {
+            greyPolyLine.remove();
+        }
 
         for (int i = 0; i < routes.size(); i++) {
             this.listLatLng.addAll(routes.get(i).points);
@@ -500,7 +512,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 int animatedValue = (int) animator.getAnimatedValue();
                 int newPoints = (animatedValue * listLatLng.size()) / 100;
 
-                if (initialPointSize < newPoints ) {
+                if (initialPointSize < newPoints) {
                     latLngList.addAll(listLatLng.subList(initialPointSize, newPoints));
                     blackPolyLine.setPoints(latLngList);
                 }
@@ -518,7 +530,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         @Override
         public void onAnimationStart(Animator animator) {
 
-            addMarker(listLatLng.get(listLatLng.size()-1));
+            addMarker(listLatLng.get(listLatLng.size() - 1));
         }
 
         @Override

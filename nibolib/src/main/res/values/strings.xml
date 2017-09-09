@@ -6,4 +6,7 @@
 
     <string name="BottomSheetBehaviorGoogleMapsLike">com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike</string>
 
+    <string name="ScrollAwareFABBehavior">com.alium.nibo.lib.ScrollAwareFABBehavior</string>
+
+
 </resources>
