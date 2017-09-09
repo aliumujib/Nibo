@@ -1,6 +1,5 @@
 package com.alium.nibo.placepicker;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.location.Address;
 import android.os.Build;
@@ -31,9 +30,7 @@ import com.alium.nibo.repo.location.LocationAddress;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
@@ -75,19 +72,15 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
     }
 
 
-    private void getPlaceDetailsByID(String placeId) {
-        Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
-                .setResultCallback(new ResultCallback<PlaceBuffer>() {
-                    @Override
-                    public void onResult(@android.support.annotation.NonNull PlaceBuffer places) {
-                        if (places.getStatus().isSuccess()) {
-                            if (places.getCount() > 0) {
-                                setNewMapMarker(places.get(0).getLatLng());
-                            }
-                        }
-                        places.release();
-                    }
-                });
+    protected void getPlaceDetailsByID(String placeId) {
+        mLocationRepository.getPlaceByID(placeId).subscribe(new Consumer<Place>() {
+            @Override
+            public void accept(@NonNull Place place) throws Exception {
+
+                addSingleMarkerToMap(place.getLatLng());
+
+            }
+        });
     }
 
 
@@ -148,6 +141,10 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
 
     @Override
     protected void extractGeocode(final double lati, final double longi) {
+
+        LatLng currentPosition = new LatLng(lati, longi);
+        addSingleMarkerToMap(currentPosition);
+
         if ((String.valueOf(lati).equals(null))) {
             Toast.makeText(getContext(), "Invlaid location", Toast.LENGTH_SHORT).show();
         } else {

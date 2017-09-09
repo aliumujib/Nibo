@@ -1,4 +1,4 @@
-package com.alium.nibo.origindestinationpicker;
+package com.alium.nibo.origindestinationpicker.fragment;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.alium.nibo.R;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
@@ -27,7 +28,12 @@ import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
 import com.alium.nibo.utils.customviews.RoundedView;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -46,7 +52,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragment {
+public class NiboOriginDestinationPickerFragment extends BaseNiboFragment {
 
     private CoordinatorLayout mCoordinatorlayout;
     private Toolbar mToolbar;
@@ -62,7 +68,11 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
     private ArrayList<NiboSearchSuggestionItem> mSearchSuggestions;
     private BottomSheetBehaviorGoogleMapsLike<View> mBehavior;
 
-    public NiboOriginDestinationPickerActivityFragment() {
+    private boolean mAvoidTriggerTextWatcher = false;
+    private Marker mOriginMapMarker;
+    private Marker mDestinationMarker;
+
+    public NiboOriginDestinationPickerFragment() {
     }
 
     @Override
@@ -155,6 +165,9 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
                         mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
+                        mSearchSuggestions.clear();
+                        mSearchItemAdapter.clear();
+                        mSearchItemAdapter.notifyDataSetChanged();
                         Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN:
@@ -218,6 +231,7 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
                 if (hasFocus) {
                     mRoundedIndicatorOrigin.setChecked(true);
                     mRoundedIndicatorDestination.setChecked(false);
+                    mAvoidTriggerTextWatcher = false;
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                 } else {
                     mRoundedIndicatorOrigin.setChecked(false);
@@ -231,6 +245,7 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
                 if (hasFocus) {
                     mRoundedIndicatorDestination.setChecked(true);
                     mRoundedIndicatorOrigin.setChecked(false);
+                    mAvoidTriggerTextWatcher = false;
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                 } else {
                     mRoundedIndicatorDestination.setChecked(false);
@@ -247,7 +262,8 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        findResults(s);
+                        if (!mAvoidTriggerTextWatcher)
+                            findResults(s);
                     }
                 });
 
@@ -256,33 +272,102 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        findResults(s);
+                        if (!mAvoidTriggerTextWatcher)
+                            findResults(s);
                     }
                 });
 
         mSuggestionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mAvoidTriggerTextWatcher = true;
                 if (mRoundedIndicatorOrigin.isChecked()) {
                     mOriginEditText.setText(mSearchSuggestions.get(position).getTitle());
-                    closeSuggestions();
+                    getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
                 } else if (mRoundedIndicatorDestination.isChecked()) {
                     mDestinationEditText.setText(mSearchSuggestions.get(position).getTitle());
-                    closeSuggestions();
+                    getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
                 }
             }
         });
     }
 
+    protected void getPlaceDetailsByID(String placeId) {
+        mLocationRepository.getPlaceByID(placeId).subscribe(new Consumer<Place>() {
+            @Override
+            public void accept(@io.reactivex.annotations.NonNull Place place) throws Exception {
+                hideLoading();
+                closeSuggestions();
+                if (mRoundedIndicatorOrigin.isChecked()) {
+                    addOriginMarker(place.getLatLng());
+                }
+                if (mRoundedIndicatorDestination.isChecked()) {
+                    addDestinationMarker(place.getLatLng());
+                }
+            }
+        });
+    }
+
+    void addOriginMarker(LatLng latLng) {
+        if (mMap != null) {
+            if (mOriginMapMarker != null) {
+                mOriginMapMarker.remove();
+            }
+            CameraPosition cameraPosition =
+                    new CameraPosition.Builder().target(latLng)
+                            .zoom(getDefaultZoom())
+                            .build();
+            hasWiderZoom = false;
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            mOriginMapMarker = addMarker(latLng);
+            mMap.setOnMarkerDragListener(this);
+
+            showBothMarkers();
+        }
+    }
+
+
+    void addDestinationMarker(LatLng latLng) {
+        if (mMap != null) {
+            if (mDestinationMarker != null) {
+                mDestinationMarker.remove();
+            }
+            hasWiderZoom = false;
+            mDestinationMarker = addMarker(latLng);
+
+            showBothMarkers();
+        }
+    }
+
+    private void showBothMarkers() {
+        if (mOriginMapMarker != null && mDestinationMarker != null) {
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int padding = (int) (width * 0.10); //
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(getLatLngBoundsForMarkers(), padding);
+            mMap.moveCamera(cu);
+            mMap.animateCamera(cu);
+        } else {
+            Toast.makeText(getContext(), "ONE MARKER IS NULL " + mDestinationMarker + " ORIGIN " + mOriginMapMarker, Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    LatLngBounds getLatLngBoundsForMarkers() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(mOriginMapMarker.getPosition());
+        builder.include(mDestinationMarker.getPosition());
+        return builder.build();
+    }
+
+
     private void closeSuggestions() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mSearchSuggestions.clear();
-                mSearchItemAdapter.clear();
-                mSearchItemAdapter.notifyDataSetChanged();
+
                 hideKeyboard();
                 mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+                mCoordinatorlayout.requestLayout();
             }
         });
 
@@ -296,7 +381,6 @@ public class NiboOriginDestinationPickerActivityFragment extends BaseNiboFragmen
                 mSearchSuggestions.clear();
                 mSearchSuggestions.addAll(niboSearchSuggestionItems);
                 mSearchItemAdapter.notifyDataSetChanged();
-                hideLoading();
             }
         });
     }

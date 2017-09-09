@@ -23,7 +23,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.alium.nibo.R;
 import com.alium.nibo.models.NiboSelectedPlace;
-import com.alium.nibo.placepicker.PlaceSuggestionsBuilder;
 import com.alium.nibo.repo.location.LocationRepository;
 import com.alium.nibo.repo.location.SuggestionsRepository;
 import com.alium.nibo.utils.NiboStyle;
@@ -69,6 +68,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     @DrawableRes
     int mMarkerPinIconRes;
     protected NiboSelectedPlace mCurrentSelection;
+    protected LocationRepository mLocationRepository;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -103,7 +103,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
         }
     }
 
-    protected void hideKeyboard(){
+    protected void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
@@ -130,6 +130,10 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
             return mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(getMarkerIconRes())).draggable(true));
         else
             return mMap.addMarker(new MarkerOptions().position(latLng).draggable(true));
+    }
+
+    protected Marker addMarker(LatLng latLng, @DrawableRes int markerPinRes) {
+            return mMap.addMarker(new MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.fromResource(markerPinRes)).draggable(true));
     }
 
     protected
@@ -213,7 +217,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     }
 
 
-    protected void setNewMapMarker(LatLng latLng) {
+    protected void addSingleMarkerToMap(LatLng latLng) {
         if (mMap != null) {
             if (mCurrentMapMarker != null) {
                 mCurrentMapMarker.remove();
@@ -273,9 +277,9 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        LocationRepository locationRepository = new LocationRepository(getActivity());
+        mLocationRepository = new LocationRepository(getActivity(), mGoogleApiClient);
 
-        locationRepository.getLocationObservable()
+        mLocationRepository.getLocationObservable()
                 .subscribe(new Consumer<Location>() {
                     @Override
                     public void accept(@NonNull Location location) throws Exception {
@@ -284,8 +288,6 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
                                 .zoom(15)
                                 .build();
                         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-                        setNewMapMarker(currentPosition);
 
                         extractGeocode(location.getLatitude(), location.getLongitude());
 

@@ -2,9 +2,12 @@ package com.alium.nibo.autocompletesearchbar;
 
 import android.graphics.drawable.Drawable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class NiboSearchSuggestionItem {
     private String mTitle;
     private String mValue;
+    private LatLng mLatLng;
     private Drawable mIcon;
     private int mType;
     public static final int TYPE_SEARCH_ITEM_SUGGESTION = 1;
@@ -12,16 +15,26 @@ public class NiboSearchSuggestionItem {
 
 
     public NiboSearchSuggestionItem(String title, String value) {
-        this(title, value, TYPE_SEARCH_ITEM_DEFAULT, null);
+        this(title, value, TYPE_SEARCH_ITEM_DEFAULT, null, null);
     }
+
     /**
      * Create a search result with text and an icon
+     *
      * @param title display value
      * @param value inner value for search
-     * @param type item type
+     * @param type  item type
      */
     public NiboSearchSuggestionItem(String title, String value, int type) {
-        this(title, value, type, null);
+        this(title, value, type, null, null);
+    }
+
+    public NiboSearchSuggestionItem(String title, String value, int type, Drawable icon, LatLng latLng) {
+        this.mTitle = title;
+        this.mValue = value;
+        this.mType = type;
+        this.mIcon = icon;
+        this.mLatLng = latLng;
     }
 
     public NiboSearchSuggestionItem(String title, String value, int type, Drawable icon) {
@@ -30,7 +43,15 @@ public class NiboSearchSuggestionItem {
         this.mType = type;
         this.mIcon = icon;
     }
-    
+
+    public LatLng getmLatLng() {
+        return mLatLng;
+    }
+
+    public void setmLatLng(LatLng mLatLng) {
+        this.mLatLng = mLatLng;
+    }
+
     /**
      * Return the title of the result
      */

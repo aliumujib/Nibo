@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.alium.nibo.origindestinationpicker.NiboOriginDestinationPickerActivityFragment">
+    tools:context="com.alium.nibo.origindestinationpicker.fragment.NiboOriginDestinationPickerFragment">
 
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context="com.alium.nibo.origindestinationpicker.NiboOriginDestinationPickerActivityFragment">
+            tools:context="com.alium.nibo.origindestinationpicker.fragment.NiboOriginDestinationPickerFragment">
 
             <ProgressBar
                 android:id="@+id/progress_bar"
