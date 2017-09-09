@@ -61,13 +61,14 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     protected static final int WIDER_ZOOM = 6;
     protected GoogleApiClient mGoogleApiClient;
 
+    protected int DEFAULT_MARKER_ICON_RES = 0;
 
     protected NiboStyle mStyleEnum = NiboStyle.DEFAULT;
     protected String TAG = getClass().getSimpleName();
 
     protected
     @RawRes
-    int mStyleFileID;
+    int mStyleFileID = DEFAULT_MARKER_ICON_RES;
     protected
     @DrawableRes
     int mMarkerPinIconRes;
@@ -279,7 +280,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
 
     protected MapStyleOptions getMapStyle() {
         if (mStyleEnum == NiboStyle.CUSTOM) {
-            if (mStyleFileID != 0) {
+            if (mStyleFileID != DEFAULT_MARKER_ICON_RES) {
                 return MapStyleOptions.loadRawResourceStyle(
                         getActivity(), mStyleFileID);
             } else {
