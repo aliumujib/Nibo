@@ -131,9 +131,6 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(mProvider==null){
-            throw new IllegalStateException("Please implement NiboAutocompleteSVProvider in the host fragment or activity and set it on your instance of NiboAutoCompleteSearchView");
-        }
     }
 
     public Activity getActivity() {
@@ -764,10 +761,11 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
                 }
             });
 
-            //Collection<NiboSearchSuggestionItem> suggestions =
-
         } else {
-            Log.d(TAG, "Search suggestionsbuilder is null");
+            Log.e(TAG, "SearchSuggestionsBuilder is null");
+            if(mProvider==null){
+                throw new IllegalStateException("Please implement NiboAutocompleteSVProvider in the host fragment or activity and set it on your instance of NiboAutoCompleteSearchView");
+            }
         }
     }
 

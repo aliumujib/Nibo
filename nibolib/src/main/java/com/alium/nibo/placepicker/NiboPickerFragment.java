@@ -1,5 +1,6 @@
 package com.alium.nibo.placepicker;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.location.Address;
 import android.os.Build;
@@ -220,7 +221,6 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
         this.mCenterMyLocationFab = (FloatingActionButton) convertView.findViewById(R.id.center_my_location_fab);
         this.mLocationDetails = (LinearLayout) convertView.findViewById(R.id.location_details);
         this.mGeocodeAddress = (TextView) convertView.findViewById(R.id.geocode_address);
-        //this.mSearchTintView = convertView.findViewById(R.id.view_search_tint);
         this.mPickLocationTextView = (TextView) convertView.findViewById(R.id.pick_location_btn);
 
         mCenterMyLocationFab.setOnClickListener(new View.OnClickListener() {
@@ -231,7 +231,6 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
         });
 
         mSearchView.setmProvider(this);
-        //setUpSearchView(false);
     }
 
     @Override
@@ -265,6 +264,7 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
             public void onSearchEditOpened() {
                 hideAddressWithTransition();
 
+
             }
 
             @Override
@@ -272,7 +272,6 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
                 if (mGeolocation != null) {
                     showAddressWithTransition();
                 }
-
 
             }
 

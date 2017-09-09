@@ -32,7 +32,6 @@ public class NiboBaseSearchItemAdapter extends ArrayAdapter<NiboSearchSuggestion
             convertView = LayoutInflater.from(getContext()).inflate(
                     getLayoutRes(), parent, false);
         }
-
         View border = convertView.findViewById(R.id.view_border);
         if (position == 0) {
             border.setVisibility(View.VISIBLE);
@@ -45,7 +44,7 @@ public class NiboBaseSearchItemAdapter extends ArrayAdapter<NiboSearchSuggestion
         title.setText(niboSearchSuggestionItem.getTitle());
 
         ImageView icon = (ImageView) convertView.findViewById(R.id.imageview_icon);
-        
+
         if (niboSearchSuggestionItem.getIcon() == null) {
             icon.setImageResource(R.drawable.ic_map_marker_grey600_24dp);
         } else {
