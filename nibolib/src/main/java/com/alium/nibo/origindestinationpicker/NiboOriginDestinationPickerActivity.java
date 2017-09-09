@@ -8,10 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.alium.nibo.R;
+import com.alium.nibo.base.BaseNiboActivity;
 import com.alium.nibo.origindestinationpicker.fragment.NiboOriginDestinationPickerFragment;
 import com.alium.nibo.utils.NiboStyle;
 
-public class NiboOriginDestinationPickerActivity extends AppCompatActivity {
+public class NiboOriginDestinationPickerActivity extends BaseNiboActivity {
 
     private String TAG = getClass().getSimpleName();
 
@@ -21,6 +22,20 @@ public class NiboOriginDestinationPickerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_origin_destination_picker);
 
         Log.wtf(TAG, "What the actual fuck?");
+
+        replaceFragment(mConfig.build(),
+                this);
+    }
+
+    private static NiboOriginDestinationPickerBuilder mConfig = new NiboOriginDestinationPickerBuilder();
+
+    public static void setBuilder(NiboOriginDestinationPickerBuilder config) {
+
+        if (config == null) {
+            throw new NullPointerException("Config cannot be passed null. Not setting config will use default values.");
+        }
+
+        mConfig = config;
     }
 
 
@@ -53,6 +68,7 @@ public class NiboOriginDestinationPickerActivity extends AppCompatActivity {
         int originDestinationSeperatorLineColorRes;
         @ColorRes
         int doneFabColorRes;
+
 
         public NiboOriginDestinationPickerBuilder setOriginEditTextHint(String originEditTextHint) {
             this.originEditTextHint = originEditTextHint;
@@ -125,7 +141,8 @@ public class NiboOriginDestinationPickerActivity extends AppCompatActivity {
         }
 
         public NiboOriginDestinationPickerFragment build() {
-           //return NiboOriginDestinationPickerFragment.newInstance(searchBarTitle, confirmButtonTitle, styleEnum, styleFileID, markerPinIconRes);
+            return NiboOriginDestinationPickerFragment.newInstance(originEditTextHint, destinationEditTextHint, styleEnum, styleFileID, originMarkerPinIconRes, destinationMarkerPinIconRes
+                    , backButtonIconRes, textFieldClearIconRes, doneFabIconRes, backButtonColorRes, originCircleViewColorRes, destinationCircleViewColorRes, originDestinationSeperatorLineColorRes, doneFabColorRes);
         }
 
     }

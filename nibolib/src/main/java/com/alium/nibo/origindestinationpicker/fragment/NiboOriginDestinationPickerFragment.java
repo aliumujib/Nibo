@@ -2,6 +2,7 @@ package com.alium.nibo.origindestinationpicker.fragment;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -118,10 +119,12 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initView(view);
+        initListeners();
+
+
         Bundle args;
         if ((args = getArguments()) != null) {
-            mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
-            mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
 
             mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
             mOriginEditTextHint = args.getString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG);
@@ -159,15 +162,24 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mDoneFab.setImageResource(mDoneFabIconRes);
         }
 
+        if (mDestinationCircleViewColorRes != 0) {
+            mRoundedIndicatorDestination.setCircleColor(mDestinationCircleViewColorRes);
+        }
+
+        if (mOriginCircleViewColorRes != 0) {
+            mRoundedIndicatorOrigin.setCircleColor(mOriginCircleViewColorRes);
+        }
+
+        if (mDoneFabColorRes != 0) {
+            mDoneFab.setBackgroundTintList(ColorStateList.valueOf(mDoneFabColorRes));
+        }
 
         mSearchSuggestions = new ArrayList<>();
         mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
 
-
-        initView(view);
-        initListeners();
-
         initmap();
+
+
     }
 
     public static NiboOriginDestinationPickerFragment newInstance(String originEditTextHint, String destinationEditTextHint, NiboStyle mapStyle,

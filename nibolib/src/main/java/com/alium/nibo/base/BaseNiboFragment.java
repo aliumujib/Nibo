@@ -29,6 +29,7 @@ import com.alium.nibo.R;
 import com.alium.nibo.models.NiboSelectedPlace;
 import com.alium.nibo.repo.location.LocationRepository;
 import com.alium.nibo.repo.location.SuggestionsRepository;
+import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -96,6 +97,12 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
                 initmap();
             }
         });
+
+        Bundle args = getArguments();
+        if (getArguments() != null) {
+            mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
+            mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
+        }
 
     }
 
