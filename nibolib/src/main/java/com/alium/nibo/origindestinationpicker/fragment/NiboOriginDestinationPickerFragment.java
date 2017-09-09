@@ -3,12 +3,14 @@ package com.alium.nibo.origindestinationpicker.fragment;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -119,8 +121,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         Bundle args;
         if ((args = getArguments()) != null) {
             mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
-            mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
             mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
+
+            mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
             mOriginEditTextHint = args.getString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG);
             mDestinationEditTextHint = args.getString(NiboConstants.DEST_EDIT_TEXT_HINT_ARG);
             mOriginMarkerPinIconRes = args.getInt(NiboConstants.ORIGIN_MARKER_ICON_RES_ARG);
@@ -133,6 +136,25 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mOriginDestinationSeperatorLineColorRes = args.getInt(NiboConstants.ORIG_DEST_SEPERATOR_LINE_COLOR_RES_ARG);
             mDoneFabColorRes = args.getInt(NiboConstants.DONE_FAB_COLOR_RES_ARG);
         }
+
+        if (mOriginEditTextHint != null) {
+            mOriginEditText.setHint(mOriginEditTextHint);
+        }
+
+        if (mDestinationEditTextHint != null) {
+            mDestinationEditText.setHint(mDestinationEditTextHint);
+        }
+
+        if (mBackButtonIconRes != 0) {
+            mToolbar.setNavigationIcon(mBackButtonIconRes);
+        }
+
+        if (mTextFieldClearIconRes != 0) {
+            Drawable drawable = ContextCompat.getDrawable(getContext(), mTextFieldClearIconRes);
+            mOriginEditText.setCompoundDrawables(drawable, null, null, null);
+            mDestinationEditText.setCompoundDrawables(drawable, null, null, null);
+        }
+
 
         mSearchSuggestions = new ArrayList<>();
         mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
@@ -481,7 +503,14 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
 
             hasWiderZoom = false;
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            mOriginMapMarker = addMarker(latLng);
+
+            if (mOriginMarkerPinIconRes != DEFAULT_MARKER_ICON_RES) {
+                mOriginMapMarker = addMarker(latLng, mOriginMarkerPinIconRes);
+            } else {
+                mOriginMapMarker = addMarker(latLng);
+            }
+
+
             mMap.setOnMarkerDragListener(this);
 
             showBothMarkersAndGetDirections();
@@ -496,7 +525,11 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 mDestinationMarker = null;
             }
             hasWiderZoom = false;
-            mDestinationMarker = addMarker(latLng);
+            if (mDestinationMarkerPinIconRes != DEFAULT_MARKER_ICON_RES) {
+                mDestinationMarker = addMarker(latLng, mDestinationMarkerPinIconRes);
+            } else {
+                mDestinationMarker = addMarker(latLng);
+            }
 
             showBothMarkersAndGetDirections();
         }
