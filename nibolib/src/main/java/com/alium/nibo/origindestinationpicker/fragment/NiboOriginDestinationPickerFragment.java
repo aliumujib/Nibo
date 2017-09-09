@@ -199,6 +199,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
+                        if (mTimeDistanceLL.getVisibility() != View.VISIBLE) {
+                            toggleViews();
+                        }
                         mDoneFab.animate().scaleX(1).scaleY(1).setDuration(300).start();
                         Log.d(TAG, "STATE_COLLAPSED");
                         break;
@@ -211,6 +214,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                         mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
+                        if (mSuggestionsLL.getVisibility() != View.VISIBLE) {
+                            toggleViews();
+                        }
                         mDoneFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
                         mSearchSuggestions.clear();
                         mSearchItemAdapter.clear();
@@ -278,9 +284,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 if (hasFocus) {
                     mRoundedIndicatorOrigin.setChecked(true);
                     mRoundedIndicatorDestination.setChecked(false);
-                    if (mSuggestionsLL.getVisibility() != View.VISIBLE) {
-                        toggleViews();
-                    }
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                 } else {
                     mRoundedIndicatorOrigin.setChecked(false);
@@ -294,9 +297,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 if (hasFocus) {
                     mRoundedIndicatorDestination.setChecked(true);
                     mRoundedIndicatorOrigin.setChecked(false);
-                    if (mSuggestionsLL.getVisibility() != View.VISIBLE) {
-                        toggleViews();
-                    }
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                 } else {
                     mRoundedIndicatorDestination.setChecked(false);
@@ -313,10 +313,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                            if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
-                                mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
-                            }
-                            findResults(s);
+                        if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
+                            mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
+                        }
+                        findResults(s);
                     }
                 });
 
@@ -325,10 +325,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                            if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
-                                mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
-                            }
-                            findResults(s);
+                        if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
+                            mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
+                        }
+                        findResults(s);
 
                     }
                 });
@@ -485,20 +485,29 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         if (greyPolyLine != null) {
             greyPolyLine.remove();
         }
+
+        this.listLatLng.clear();
+
     }
 
     @Override
     public void onDirectionFinderSuccess(List<Route> route) {
         Log.d(TAG, "DONE");
-        drawPolyline(route);
-        toggleViews();
+        if (!route.isEmpty()) {
+            drawPolyline(route);
+        }
+        if (mBehavior.getState() == (BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) && mTimeDistanceLL.getVisibility() == View.INVISIBLE) {
+            toggleViews();
+        }
     }
 
     private void setUpTimeAndDistanceText(String time, String distance) {
+        Log.d(TAG, "SET UP TIME AND DISTANCE");
         mTimeTaken.setText(String.format(getString(R.string.time_distance), time, distance));
     }
 
     private void setUpOriginDestinationText() {
+        Log.d(TAG, "SET UP ORIGIN AND DESTINATION");
         if (mOriginSuggestion != null && mDestinationSuggestion != null) {
             mOriginToDestinationTv.setText(String.format(getString(R.string.origin_to_dest_text), mOriginSuggestion.getShortTitle(), mDestinationSuggestion.getShortTitle()));
         }
@@ -510,16 +519,21 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     }
 
 
-    void drawPolyline(List<Route> routes) {
+    void drawPolyline(final List<Route> routes) {
 
         ArrayList<LatLng> points = null;
         PolylineOptions lineOptions = new PolylineOptions();
 
-
-        if (!routes.isEmpty()) {
-            setUpTimeAndDistanceText(routes.get(0).distance.text, routes.get(0).duration.text);
-            setUpOriginDestinationText();
-        }
+        mCoordinatorlayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mOriginEditText.clearFocus();
+                mDestinationEditText.clearFocus();
+                setUpTimeAndDistanceText(routes.get(0).distance.text, routes.get(0).duration.text);
+                setUpOriginDestinationText();
+                mCoordinatorlayout.requestLayout();
+            }
+        }, 1000);
 
         for (int i = 0; i < routes.size(); i++) {
             this.listLatLng.addAll(routes.get(i).points);

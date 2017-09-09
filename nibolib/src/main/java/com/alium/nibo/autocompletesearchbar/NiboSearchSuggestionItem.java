@@ -55,6 +55,7 @@ public class NiboSearchSuggestionItem {
     /**
      * Return the title of the result
      */
+
     @Override
     public String toString() {
         return mTitle;
@@ -97,7 +98,7 @@ public class NiboSearchSuggestionItem {
             String[] titleSub = this.getFullTitle().split(",");
 
             if (titleSub.length >= 1) {
-                return titleSub[0];
+                return titleSub[0].trim();
             }
         }
         return null;
@@ -109,7 +110,7 @@ public class NiboSearchSuggestionItem {
             String[] titleSub = this.getFullTitle().split(",", 2);
 
             if (titleSub.length >= 2) {
-                return titleSub[1];
+                return titleSub[1].trim();
             }
         }
         return null;
