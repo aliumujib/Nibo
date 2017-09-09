@@ -98,12 +98,49 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     private NiboSearchSuggestionItem mOriginSuggestion;
     private NiboSearchSuggestionItem mDestinationSuggestion;
 
+    private String mOriginEditTextHint;
+    private String mDestinationEditTextHint;
+    private int mOriginMarkerPinIconRes;
+    private int mDestinationMarkerPinIconRes;
+    private int mBackButtonIconRes;
+    private int mTextFieldClearIconRes;
+    private int mDoneFabIconRes;
+    private int mBackButtonColorRes;
+    private int mOriginCircleViewColorRes;
+    private int mDestinationCircleViewColorRes;
+    private int mOriginDestinationSeperatorLineColorRes;
+    private int mDoneFabColorRes;
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Bundle args;
+        if ((args = getArguments()) != null) {
+            mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
+            mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
+            mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
+            mOriginEditTextHint = args.getString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG);
+            mDestinationEditTextHint = args.getString(NiboConstants.DEST_EDIT_TEXT_HINT_ARG);
+
+        }
+
+        mSearchSuggestions = new ArrayList<>();
+        mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
+
+
+
+        initView(view);
+        initListeners();
+
+        initmap();
+    }
 
     public static NiboOriginDestinationPickerFragment newInstance(String originEditTextHint, String destinationEditTextHint, NiboStyle mapStyle,
                                                                   int styleFileID, int originMarkerPinIconRes, int destinationMarkerPinIconRes, int backButtonIconRes,
                                                                   int textFieldClearIconRes, int doneFabIconRes, int backButtonColorRes, int originCircleViewColorRes,
                                                                   int destinationCircleViewColorRes, int originDestinationSeperatorLineColorRes, int doneFabColorRes) {
-
         Bundle args = new Bundle();
         args.putString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG, originEditTextHint);
         args.putString(NiboConstants.DEST_EDIT_TEXT_HINT_ARG, destinationEditTextHint);
@@ -127,6 +164,8 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
 
     public NiboOriginDestinationPickerFragment() {
@@ -154,26 +193,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         }
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-        Bundle args;
-        if ((args = getArguments()) != null) {
-            mStyleEnum = (NiboStyle) args.getSerializable(NiboConstants.STYLE_ENUM_ARG);
-            mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
-            mStyleFileID = args.getInt(NiboConstants.STYLE_FILE_ID);
-        }
-
-        mSearchSuggestions = new ArrayList<>();
-        mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
-
-
-        initView(view);
-        initListeners();
-
-        initmap();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -276,7 +296,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             }
         });
 
-        mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
+        this.mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
 
 
     }
