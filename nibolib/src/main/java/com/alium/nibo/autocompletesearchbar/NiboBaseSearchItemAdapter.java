@@ -41,7 +41,7 @@ public class NiboBaseSearchItemAdapter extends ArrayAdapter<NiboSearchSuggestion
         final TextView title = (TextView) convertView
                 .findViewById(R.id.textview_title);
 
-        title.setText(niboSearchSuggestionItem.getTitle());
+        title.setText(niboSearchSuggestionItem.getFullTitle());
 
         ImageView icon = (ImageView) convertView.findViewById(R.id.imageview_icon);
 

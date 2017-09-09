@@ -20,14 +20,16 @@ import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.alium.nibo.R;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike;
-import com.alium.nibo.origindestinationpicker.adapter.OrigDestSuggestionAdapterNiboBase;
+import com.alium.nibo.origindestinationpicker.adapter.NiboBaseOrigDestSuggestionAdapter;
 import com.alium.nibo.repo.directions.DirectionFinder;
 import com.alium.nibo.repo.directions.DirectionFinderListener;
 import com.alium.nibo.repo.directions.Route;
@@ -47,11 +49,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.SquareCap;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -79,16 +79,24 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     private CardView mContentCardView;
     private ListView mSuggestionsListView;
     private ProgressBar mProgressBar;
-    private OrigDestSuggestionAdapterNiboBase mSearchItemAdapter;
+    private NiboBaseOrigDestSuggestionAdapter mSearchItemAdapter;
     private ArrayList<NiboSearchSuggestionItem> mSearchSuggestions;
     private BottomSheetBehaviorGoogleMapsLike<View> mBehavior;
     private FloatingActionButton mDoneFab;
-    private boolean mAvoidTriggerTextWatcher = false;
+
     private Marker mOriginMapMarker;
     private Marker mDestinationMarker;
+
     private ArrayList<LatLng> listLatLng = new ArrayList<>();
     private Polyline blackPolyLine;
     private Polyline greyPolyLine;
+    private TextView mTimeTaken;
+    private TextView mOriginToDestinationTv;
+    private LinearLayout mTimeDistanceLL;
+    private LinearLayout mSuggestionsLL;
+    private NiboSearchSuggestionItem mOriginSuggestion;
+    private NiboSearchSuggestionItem mDestinationSuggestion;
+
 
     public NiboOriginDestinationPickerFragment() {
     }
@@ -128,7 +136,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         }
 
         mSearchSuggestions = new ArrayList<>();
-        mSearchItemAdapter = new OrigDestSuggestionAdapterNiboBase(getContext(), mSearchSuggestions);
+        mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
 
 
         initView(view);
@@ -173,10 +181,15 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
         this.mProgressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
         this.mDoneFab = (FloatingActionButton) convertView.findViewById(R.id.done_fab);
+        this.mTimeDistanceLL = (LinearLayout) convertView.findViewById(R.id.title_distance_ll);
+        this.mSuggestionsLL = (LinearLayout) convertView.findViewById(R.id.suggestions_progress_ll);
+        this.mTimeTaken = (TextView) convertView.findViewById(R.id.time_taken);
+        this.mOriginToDestinationTv = (TextView) convertView.findViewById(R.id.origin_to_destination_tv);
 
         this.mRoundedIndicatorDestination.setChecked(true);
+
         /**
-         * If we want to listen for states callback
+         * we want to listen for states
          */
         View bottomSheet = mCoordinatorlayout.findViewById(R.id.bottom_sheet);
 
@@ -187,27 +200,28 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 switch (newState) {
                     case BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED:
                         mDoneFab.animate().scaleX(1).scaleY(1).setDuration(300).start();
-                        Log.d("bottomsheet-", "STATE_COLLAPSED");
+                        Log.d(TAG, "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
                         mDoneFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
-                        Log.d("bottomsheet-", "STATE_DRAGGING");
+                        Log.d(TAG, "STATE_DRAGGING");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:
-                        Log.d("bottomsheet-", "STATE_EXPANDED");
+                        Log.d(TAG, "STATE_EXPANDED");
                         mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT:
+                        mDoneFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
                         mSearchSuggestions.clear();
                         mSearchItemAdapter.clear();
                         mSearchItemAdapter.notifyDataSetChanged();
-                        Log.d("bottomsheet-", "STATE_ANCHOR_POINT");
+                        Log.d(TAG, "STATE_ANCHOR_POINT");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_HIDDEN:
-                        Log.d("bottomsheet-", "STATE_HIDDEN");
+                        Log.d(TAG, "STATE_HIDDEN");
                         break;
                     default:
-                        Log.d("bottomsheet-", "STATE_SETTLING");
+                        Log.d(TAG, "STATE_SETTLING");
                         break;
                 }
             }
@@ -264,7 +278,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 if (hasFocus) {
                     mRoundedIndicatorOrigin.setChecked(true);
                     mRoundedIndicatorDestination.setChecked(false);
-                    mAvoidTriggerTextWatcher = false;
+                    if (mSuggestionsLL.getVisibility() != View.VISIBLE) {
+                        toggleViews();
+                    }
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                 } else {
                     mRoundedIndicatorOrigin.setChecked(false);
@@ -278,7 +294,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 if (hasFocus) {
                     mRoundedIndicatorDestination.setChecked(true);
                     mRoundedIndicatorOrigin.setChecked(false);
-                    mAvoidTriggerTextWatcher = false;
+                    if (mSuggestionsLL.getVisibility() != View.VISIBLE) {
+                        toggleViews();
+                    }
                     mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                 } else {
                     mRoundedIndicatorDestination.setChecked(false);
@@ -295,13 +313,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        if (!mAvoidTriggerTextWatcher) {
                             if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
                                 mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                             }
                             findResults(s);
-                        } else
-                            Log.e(TAG, "Avoiding text triggers");
                     }
                 });
 
@@ -310,13 +325,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull String s) throws Exception {
-                        if (!mAvoidTriggerTextWatcher) {
                             if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
                                 mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                             }
                             findResults(s);
-                        } else
-                            Log.e(TAG, "Avoiding text triggers");
 
                     }
                 });
@@ -324,12 +336,13 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         mSuggestionsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mAvoidTriggerTextWatcher = true;
                 if (mRoundedIndicatorOrigin.isChecked()) {
-                    mOriginEditText.setText(mSearchSuggestions.get(position).getTitle());
+                    mOriginSuggestion = mSearchSuggestions.get(position);
+                    mOriginEditText.setText(mSearchSuggestions.get(position).getFullTitle());
                     getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
                 } else if (mRoundedIndicatorDestination.isChecked()) {
-                    mDestinationEditText.setText(mSearchSuggestions.get(position).getTitle());
+                    mDestinationSuggestion = mSearchSuggestions.get(position);
+                    mDestinationEditText.setText(mSearchSuggestions.get(position).getFullTitle());
                     getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
                 }
             }
@@ -344,12 +357,27 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 closeSuggestions();
                 if (mRoundedIndicatorOrigin.isChecked()) {
                     addOriginMarker(place.getLatLng());
+
+
                 }
                 if (mRoundedIndicatorDestination.isChecked()) {
                     addDestinationMarker(place.getLatLng());
                 }
             }
         });
+    }
+
+
+    protected void toggleVisibility(View... views) {
+        for (View view : views) {
+            boolean isVisible = view.getVisibility() == View.VISIBLE;
+            view.setVisibility(isVisible ? View.INVISIBLE : View.VISIBLE);
+        }
+    }
+
+    void toggleViews() {
+        toggleVisibility(mSuggestionsLL);
+        toggleVisibility(mTimeDistanceLL);
     }
 
     void addOriginMarker(LatLng latLng) {
@@ -383,6 +411,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         }
     }
 
+
     private void showBothMarkersAndGetDirections() {
         if (mOriginMapMarker != null && mDestinationMarker != null) {
             int width = getResources().getDisplayMetrics().widthPixels;
@@ -411,7 +440,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
                 hideKeyboard();
                 mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
                 mCoordinatorlayout.requestLayout();
@@ -449,12 +477,31 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     @Override
     public void onDirectionFinderStart() {
         Log.d(TAG, "STARTED");
+
+        if (blackPolyLine != null) {
+            blackPolyLine.remove();
+        }
+
+        if (greyPolyLine != null) {
+            greyPolyLine.remove();
+        }
     }
 
     @Override
     public void onDirectionFinderSuccess(List<Route> route) {
         Log.d(TAG, "DONE");
         drawPolyline(route);
+        toggleViews();
+    }
+
+    private void setUpTimeAndDistanceText(String time, String distance) {
+        mTimeTaken.setText(String.format(getString(R.string.time_distance), time, distance));
+    }
+
+    private void setUpOriginDestinationText() {
+        if (mOriginSuggestion != null && mDestinationSuggestion != null) {
+            mOriginToDestinationTv.setText(String.format(getString(R.string.origin_to_dest_text), mOriginSuggestion.getShortTitle(), mDestinationSuggestion.getShortTitle()));
+        }
     }
 
     @Override
@@ -468,12 +515,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         ArrayList<LatLng> points = null;
         PolylineOptions lineOptions = new PolylineOptions();
 
-        if (blackPolyLine != null) {
-            blackPolyLine.remove();
-        }
 
-        if (greyPolyLine != null) {
-            greyPolyLine.remove();
+        if (!routes.isEmpty()) {
+            setUpTimeAndDistanceText(routes.get(0).distance.text, routes.get(0).duration.text);
+            setUpOriginDestinationText();
         }
 
         for (int i = 0; i < routes.size(); i++) {

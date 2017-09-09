@@ -39,14 +39,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:text="15 minutes"
+                    android:id="@+id/time_taken"
                     android:textColor="#80000000"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:text="Ikeja - Oworonshoki"
+                    android:id="@+id/origin_to_destination_tv"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                     android:layout_width="wrap_content"
                     android:textColor="#80000000"
@@ -60,6 +60,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:visibility="visible"
+                android:id="@+id/suggestions_progress_ll"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 

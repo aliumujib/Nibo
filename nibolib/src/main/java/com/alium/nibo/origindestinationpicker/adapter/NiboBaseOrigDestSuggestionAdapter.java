@@ -18,9 +18,9 @@ import java.util.ArrayList;
  * Created by abdulmujibaliu on 9/8/17.
  */
 
-public class OrigDestSuggestionAdapterNiboBase extends NiboBaseSearchItemAdapter {
+public class NiboBaseOrigDestSuggestionAdapter extends NiboBaseSearchItemAdapter {
 
-    public OrigDestSuggestionAdapterNiboBase(Context context, ArrayList<NiboSearchSuggestionItem> options) {
+    public NiboBaseOrigDestSuggestionAdapter(Context context, ArrayList<NiboSearchSuggestionItem> options) {
         super(context, options);
     }
 
@@ -50,20 +50,18 @@ public class OrigDestSuggestionAdapterNiboBase extends NiboBaseSearchItemAdapter
         final TextView subTitle = (TextView) convertView
                 .findViewById(R.id.subtitle);
 
-        if (niboSearchSuggestionItem.getTitle() != null) {
-            String[] titleSub = niboSearchSuggestionItem.getTitle().split(",");
-
-            if (titleSub.length >= 2) {
-                title.setText(titleSub[0]);
-                subTitle.setText(titleSub[1].trim());
-            } else {
-                title.setText(niboSearchSuggestionItem.getTitle());
-            }
-
+        if (niboSearchSuggestionItem.getShortTitle() != null) {
+            title.setText(niboSearchSuggestionItem.getShortTitle());
+        }else {
+            title.setText(niboSearchSuggestionItem.getFullTitle());
         }
 
+        if (niboSearchSuggestionItem.getLongTitle() != null) {
+            subTitle.setText(niboSearchSuggestionItem.getLongTitle());
+        }
 
         ImageView icon = (ImageView) convertView.findViewById(R.id.imageview_icon);
+
         if (niboSearchSuggestionItem.getIcon() == null) {
 
         } else {

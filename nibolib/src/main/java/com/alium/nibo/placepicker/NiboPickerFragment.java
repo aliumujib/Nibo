@@ -300,8 +300,8 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
             @Override
             public boolean onSuggestion(NiboSearchSuggestionItem niboSearchSuggestionItem) {
                 Toast.makeText(getContext(), niboSearchSuggestionItem.getValue(), Toast.LENGTH_LONG).show();
-                mSearchView.setSearchString(niboSearchSuggestionItem.getTitle(), true);
-                mSearchView.setLogoText(niboSearchSuggestionItem.getTitle());
+                mSearchView.setSearchString(niboSearchSuggestionItem.getFullTitle(), true);
+                mSearchView.setLogoText(niboSearchSuggestionItem.getFullTitle());
                 getPlaceDetailsByID(niboSearchSuggestionItem.getValue());
                 mSearchView.closeSearch();
                 hideKeyboard();

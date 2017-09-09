@@ -7,6 +7,8 @@
     <string name="BottomSheetBehaviorGoogleMapsLike">com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike</string>
 
     <string name="ScrollAwareFABBehavior">com.alium.nibo.lib.ScrollAwareFABBehavior</string>
+    <string name="time_distance" formatted="false">%s, %s</string>
+    <string name="origin_to_dest_text" formatted="false">%s - %s</string>
 
 
 </resources>

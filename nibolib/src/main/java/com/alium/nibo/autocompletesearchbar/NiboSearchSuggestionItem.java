@@ -60,7 +60,7 @@ public class NiboSearchSuggestionItem {
         return mTitle;
     }
 
-    public String getTitle() {
+    public String getFullTitle() {
         return mTitle;
     }
 
@@ -90,5 +90,28 @@ public class NiboSearchSuggestionItem {
 
     public void setType(int type) {
         this.mType = type;
+    }
+
+    public String getShortTitle() {
+        if (this.getFullTitle() != null) {
+            String[] titleSub = this.getFullTitle().split(",");
+
+            if (titleSub.length >= 1) {
+                return titleSub[0];
+            }
+        }
+        return null;
+    }
+
+
+    public String getLongTitle() {
+        if (this.getFullTitle() != null) {
+            String[] titleSub = this.getFullTitle().split(",", 2);
+
+            if (titleSub.length >= 2) {
+                return titleSub[1];
+            }
+        }
+        return null;
     }
 }
