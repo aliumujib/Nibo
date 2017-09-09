@@ -338,11 +338,11 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mRoundedIndicatorOrigin.isChecked()) {
                     mOriginSuggestion = mSearchSuggestions.get(position);
-                    mOriginEditText.setText(mSearchSuggestions.get(position).getFullTitle());
+                    mOriginEditText.setText(mSearchSuggestions.get(position).getShortTitle());
                     getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
                 } else if (mRoundedIndicatorDestination.isChecked()) {
                     mDestinationSuggestion = mSearchSuggestions.get(position);
-                    mDestinationEditText.setText(mSearchSuggestions.get(position).getFullTitle());
+                    mDestinationEditText.setText(mSearchSuggestions.get(position).getShortTitle());
                     getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
                 }
             }
@@ -502,12 +502,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     }
 
     private void setUpTimeAndDistanceText(String time, String distance) {
-        Log.d(TAG, "SET UP TIME AND DISTANCE");
         mTimeTaken.setText(String.format(getString(R.string.time_distance), time, distance));
     }
 
     private void setUpOriginDestinationText() {
-        Log.d(TAG, "SET UP ORIGIN AND DESTINATION");
         if (mOriginSuggestion != null && mDestinationSuggestion != null) {
             mOriginToDestinationTv.setText(String.format(getString(R.string.origin_to_dest_text), mOriginSuggestion.getShortTitle(), mDestinationSuggestion.getShortTitle()));
         }

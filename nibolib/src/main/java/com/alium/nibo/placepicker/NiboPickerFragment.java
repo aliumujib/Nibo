@@ -48,7 +48,6 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
     private Address mGeolocation;
     private RelativeLayout mRootLayout;
     private NiboPlacesAutoCompleteSearchView mSearchView;
-    private FloatingActionButton mCenterMyLocationFab;
     private LinearLayout mLocationDetails;
     private TextView mGeocodeAddress;
     private TextView mPickLocationTextView;
@@ -214,17 +213,10 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
     private void initView(View convertView) {
         this.mRootLayout = (RelativeLayout) convertView.findViewById(R.id.root_layout);
         this.mSearchView = (NiboPlacesAutoCompleteSearchView) convertView.findViewById(R.id.searchview);
-        this.mCenterMyLocationFab = (FloatingActionButton) convertView.findViewById(R.id.center_my_location_fab);
         this.mLocationDetails = (LinearLayout) convertView.findViewById(R.id.location_details);
         this.mGeocodeAddress = (TextView) convertView.findViewById(R.id.geocode_address);
         this.mPickLocationTextView = (TextView) convertView.findViewById(R.id.pick_location_btn);
 
-        mCenterMyLocationFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initmap();
-            }
-        });
 
         mSearchView.setmProvider(this);
     }

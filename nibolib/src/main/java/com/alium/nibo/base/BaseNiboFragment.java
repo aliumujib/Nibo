@@ -17,6 +17,7 @@ import android.os.Vibrator;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -73,6 +74,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     int mMarkerPinIconRes;
     protected NiboSelectedPlace mCurrentSelection;
     protected LocationRepository mLocationRepository;
+    protected FloatingActionButton mCenterMyLocationFab;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -86,6 +88,15 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        this.mCenterMyLocationFab = (FloatingActionButton) view.findViewById(R.id.center_my_location_fab);
+        this.mCenterMyLocationFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initmap();
+            }
+        });
+
     }
 
     @Override

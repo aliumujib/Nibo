@@ -90,8 +90,10 @@
                         android:background="@drawable/rectangle_rounded"
                         android:ellipsize="end"
                         android:hint="Select origin"
+                        android:drawableRight="@drawable/ic_close_circle_black_18dp"
                         android:maxLines="1"
                         android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
                         android:singleLine="true"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
 
@@ -103,10 +105,11 @@
                         android:layout_weight="1"
                         android:background="@drawable/rectangle_rounded"
                         android:ellipsize="end"
-
+                        android:drawableRight="@drawable/ic_close_circle_black_18dp"
                         android:hint="Select destination"
                         android:maxLines="1"
                         android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
                         android:singleLine="true"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
                 </LinearLayout>
@@ -150,8 +153,27 @@
         app:layout_anchorGravity="top|end"
         android:clickable="true"
         android:layout_gravity="right"
-        android:src="@drawable/ic_crosshairs_gps_white_24dp"
+        android:src="@drawable/ic_navigation_white_24dp"
         app:backgroundTint="#000000"
+        app:rippleColor="#FFF" />
+
+    <View
+        android:id="@+id/dummy"
+        android:layout_width="1dp"
+        android:layout_height="72dp"
+        app:layout_anchor="@id/done_fab"
+        app:layout_anchorGravity="top|right|end" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/center_my_location_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        app:layout_anchor="@id/dummy"
+        app:layout_anchorGravity="top|right|end"
+        android:src="@drawable/ic_crosshairs_gps_grey600_24dp"
+        app:backgroundTint="#FFFFFF"
         app:rippleColor="#FFF" />
 
 
