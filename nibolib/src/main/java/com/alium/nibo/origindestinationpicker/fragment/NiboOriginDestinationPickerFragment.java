@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -186,7 +187,11 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         this.mTimeTaken = (TextView) convertView.findViewById(R.id.time_taken);
         this.mOriginToDestinationTv = (TextView) convertView.findViewById(R.id.origin_to_destination_tv);
 
-        this.mRoundedIndicatorDestination.setChecked(true);
+        //this.mRoundedIndicatorDestination.setChecked(true);
+
+        this.mOriginEditText.setOnTouchListener(getClearListener(mOriginEditText));
+        this.mDestinationEditText.setOnTouchListener(getClearListener(mDestinationEditText));
+
 
         /**
          * we want to listen for states
@@ -203,6 +208,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                             toggleViews();
                         }
                         mDoneFab.animate().scaleX(1).scaleY(1).setDuration(300).start();
+                        mCenterMyLocationFab.animate().scaleX(1).scaleY(1).setDuration(300).start();
                         Log.d(TAG, "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
@@ -217,7 +223,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                         if (mSuggestionsLL.getVisibility() != View.VISIBLE) {
                             toggleViews();
                         }
+
                         mDoneFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
+                        mCenterMyLocationFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
+
                         mSearchSuggestions.clear();
                         mSearchItemAdapter.clear();
                         mSearchItemAdapter.notifyDataSetChanged();
@@ -241,6 +250,32 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED);
 
 
+    }
+
+    @NonNull
+    private View.OnTouchListener getClearListener(final EditText editText) {
+        return new View.OnTouchListener() {
+            final int DRAWABLE_LEFT = 0;
+            final int DRAWABLE_TOP = 1;
+            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_BOTTOM = 3;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    int leftEdgeOfRightDrawable = editText.getRight()
+                            - editText.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+                    // when EditBox has padding, adjust leftEdge like
+                    // leftEdgeOfRightDrawable -= getResources().getDimension(R.dimen.edittext_padding_left_right);
+                    if (event.getRawX() >= leftEdgeOfRightDrawable) {
+                        // clicked on clear icon
+                        editText.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
     }
 
     private void showLoading() {
