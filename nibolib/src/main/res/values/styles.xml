@@ -34,17 +34,26 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="originRoundViewStyle">@style/BaseOriginCircleViewTheme</item>
         <item name="destinationRoundViewStyle">@style/BaseDestinationCircleViewTheme</item>
-        <item name="originDestinationSeperatorLineColor">@color/colorPrimary</item>
+        <item name="originDestinationSeperatorLineColor">@color/white</item>
         <item name="textViewClearerIcon">@drawable/ic_close_circle_black_18dp</item>
         <item name="detailsBackground">@color/colorPrimary</item>
         <item name="appBarBackground">@color/colorPrimary</item>
         <item name="navigationIcon">@drawable/arrow_left</item>
 
+        <item name="distanceDurationTextColor">@color/white</item>
+        <item name="originDestinationTextColor">@color/white</item>
+        <item name="progressBarColor">@color/colorAccent</item>
         <item name="origTextViewHint">@string/origin_hint</item>
         <item name="destTextViewHint">@string/destination_hint</item>
 
+        <item name="origTextViewTextColor">@color/black</item>
+        <item name="destTextViewTextColor">@color/black</item>
+
         <item name="originEditTextBg">@color/white</item>
         <item name="destEditTextBg">@color/white</item>
+
+        <item name="doneFabColorRes">@color/colorAccent</item>
+        <item name="doneFabIconRes">@drawable/ic_navigation_white_24dp</item>
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -52,12 +61,12 @@
 
     <style name="BaseOriginCircleViewTheme">
         <item name="colorSelected">@color/colorAccent</item>
-        <item name="colorUnselected">@color/colorPrimary</item>
+        <item name="colorUnselected">@color/white</item>
     </style>
 
     <style name="BaseDestinationCircleViewTheme">
         <item name="colorSelected">@color/colorAccent</item>
-        <item name="colorUnselected">@color/colorPrimary</item>
+        <item name="colorUnselected">@color/white</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

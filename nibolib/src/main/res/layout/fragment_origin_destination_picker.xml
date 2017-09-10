@@ -94,6 +94,7 @@
                         android:background="@drawable/rectangle_rounded_origin"
                         android:ellipsize="end"
                         android:hint="Select origin"
+                        android:textColor="?origTextViewTextColor"
                         android:drawableRight="?textViewClearerIcon"
                         android:maxLines="1"
                         android:paddingLeft="8dp"
@@ -107,6 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_weight="1"
+                        android:textColor="?destTextViewTextColor"
                         android:background="@drawable/rectangle_rounded_destination"
                         android:ellipsize="end"
                         android:drawableRight="?textViewClearerIcon"
@@ -157,8 +159,8 @@
         app:layout_anchorGravity="top|end"
         android:clickable="true"
         android:layout_gravity="right"
-        android:src="@drawable/ic_navigation_white_24dp"
-        app:backgroundTint="#000000"
+        android:src="?doneFabIconRes"
+        app:backgroundTint="?doneFabColorRes"
         app:rippleColor="#FFF" />
 
     <View

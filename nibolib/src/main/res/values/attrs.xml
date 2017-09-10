@@ -23,6 +23,13 @@
     <attr name="distanceDurationTextColor" format="color|reference" />
     <attr name="originDestinationTextColor" format="color|reference" />
 
+
+    <attr name="suggestionItemTitleTextColor" format="color|reference" />
+    <attr name="suggestionItemSubtitleTextColor" format="color|reference" />
+    <attr name="suggestionItemSeperatorLineColor" format="color|reference" />
+    <attr name="suggestionItemLeftIconTintColor" format="color|reference" />
+
+
     <attr name="textViewClearerIcon" format="reference" />
 
     <attr name="detailsBackground" format="color|reference" />
