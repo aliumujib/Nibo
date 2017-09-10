@@ -10,8 +10,7 @@
     </style>
 
 
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme.NoActionBar" parent="NiboOrigDestTheme.NoActionBar">
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/black</item>
@@ -23,7 +22,7 @@
         <item name="originRoundViewStyle">@style/OriginCircleViewTheme</item>
         <item name="destinationRoundViewStyle">@style/DestinationCircleViewTheme</item>
         <item name="originDestinationSeperatorLineColor">@color/white</item>
-        <item name="textViewClearerIcon">@drawable/ic_close_circle_black_18dp</item>
+        <item name="textViewClearerIcon">@drawable/ic_close_grey600_18dp</item>
         <item name="detailsBackground">@color/colorPrimary</item>
         <item name="appBarBackground">@color/colorPrimary</item>
         <item name="navigationIcon">@drawable/ic_close_white_24dp</item>
