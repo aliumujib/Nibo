@@ -28,14 +28,14 @@
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="136dp"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/appBarBackground"
             android:theme="@style/NiboTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                app:navigationIcon="@drawable/arrow_left"
+                app:navigationIcon="?navigationIcon"
                 app:popupTheme="@style/NiboTheme.PopupOverlay">
 
             </android.support.v7.widget.Toolbar>
@@ -55,6 +55,7 @@
 
                     <com.alium.nibo.utils.customviews.RoundedView
                         android:id="@+id/rounded_indicator_source"
+                        style="?originRoundViewStyle"
                         android:layout_width="8dp"
                         android:layout_height="8dp" />
 
@@ -66,11 +67,12 @@
                         android:layout_marginTop="3dp"
                         android:layout_weight="1"
                         android:id="@+id/orig_dest_seperator_line"
-                        android:background="@color/circle_color_default_gray" />
+                        android:background="?originDestinationSeperatorLineColor" />
 
                     <com.alium.nibo.utils.customviews.RoundedView
                         android:id="@+id/rounded_indicator_destination"
                         android:layout_width="8dp"
+                        style="?destinationRoundViewStyle"
                         android:layout_height="8dp" />
 
                 </LinearLayout>
@@ -89,10 +91,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_rounded"
+                        android:background="@drawable/rectangle_rounded_origin"
                         android:ellipsize="end"
                         android:hint="Select origin"
-                        android:drawableRight="@drawable/ic_close_circle_black_18dp"
+                        android:drawableRight="?textViewClearerIcon"
                         android:maxLines="1"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
@@ -105,9 +107,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/rectangle_rounded"
+                        android:background="@drawable/rectangle_rounded_destination"
                         android:ellipsize="end"
-                        android:drawableRight="@drawable/ic_close_circle_black_18dp"
+                        android:drawableRight="?textViewClearerIcon"
                         android:hint="Select destination"
                         android:maxLines="1"
                         android:paddingLeft="8dp"

@@ -57,12 +57,12 @@ public class MainActivity extends AppCompatActivity {
                 .setDestinationMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
                 .setOriginMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
                 .setOriginEditTextHint("Input pick up location")
-                .setDestinationCircleViewColorRes(R.color.colorAccent)
-                .setTextFieldClearIconRes(R.drawable.ic_close_black_18dp)
-                .setOriginCircleViewColorRes(R.color.colorPrimaryDark)
-                .setDoneFabIconRes(R.drawable.ic_close_white_36dp)
-                .setBackButtonIconRes(R.drawable.ic_close_black_24dp)
-                .setOriginDestinationSeperatorLineColorRes(R.color.colorPrimary)
+                //.setDestinationCircleViewColorRes(R.color.colorAccent)
+                //.setTextFieldClearIconRes(R.drawable.ic_close_black_18dp)
+                //.setOriginCircleViewColorRes(R.color.colorPrimaryDark)
+                //.setDoneFabIconRes(R.drawable.ic_close_white_36dp)
+                //.setBackButtonIconRes(R.drawable.ic_close_black_24dp)
+                //.setOriginDestinationSeperatorLineColorRes(R.color.circle_color_default_gray)
                 .setDestinationEditTextHint("Input destination")
                 .setStyleEnum(NiboStyle.SUBTLE_GREY_SCALE);
 

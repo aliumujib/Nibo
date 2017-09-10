@@ -11,21 +11,32 @@
     </declare-styleable>
 
 
-    <attr name="niboODPicker_originTextViewBg" format="reference" />
-    <attr name="niboODPicker_destTextViewBg" format="reference" />
-    <attr name="niboODPicker_origTextViewHint" format="string" />
-    <attr name="niboODPicker_destTextViewHint" format="string" />
-    <attr name="niboODPicker_distanceDurationTextColor" format="color" />
-    <attr name="niboODPicker_originDestinationTextColor" format="color" />
-    <attr name="niboODPicker_textViewClearerIcon" format="reference" />
-    <attr name="niboODPicker_detailsBackgroundColor" format="color" />
-    <attr name="niboODPicker_doneFabIconRes" format="reference" />
-    <attr name="niboODPicker_doneFabColorRes" format="color" />
-    <attr name="niboODPicker_destinationRoundViewCheckedColor" format="color" />
-    <attr name="niboODPicker_destinationRoundViewUncheckedColor" format="color" />
-    <attr name="niboODPicker_originRoundViewCheckedColor" format="color" />
-    <attr name="niboODPicker_originRoundViewUncheckedColor" format="color" />
-    <attr name="niboODPicker_progressBarColor" format="color" />
+    <attr name="originEditTextBg" format="reference|color" />
+    <attr name="destEditTextBg" format="reference|color" />
+
+    <attr name="origTextViewHint" format="string|reference" />
+    <attr name="destTextViewHint" format="string|reference" />
+
+    <attr name="origTextViewTextColor" format="string|reference" />
+    <attr name="destTextViewTextColor" format="string|reference" />
+
+    <attr name="distanceDurationTextColor" format="color|reference" />
+    <attr name="originDestinationTextColor" format="color|reference" />
+
+    <attr name="textViewClearerIcon" format="reference" />
+
+    <attr name="detailsBackground" format="color|reference" />
+    <attr name="appBarBackground" format="color|reference"/>
+
+    <attr name="doneFabIconRes" format="reference" />
+    <attr name="doneFabColorRes" format="color|reference" />
+
+    <attr name="destinationRoundViewStyle" format="reference" />
+    <attr name="originRoundViewStyle" format="reference" />
+
+    <attr name="originDestinationSeperatorLineColor" format="color|reference" />
+
+    <attr name="progressBarColor" format="color|reference" />
 
 
     <declare-styleable name="NiboPlacesAutoCompleteSearchView">

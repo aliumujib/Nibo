@@ -28,6 +28,7 @@ public class RoundedView extends View {
         uncheckedColor = a.getColor(R.styleable.RoundedView_colorUnselected, ContextCompat.getColor(getContext(), R.color.circle_color_default_gray));
         checkedColor = a.getColor(R.styleable.RoundedView_colorSelected, ContextCompat.getColor(getContext(), R.color.black));
 
+        paintColor = uncheckedColor;
 
     }
 
@@ -46,7 +47,6 @@ public class RoundedView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //if (getBackgroundColor(this) != 0) uncheckedColor = getBackgroundColor(this);
 
         paint.setAntiAlias(true);
         paint.setFilterBitmap(true);

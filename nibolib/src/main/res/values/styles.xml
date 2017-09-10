@@ -27,9 +27,37 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/black</item>
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/circle_color_default_gray</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">
+            @color/colorPrimaryDark
+        </item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="originRoundViewStyle">@style/BaseOriginCircleViewTheme</item>
+        <item name="destinationRoundViewStyle">@style/BaseDestinationCircleViewTheme</item>
+        <item name="originDestinationSeperatorLineColor">@color/colorPrimary</item>
+        <item name="textViewClearerIcon">@drawable/ic_close_circle_black_18dp</item>
+        <item name="detailsBackground">@color/colorPrimary</item>
+        <item name="appBarBackground">@color/colorPrimary</item>
+        <item name="navigationIcon">@drawable/arrow_left</item>
+
+        <item name="origTextViewHint">@string/origin_hint</item>
+        <item name="destTextViewHint">@string/destination_hint</item>
+
+        <item name="originEditTextBg">@color/white</item>
+        <item name="destEditTextBg">@color/white</item>
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="BaseOriginCircleViewTheme">
+        <item name="colorSelected">@color/colorAccent</item>
+        <item name="colorUnselected">@color/colorPrimary</item>
+    </style>
+
+    <style name="BaseDestinationCircleViewTheme">
+        <item name="colorSelected">@color/colorAccent</item>
+        <item name="colorUnselected">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -40,4 +68,6 @@
 
     <style name="NiboTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <string name="origin_hint">select a starting point</string>
+    <string name="destination_hint">destination hint</string>
 </resources>

@@ -6,12 +6,26 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="navigationIcon">@drawable/ic_close_white_24dp</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/white</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="icon">@drawable/ic_close_white_24dp</item>
+        <item name="closeIcon">@drawable/ic_close_white_18dp</item>
+        <item name="dividerVertical">@color/white</item>
+        <item name="android:tint">@color/white</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

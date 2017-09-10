@@ -664,6 +664,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     @Override
     public void onDirectionFinderSuccess(List<Route> route) {
         hideLoading();
+        resetDirectionDetailsTV();
         Log.d(TAG, "DONE");
         if (!route.isEmpty()) {
             drawPolyline(route);
@@ -671,6 +672,11 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         if (mBehavior.getState() == (BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) && mTimeDistanceLL.getVisibility() == View.INVISIBLE) {
             toggleViews();
         }
+    }
+
+    private void resetDirectionDetailsTV() {
+        mOriginToDestinationTv.setText("");
+        mTimeTaken.setText("");
     }
 
     private void setUpTimeAndDistanceText(String time, String distance) {
