@@ -8,5 +8,7 @@
     <string name="time_distance" formatted="false">%s, %s</string>
     <string name="origin_to_dest_text" formatted="false">%s - %s</string>
 
+    <string name="origin_hint">select a starting point</string>
+    <string name="destination_hint">destination hint</string>
 
 </resources>

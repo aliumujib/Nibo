@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -9,19 +9,61 @@
 
     </style>
 
-    <style name="AppTheme.NoActionBar">
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/black</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">
+            @color/colorPrimaryDark
+        </item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="originRoundViewStyle">@style/OriginCircleViewTheme</item>
+        <item name="destinationRoundViewStyle">@style/DestinationCircleViewTheme</item>
+        <item name="originDestinationSeperatorLineColor">@color/white</item>
+        <item name="textViewClearerIcon">@drawable/ic_close_circle_black_18dp</item>
+        <item name="detailsBackground">@color/colorPrimary</item>
+        <item name="appBarBackground">@color/colorPrimary</item>
+        <item name="navigationIcon">@drawable/ic_close_white_24dp</item>
+
+        <item name="distanceDurationTextColor">@color/white</item>
+        <item name="originDestinationTextColor">@color/white</item>
+        <item name="progressBarColor">@color/colorAccent</item>
+
+        <item name="origTextViewHint">@string/origin_hint</item>
+        <item name="destTextViewHint">@string/destination_hint</item>
+
+        <item name="origTextViewHintColor">#808080</item>
+        <item name="destTextViewHintColor">#808080</item>
+
+        <item name="origTextViewTextColor">@color/black</item>
+        <item name="destTextViewTextColor">@color/black</item>
+
+        <item name="originEditTextBg">@color/white</item>
+        <item name="destEditTextBg">@color/white</item>
+
+        <item name="doneFabColorRes">@color/colorAccent</item>
+        <item name="doneFabIconRes">@drawable/ic_navigation_white_24dp</item>
+
+        <item name="suggestionItemTitleTextColor">@color/white</item>
+        <item name="suggestionItemSubtitleTextColor">@color/white</item>
+        <item name="suggestionItemSeperatorLineColor">@color/white</item>
+        <item name="suggestionItemLeftIconTintColor">@color/white</item>
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
-        <item name="navigationIcon">@drawable/ic_close_white_24dp</item>
-        <item name="colorControlNormal">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/white</item>
-        <item name="colorControlActivated">@color/colorAccent</item>
-        <item name="icon">@drawable/ic_close_white_24dp</item>
-        <item name="closeIcon">@drawable/ic_close_white_18dp</item>
-        <item name="dividerVertical">@color/white</item>
-        <item name="android:tint">@color/white</item>
+    </style>
+
+    <style name="OriginCircleViewTheme">
+        <item name="colorSelected">@color/colorAccent</item>
+        <item name="colorUnselected">@color/white</item>
+    </style>
+
+    <style name="DestinationCircleViewTheme">
+        <item name="colorSelected">@color/colorAccent</item>
+        <item name="colorUnselected">@color/white</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
