@@ -315,6 +315,10 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
 
         mLocationRepository = new LocationRepository(getActivity(), mGoogleApiClient);
 
+        if (mStyleEnum == NiboStyle.DEFAULT) {
+            mStyleEnum = NiboStyle.SUBTLE_GREY_SCALE;
+        }
+
         mLocationRepository.getLocationObservable()
                 .subscribe(new Consumer<Location>() {
                     @Override

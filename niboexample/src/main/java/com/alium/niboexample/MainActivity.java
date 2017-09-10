@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPrimaryPolyLineColor(R.color.colorPrimary)
                 .setSecondaryPolyLineColor(R.color.colorAccent)
                 .setDestinationEditTextHint("Input destination")
-                .setStyleEnum(NiboStyle.SUBTLE_GREY_SCALE);
+                .setStyleEnum(NiboStyle.UNSATURATED_BROWNS);
 
         NiboOriginDestinationPickerActivity.setBuilder(config);
         startActivityForResult(intent, 200);

@@ -46,7 +46,7 @@ public class NiboBaseSearchItemAdapter extends ArrayAdapter<NiboSearchSuggestion
         ImageView icon = (ImageView) convertView.findViewById(R.id.imageview_icon);
 
         if (niboSearchSuggestionItem.getIcon() == null) {
-            icon.setImageResource(R.drawable.ic_map_marker_grey600_24dp);
+            icon.setImageResource(R.drawable.ic_map_marker_grey_def);
         } else {
             icon.setImageDrawable(niboSearchSuggestionItem.getIcon());
         }

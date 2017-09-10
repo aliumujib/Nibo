@@ -44,7 +44,7 @@
         <item name="destEditTextBg">@color/white</item>
 
         <item name="doneFabColorRes">@color/colorAccent</item>
-        <item name="primaryPolyLineColor">@drawable/ic_navigation_white_24dp</item>
+        <item name="primaryPolyLineColor">@drawable/ic_navigation_def</item>
 
         <item name="suggestionItemTitleTextColor">@color/white</item>
         <item name="suggestionItemSubtitleTextColor">@color/white</item>

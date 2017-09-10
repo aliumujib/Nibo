@@ -31,7 +31,7 @@
     <attr name="distanceDurationTextColor" format="color|reference" />
     <attr name="originDestinationTextColor" format="color|reference" />
 
-
+    <!-- color of text for suggestionListViewItems-->
     <attr name="suggestionItemTitleTextColor" format="color|reference" />
     <attr name="suggestionItemSubtitleTextColor" format="color|reference" />
     <attr name="suggestionItemSeperatorLineColor" format="color|reference" />

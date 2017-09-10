@@ -29,7 +29,7 @@
             android:layout_margin="16dp"
             android:clickable="true"
             android:layout_gravity="right"
-            android:src="@drawable/ic_crosshairs_gps_grey600_24dp"
+            android:src="@drawable/ic_crosshairs_gps_def"
             app:backgroundTint="#FFFFFF"
             app:rippleColor="#FFF" />
 
@@ -54,7 +54,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_map_marker_grey600_24dp" />
+                    android:src="@drawable/ic_map_marker_grey_def" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -90,7 +90,7 @@
                     android:layout_height="30dp"
                     android:background="@drawable/circle_blue"
                     android:padding="4dp"
-                    android:src="@drawable/ic_map_marker_circle_black_24dp"
+                    android:src="@drawable/ic_map_marker_circle_def"
                     android:tint="@android:color/tertiary_text_dark" />
 
 

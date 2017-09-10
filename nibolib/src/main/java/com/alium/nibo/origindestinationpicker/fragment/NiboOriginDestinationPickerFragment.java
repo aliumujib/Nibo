@@ -160,7 +160,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mDestinationEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, mTextFieldClearIconRes, 0);
         }
 
-
         initmap();
 
 

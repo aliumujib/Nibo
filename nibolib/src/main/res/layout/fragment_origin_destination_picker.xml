@@ -181,7 +181,7 @@
         android:clickable="true"
         app:layout_anchor="@id/dummy"
         app:layout_anchorGravity="top|right|end"
-        android:src="@drawable/ic_crosshairs_gps_grey600_24dp"
+        android:src="@drawable/ic_crosshairs_gps_def"
         app:backgroundTint="#FFFFFF"
         app:rippleColor="#FFF" />
 

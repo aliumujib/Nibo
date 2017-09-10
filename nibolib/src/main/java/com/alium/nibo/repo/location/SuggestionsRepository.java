@@ -63,7 +63,7 @@ public class SuggestionsRepository {
                                                 NiboSearchSuggestionItem placeSuggestion = new NiboSearchSuggestionItem(
                                                         prediction.getFullText(null).toString(),
                                                         prediction.getPlaceId(), NiboSearchSuggestionItem.TYPE_SEARCH_ITEM_SUGGESTION,
-                                                        mContext.getResources().getDrawable(R.drawable.ic_map_marker_grey600_18dp)
+                                                        mContext.getResources().getDrawable(R.drawable.ic_map_marker_def)
                                                 );
 
                                                 placeSuggestionItems.add(placeSuggestion);
