@@ -20,6 +20,10 @@
     <attr name="origTextViewTextColor" format="string|reference" />
     <attr name="destTextViewTextColor" format="string|reference" />
 
+    <attr name="origTextViewHintColor" format="color|reference" />
+    <attr name="destTextViewHintColor" format="color|reference" />
+
+
     <attr name="distanceDurationTextColor" format="color|reference" />
     <attr name="originDestinationTextColor" format="color|reference" />
 

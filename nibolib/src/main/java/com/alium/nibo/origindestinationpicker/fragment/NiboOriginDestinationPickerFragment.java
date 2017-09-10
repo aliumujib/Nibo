@@ -692,6 +692,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     @Override
     public void onDirectionFinderError(String errorMessage) {
         hideLoading();
+        mOriginToDestinationTv.setText(errorMessage);
         Log.d(TAG, errorMessage);
     }
 

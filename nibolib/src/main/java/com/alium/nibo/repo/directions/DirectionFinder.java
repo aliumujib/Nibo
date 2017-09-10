@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.alium.nibo.utils.NiboConstants;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -105,31 +107,66 @@ public class DirectionFinder {
 
         List<Route> routes = new ArrayList<Route>();
         JSONObject jsonData = new JSONObject(data);
-        JSONArray jsonRoutes = jsonData.getJSONArray("routes");
-        for (int i = 0; i < jsonRoutes.length(); i++) {
-            JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
-            Route route = new Route();
 
-            JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
-            JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
-            JSONObject jsonLeg = jsonLegs.getJSONObject(0);
-            JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
-            JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
-            JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
-            JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
+        if (jsonData.has("status")) {
 
-            route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
-            route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
-            route.endAddress = jsonLeg.getString("end_address");
-            route.startAddress = jsonLeg.getString("start_address");
-            route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
-            route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
-            route.points = decodePolyLine(overview_polylineJson.getString("points"));
+            String status = jsonData.getString("status");
 
-            routes.add(route);
+            if (status.equals(NiboConstants.OK)) {
+                JSONArray jsonRoutes = jsonData.getJSONArray("routes");
+                for (int i = 0; i < jsonRoutes.length(); i++) {
+                    JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
+                    Route route = new Route();
+
+                    JSONObject overview_polylineJson = jsonRoute.getJSONObject("overview_polyline");
+                    JSONArray jsonLegs = jsonRoute.getJSONArray("legs");
+                    JSONObject jsonLeg = jsonLegs.getJSONObject(0);
+                    JSONObject jsonDistance = jsonLeg.getJSONObject("distance");
+                    JSONObject jsonDuration = jsonLeg.getJSONObject("duration");
+                    JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
+                    JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
+
+                    route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
+                    route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
+                    route.endAddress = jsonLeg.getString("end_address");
+                    route.startAddress = jsonLeg.getString("start_address");
+                    route.startLocation = new LatLng(jsonStartLocation.getDouble("lat"), jsonStartLocation.getDouble("lng"));
+                    route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
+                    route.points = decodePolyLine(overview_polylineJson.getString("points"));
+
+                    routes.add(route);
+                }
+
+                /**
+                 * https://developers.google.com/maps/documentation/javascript/directions#DirectionsStatus
+                 *
+                 * OK indicates the response contains a valid DirectionsResult.
+                 * NOT_FOUND indicates at least one of the locations specified in the request's origin, destination, or waypoints could not be geocoded.
+                 * ZERO_RESULTS indicates no route could be found between the origin and destination.
+                 * MAX_WAYPOINTS_EXCEEDED indicates that too many DirectionsWaypoint fields were provided in the DirectionsRequest. See the section below on limits for way points.
+                 * INVALID_REQUEST indicates that the provided DirectionsRequest was invalid. The most common causes of this error code are requests that are missing either an origin or destination, or a transit request that includes waypoints.
+                 * OVER_QUERY_LIMIT indicates the webpage has sent too many requests within the allowed time period.
+                 * REQUEST_DENIED indicates the webpage is not allowed to use the directions service.
+                 * UNKNOWN_ERROR indicates a directions request could not be processed due to a server error. The request may succeed if yo
+                 */
+                listener.onDirectionFinderSuccess(routes);
+            } else if (status.equals(NiboConstants.NOT_FOUND)) {
+                listener.onDirectionFinderError("Invalid request, please select another location");
+            } else if (status.equals(NiboConstants.ZERO_RESULTS)) {
+                listener.onDirectionFinderError("no route could be found between the selected locations");
+            } else if (status.equals(NiboConstants.MAX_WAYPOINTS_EXCEEDED)) {
+                listener.onDirectionFinderError("maximum waypoint limit exceeded");
+            } else if (status.equals(NiboConstants.INVALID_REQUEST)) {
+                listener.onDirectionFinderError("invalid request, please select two locations");
+            } else if (status.equals(NiboConstants.OVER_QUERY_LIMIT)) {
+                listener.onDirectionFinderError("query limit exceeded");
+            } else if (status.equals(NiboConstants.REQUEST_DENIED)) {
+                listener.onDirectionFinderError("unauthorized usage");
+            } else if (status.equals(NiboConstants.UNKNOWN_ERROR)) {
+                listener.onDirectionFinderError("unknown error");
+            }
+
         }
-
-        listener.onDirectionFinderSuccess(routes);
     }
 
     private List<LatLng> decodePolyLine(final String poly) {

@@ -93,9 +93,10 @@
                         android:layout_weight="1"
                         android:background="@drawable/rectangle_rounded_origin"
                         android:ellipsize="end"
-                        android:hint="Select origin"
+                        android:hint="?origTextViewHint"
                         android:textColor="?origTextViewTextColor"
                         android:drawableRight="?textViewClearerIcon"
+                        android:textColorHint="?origTextViewHintColor"
                         android:maxLines="1"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
@@ -112,12 +113,14 @@
                         android:background="@drawable/rectangle_rounded_destination"
                         android:ellipsize="end"
                         android:drawableRight="?textViewClearerIcon"
-                        android:hint="Select destination"
+                        android:textColorHint="?destTextViewHintColor"
+                        android:hint="?destTextViewHint"
                         android:maxLines="1"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:singleLine="true"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead" />
+
                 </LinearLayout>
 
 

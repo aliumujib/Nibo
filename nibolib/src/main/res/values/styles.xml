@@ -43,8 +43,12 @@
         <item name="distanceDurationTextColor">@color/white</item>
         <item name="originDestinationTextColor">@color/white</item>
         <item name="progressBarColor">@color/colorAccent</item>
+
         <item name="origTextViewHint">@string/origin_hint</item>
         <item name="destTextViewHint">@string/destination_hint</item>
+
+        <item name="origTextViewHintColor">#808080</item>
+        <item name="destTextViewHintColor">#808080</item>
 
         <item name="origTextViewTextColor">@color/black</item>
         <item name="destTextViewTextColor">@color/black</item>
@@ -54,6 +58,11 @@
 
         <item name="doneFabColorRes">@color/colorAccent</item>
         <item name="doneFabIconRes">@drawable/ic_navigation_white_24dp</item>
+
+        <item name="suggestionItemTitleTextColor">@color/white</item>
+        <item name="suggestionItemSubtitleTextColor">@color/white</item>
+        <item name="suggestionItemSeperatorLineColor">@color/white</item>
+        <item name="suggestionItemLeftIconTintColor">@color/white</item>
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

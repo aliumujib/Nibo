@@ -31,4 +31,14 @@ public interface NiboConstants {
     String DONE_FAB_COLOR_RES_ARG = "DONE_FAB_COLOR_RES_ARG";
 
 
+
+    String OK = "OK";
+    String NOT_FOUND = "NOT_FOUND";
+    String ZERO_RESULTS = "ZERO_RESULTS";
+    String MAX_WAYPOINTS_EXCEEDED = "MAX_WAYPOINTS_EXCEEDED";
+    String INVALID_REQUEST = "INVALID_REQUEST";
+    String OVER_QUERY_LIMIT = "OVER_QUERY_LIMIT";
+    String REQUEST_DENIED = "REQUEST_DENIED";
+    String UNKNOWN_ERROR = "UNKNOWN_ERROR";
+
 }
