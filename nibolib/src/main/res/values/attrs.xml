@@ -11,19 +11,23 @@
     </declare-styleable>
 
 
+    <!-- Backgrround color for location input editTexts -->
     <attr name="originEditTextBg" format="reference|color" />
     <attr name="destEditTextBg" format="reference|color" />
 
-    <attr name="origTextViewHint" format="string|reference" />
-    <attr name="destTextViewHint" format="string|reference" />
+    <!-- hint text for location input editTexts -->
+    <attr name="origEditTextHint" format="string|reference" />
+    <attr name="destEditTextHint" format="string|reference" />
 
-    <attr name="origTextViewTextColor" format="string|reference" />
-    <attr name="destTextViewTextColor" format="string|reference" />
+    <!-- text color for location input editTexts -->
+    <attr name="origEditTextTextColor" format="string|reference" />
+    <attr name="destEditTextTextColor" format="string|reference" />
 
-    <attr name="origTextViewHintColor" format="color|reference" />
-    <attr name="destTextViewHintColor" format="color|reference" />
+    <!-- color of hint text for location input editTexts -->
+    <attr name="origEditTextHintColor" format="color|reference" />
+    <attr name="destEditTextHintColor" format="color|reference" />
 
-
+    <!-- color of text for descriptionTextViews -->
     <attr name="distanceDurationTextColor" format="color|reference" />
     <attr name="originDestinationTextColor" format="color|reference" />
 
@@ -34,10 +38,10 @@
     <attr name="suggestionItemLeftIconTintColor" format="color|reference" />
 
 
-    <attr name="textViewClearerIcon" format="reference" />
+    <attr name="editTextClearerIcon" format="reference" />
 
     <attr name="detailsBackground" format="color|reference" />
-    <attr name="appBarBackground" format="color|reference"/>
+    <attr name="appBarBackground" format="color|reference" />
 
     <attr name="primaryPolyLineColor" format="reference" />
     <attr name="doneFabColorRes" format="color|reference" />

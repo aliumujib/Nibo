@@ -22,7 +22,7 @@
         <item name="originRoundViewStyle">@style/OriginCircleViewTheme</item>
         <item name="destinationRoundViewStyle">@style/DestinationCircleViewTheme</item>
         <item name="originDestinationSeperatorLineColor">@color/white</item>
-        <item name="textViewClearerIcon">@drawable/ic_close_grey600_18dp</item>
+        <item name="editTextClearerIcon">@drawable/ic_close_grey600_18dp</item>
         <item name="detailsBackground">@color/colorPrimary</item>
         <item name="appBarBackground">@color/colorPrimary</item>
         <item name="navigationIcon">@drawable/ic_close_white_24dp</item>
@@ -31,14 +31,14 @@
         <item name="originDestinationTextColor">@color/white</item>
         <item name="progressBarColor">@color/colorAccent</item>
 
-        <item name="origTextViewHint">@string/origin_hint</item>
-        <item name="destTextViewHint">@string/destination_hint</item>
+        <item name="origEditTextHint">@string/origin_hint</item>
+        <item name="destEditTextHint">@string/destination_hint</item>
 
-        <item name="origTextViewHintColor">#808080</item>
-        <item name="destTextViewHintColor">#808080</item>
+        <item name="origEditTextHintColor">#808080</item>
+        <item name="destEditTextHintColor">#808080</item>
 
-        <item name="origTextViewTextColor">@color/black</item>
-        <item name="destTextViewTextColor">@color/black</item>
+        <item name="origEditTextTextColor">@color/black</item>
+        <item name="destEditTextTextColor">@color/black</item>
 
         <item name="originEditTextBg">@color/white</item>
         <item name="destEditTextBg">@color/white</item>
