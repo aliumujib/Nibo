@@ -76,6 +76,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     protected NiboSelectedPlace mCurrentSelection;
     protected LocationRepository mLocationRepository;
     protected FloatingActionButton mCenterMyLocationFab;
+    public View mOriginDestinationSeperatorLine;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

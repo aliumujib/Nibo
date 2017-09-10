@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         NiboPlacePickerActivity.NiboPlacePickerBuilder config = new NiboPlacePickerActivity.NiboPlacePickerBuilder()
                 .setSearchBarTitle("Search for an area")
                 .setConfirmButtonTitle("Pick here bish")
-                .setMarkerPinIconRes(R.drawable.ic_place)
+                .setMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
                 .setStyleEnum(NiboStyle.CUSTOM)
                 .setStyleFileID(R.raw.retro);
         NiboPlacePickerActivity.setBuilder(config);
@@ -54,8 +54,17 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NiboOriginDestinationPickerActivity.class);
 
         NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder config = new NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder()
-                .setDestinationMarkerPinIconRes(R.drawable.ic_place)
-                .setStyleEnum(NiboStyle.BLUE_ESSENCE);
+                .setDestinationMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
+                .setOriginMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
+                .setOriginEditTextHint("Input pick up location")
+                .setDestinationCircleViewColorRes(R.color.colorAccent)
+                .setTextFieldClearIconRes(R.drawable.ic_close_black_18dp)
+                .setOriginCircleViewColorRes(R.color.colorPrimaryDark)
+                .setDoneFabIconRes(R.drawable.ic_close_white_36dp)
+                .setBackButtonIconRes(R.drawable.ic_close_black_24dp)
+                .setOriginDestinationSeperatorLineColorRes(R.color.colorPrimary)
+                .setDestinationEditTextHint("Input destination")
+                .setStyleEnum(NiboStyle.SUBTLE_GREY_SCALE);
 
         NiboOriginDestinationPickerActivity.setBuilder(config);
         startActivityForResult(intent, 200);

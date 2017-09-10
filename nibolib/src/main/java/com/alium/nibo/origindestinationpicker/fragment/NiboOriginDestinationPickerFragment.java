@@ -13,11 +13,13 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,16 +133,22 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         if ((args = getArguments()) != null) {
 
             mMarkerPinIconRes = args.getInt(NiboConstants.MARKER_PIN_ICON_RES);
+
             mOriginEditTextHint = args.getString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG);
             mDestinationEditTextHint = args.getString(NiboConstants.DEST_EDIT_TEXT_HINT_ARG);
+
             mOriginMarkerPinIconRes = args.getInt(NiboConstants.ORIGIN_MARKER_ICON_RES_ARG);
             mDestinationMarkerPinIconRes = args.getInt(NiboConstants.DEST_MARKER_ICON_RES_ARG);
+
             mBackButtonIconRes = args.getInt(NiboConstants.BACK_BUTTON_ICON_RES_ARG);
             mTextFieldClearIconRes = args.getInt(NiboConstants.TEXT_FIELD_CLEAR_ICON_RES_ARG);
+
             mDoneFabIconRes = args.getInt(NiboConstants.DONE_FAB_ICON_RES_ARG);
             mBackButtonColorRes = args.getInt(NiboConstants.BACK_BTN_COLOR_RES_ARG);
+
             mDestinationCircleViewColorRes = args.getInt(NiboConstants.DEST_CIRCLE_VIEW_COLOR_RES_ARG);
             mOriginDestinationSeperatorLineColorRes = args.getInt(NiboConstants.ORIG_DEST_SEPERATOR_LINE_COLOR_RES_ARG);
+
             mDoneFabColorRes = args.getInt(NiboConstants.DONE_FAB_COLOR_RES_ARG);
         }
 
@@ -157,9 +165,8 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         }
 
         if (mTextFieldClearIconRes != 0) {
-            Drawable drawable = ContextCompat.getDrawable(getContext(), mTextFieldClearIconRes);
-            mOriginEditText.setCompoundDrawables(drawable, null, null, null);
-            mDestinationEditText.setCompoundDrawables(drawable, null, null, null);
+            mOriginEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, mTextFieldClearIconRes, 0);
+            mDestinationEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, mTextFieldClearIconRes, 0);
         }
 
         if (mDoneFabIconRes != 0) {
@@ -167,15 +174,19 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         }
 
         if (mDestinationCircleViewColorRes != 0) {
-            mRoundedIndicatorDestination.setCircleColor(mDestinationCircleViewColorRes);
+            mRoundedIndicatorDestination.setCheckedCircleColor(ContextCompat.getColor(getContext(), mDestinationCircleViewColorRes));
         }
 
         if (mOriginCircleViewColorRes != 0) {
-            mRoundedIndicatorOrigin.setCircleColor(mOriginCircleViewColorRes);
+            mRoundedIndicatorOrigin.setCheckedCircleColor(ContextCompat.getColor(getContext(), mOriginCircleViewColorRes));
         }
 
         if (mDoneFabColorRes != 0) {
             mDoneFab.setBackgroundTintList(ColorStateList.valueOf(mDoneFabColorRes));
+        }
+
+        if(mOriginDestinationSeperatorLineColorRes!=0){
+            mOriginDestinationSeperatorLine.setBackgroundColor(ContextCompat.getColor(getContext(), mOriginDestinationSeperatorLineColorRes));
         }
 
 
@@ -200,6 +211,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         args.putInt(NiboConstants.TEXT_FIELD_CLEAR_ICON_RES_ARG, textFieldClearIconRes);
         args.putInt(NiboConstants.DONE_FAB_ICON_RES_ARG, doneFabIconRes);
         args.putInt(NiboConstants.BACK_BTN_COLOR_RES_ARG, backButtonColorRes);
+
         args.putInt(NiboConstants.ORIGIN_CIRCLE_VIEW_COLOR_RES_ARG, originCircleViewColorRes);
         args.putInt(NiboConstants.DEST_CIRCLE_VIEW_COLOR_RES_ARG, destinationCircleViewColorRes);
 
@@ -278,12 +290,23 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         this.mSuggestionsLL = (LinearLayout) convertView.findViewById(R.id.suggestions_progress_ll);
         this.mTimeTaken = (TextView) convertView.findViewById(R.id.time_taken);
         this.mOriginToDestinationTv = (TextView) convertView.findViewById(R.id.origin_to_destination_tv);
+        this.mOriginDestinationSeperatorLine = convertView.findViewById(R.id.orig_dest_seperator_line);
 
         //this.mRoundedIndicatorDestination.setChecked(true);
         this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
 
         this.mOriginEditText.setOnTouchListener(getClearListener(mOriginEditText));
         this.mDestinationEditText.setOnTouchListener(getClearListener(mDestinationEditText));
+
+        this.mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                getActivity().finish();
+                return false;
+            }
+        });
+
+        //((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
 
 
         /**
@@ -302,10 +325,13 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                         }
                         mDoneFab.animate().scaleX(1).scaleY(1).setDuration(300).start();
                         mCenterMyLocationFab.animate().scaleX(1).scaleY(1).setDuration(300).start();
+                        hideKeyboard();
                         Log.d(TAG, "STATE_COLLAPSED");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_DRAGGING:
                         mDoneFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
+                        mCenterMyLocationFab.animate().scaleX(0).scaleY(0).setDuration(300).start();
+
                         Log.d(TAG, "STATE_DRAGGING");
                         break;
                     case BottomSheetBehaviorGoogleMapsLike.STATE_EXPANDED:

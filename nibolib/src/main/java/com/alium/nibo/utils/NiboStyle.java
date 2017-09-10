@@ -8,7 +8,7 @@ import com.alium.nibo.R;
 
 public enum NiboStyle {
 
-    BLUE_ESSENCE(R.raw.blue_essense), GREY_UBER(R.raw.grey_uber), HOPPER(R.raw.hopper), NIGHT_MODE(R.raw.night_mode), RETRO(R.raw.retro), UNSATURATED_BROWNS(R.raw.unsaturated_browns), DEFAULT(0), CUSTOM(-1);
+    BLUE_ESSENCE(R.raw.blue_essense), SUBTLE_GREY_SCALE(R.raw.subtle_grey_scale), HOPPER(R.raw.hopper), NIGHT_MODE(R.raw.night_mode), RETRO(R.raw.retro), UNSATURATED_BROWNS(R.raw.unsaturated_browns), DEFAULT(0), CUSTOM(-1);
 
     private final int value;
 

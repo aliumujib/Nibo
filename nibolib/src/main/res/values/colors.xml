@@ -6,8 +6,9 @@
 
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00ffffff</color>
-    <color name="circle_color_default_blue">#4184F3</color>
+
     <color name="circle_color_default_gray">#BDBDBD</color>
     <color name="black">#000000</color>
+    <color name="default_text_color">#80000000</color>
 
 </resources>

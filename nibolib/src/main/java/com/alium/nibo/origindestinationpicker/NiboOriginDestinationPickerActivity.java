@@ -105,10 +105,10 @@ public class NiboOriginDestinationPickerActivity extends BaseNiboActivity {
             return this;
         }
 
-        public NiboOriginDestinationPickerBuilder setBackButtonColorRes(int backButtonColorRes) {
-            this.backButtonColorRes = backButtonColorRes;
-            return this;
-        }
+//        public NiboOriginDestinationPickerBuilder setBackButtonColorRes(int backButtonColorRes) {
+//            this.backButtonColorRes = backButtonColorRes;
+//            return this;
+//        }
 
         public NiboOriginDestinationPickerBuilder setOriginCircleViewColorRes(int originCircleViewColorRes) {
             this.originCircleViewColorRes = originCircleViewColorRes;
@@ -141,8 +141,9 @@ public class NiboOriginDestinationPickerActivity extends BaseNiboActivity {
         }
 
         public NiboOriginDestinationPickerFragment build() {
-            return NiboOriginDestinationPickerFragment.newInstance(originEditTextHint, destinationEditTextHint, styleEnum, styleFileID, originMarkerPinIconRes, destinationMarkerPinIconRes
-                    , backButtonIconRes, textFieldClearIconRes, doneFabIconRes, backButtonColorRes, originCircleViewColorRes, destinationCircleViewColorRes, originDestinationSeperatorLineColorRes, doneFabColorRes);
+            return NiboOriginDestinationPickerFragment.newInstance(originEditTextHint, destinationEditTextHint, styleEnum, styleFileID, originMarkerPinIconRes, destinationMarkerPinIconRes,
+                    backButtonIconRes, textFieldClearIconRes, doneFabIconRes, backButtonColorRes, originCircleViewColorRes, destinationCircleViewColorRes,
+                    originDestinationSeperatorLineColorRes, doneFabColorRes);
         }
 
     }

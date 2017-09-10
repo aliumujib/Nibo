@@ -5,6 +5,7 @@
     android:id="@+id/coordinatorlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <fragment
@@ -64,6 +65,7 @@
                         android:layout_marginBottom="3dp"
                         android:layout_marginTop="3dp"
                         android:layout_weight="1"
+                        android:id="@+id/orig_dest_seperator_line"
                         android:background="@color/circle_color_default_gray" />
 
                     <com.alium.nibo.utils.customviews.RoundedView

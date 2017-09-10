@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.alium.nibo">
 
     <application
@@ -16,7 +17,7 @@
         <activity
             android:name=".origindestinationpicker.NiboOriginDestinationPickerActivity"
             android:label="@string/title_activity_origin_destination_picker"
-            android:theme="@style/NiboOrigDestTheme.NoActionBar"></activity>
+            ></activity>
     </application>
 
 </manifest>

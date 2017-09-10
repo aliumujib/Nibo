@@ -90,7 +90,7 @@ public class DirectionFinder {
         @Override
         protected void onPostExecute(String res) {
             try {
-                Log.d(TAG, res);
+                //Log.d(TAG, res);
                 parseJSon(res);
             } catch (JSONException e) {
                 e.printStackTrace();
