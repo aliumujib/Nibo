@@ -269,7 +269,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         this.mDestinationEditText = (EditText) convertView.findViewById(R.id.destination_edit_text);
         this.mBottomSheet = (NestedScrollView) convertView.findViewById(R.id.bottom_sheet);
         this.mContentCardView = (CardView) convertView.findViewById(R.id.content_card_view);
-        this.mSuggestionsListView = (ListView) convertView.findViewById(R.id.suggestions_recyclerview);
+        this.mSuggestionsListView = (ListView) convertView.findViewById(R.id.suggestions_list);
         this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
         this.mProgressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
         this.mDoneFab = (FloatingActionButton) convertView.findViewById(R.id.done_fab);

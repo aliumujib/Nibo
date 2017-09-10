@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<FrameLayout android:id="@+id/frame_container"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.alium.nibo.origindestinationpicker.NiboOriginDestinationPickerActivity">
-
-
-    <include layout="@layout/content_origin_destination_picker" />
-
-
-</android.support.design.widget.CoordinatorLayout>
+    android:layout_width="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

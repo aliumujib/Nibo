@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchStartFinishActivity() {
         Intent intent = new Intent(this, NiboOriginDestinationPickerActivity.class);
-        
+
         NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder config = new NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder()
                 .setDestinationMarkerPinIconRes(R.drawable.ic_place)
                 .setStyleEnum(NiboStyle.BLUE_ESSENCE);
