@@ -119,6 +119,10 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        mSearchSuggestions = new ArrayList<>();
+        mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
+
         initView(view);
         initListeners();
 
@@ -174,8 +178,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mDoneFab.setBackgroundTintList(ColorStateList.valueOf(mDoneFabColorRes));
         }
 
-        mSearchSuggestions = new ArrayList<>();
-        mSearchItemAdapter = new NiboBaseOrigDestSuggestionAdapter(getContext(), mSearchSuggestions);
 
         initmap();
 
@@ -270,7 +272,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         this.mBottomSheet = (NestedScrollView) convertView.findViewById(R.id.bottom_sheet);
         this.mContentCardView = (CardView) convertView.findViewById(R.id.content_card_view);
         this.mSuggestionsListView = (ListView) convertView.findViewById(R.id.suggestions_list);
-        this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
         this.mProgressBar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
         this.mDoneFab = (FloatingActionButton) convertView.findViewById(R.id.done_fab);
         this.mTimeDistanceLL = (LinearLayout) convertView.findViewById(R.id.title_distance_ll);
@@ -279,6 +280,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         this.mOriginToDestinationTv = (TextView) convertView.findViewById(R.id.origin_to_destination_tv);
 
         //this.mRoundedIndicatorDestination.setChecked(true);
+        this.mSuggestionsListView.setAdapter(mSearchItemAdapter);
 
         this.mOriginEditText.setOnTouchListener(getClearListener(mOriginEditText));
         this.mDestinationEditText.setOnTouchListener(getClearListener(mDestinationEditText));
@@ -361,6 +363,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                     if (event.getRawX() >= leftEdgeOfRightDrawable) {
                         // clicked on clear icon
                         editText.setText("");
+                        editText.clearFocus();
                         return true;
                     }
                 }
@@ -592,6 +595,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         SuggestionsRepository.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<NiboSearchSuggestionItem>>() {
             @Override
             public void accept(@io.reactivex.annotations.NonNull Collection<NiboSearchSuggestionItem> niboSearchSuggestionItems) throws Exception {
+                Log.wtf(TAG, String.valueOf(niboSearchSuggestionItems.size()));
                 mSearchSuggestions.clear();
                 mSearchSuggestions.addAll(niboSearchSuggestionItems);
                 mSearchItemAdapter.notifyDataSetChanged();

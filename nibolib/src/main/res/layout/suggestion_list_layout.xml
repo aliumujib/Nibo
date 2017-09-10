@@ -70,14 +70,15 @@
                     android:layout_height="match_parent"
                     android:divider="@color/transparent"
                     android:scrollbars="vertical" />
+
             </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progress_bar"
-                android:layout_alignParentTop="true"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="bottom"
