@@ -39,7 +39,7 @@
     <attr name="detailsBackground" format="color|reference" />
     <attr name="appBarBackground" format="color|reference"/>
 
-    <attr name="doneFabIconRes" format="reference" />
+    <attr name="primaryPolyLineColor" format="reference" />
     <attr name="doneFabColorRes" format="color|reference" />
 
     <attr name="destinationRoundViewStyle" format="reference" />

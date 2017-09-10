@@ -162,7 +162,7 @@
         app:layout_anchorGravity="top|end"
         android:clickable="true"
         android:layout_gravity="right"
-        android:src="?doneFabIconRes"
+        android:src="?primaryPolyLineColor"
         app:backgroundTint="?doneFabColorRes"
         app:rippleColor="#FFF" />
 

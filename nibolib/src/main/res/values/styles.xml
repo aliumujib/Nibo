@@ -58,7 +58,7 @@
         <item name="destEditTextBg">@color/circle_color_default_gray</item>
 
         <item name="doneFabColorRes">@color/black</item>
-        <item name="doneFabIconRes">@drawable/ic_navigation_white_24dp</item>
+        <item name="primaryPolyLineColor">@drawable/ic_navigation_white_24dp</item>
 
         <item name="suggestionItemTitleTextColor">@color/suggestion_title</item>
         <item name="suggestionItemSubtitleTextColor">@color/suggestion_title</item>

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.RawRes;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.alium.nibo.R;
@@ -57,17 +56,9 @@ public class NiboOriginDestinationPickerActivity extends BaseNiboActivity {
         @DrawableRes
         int textFieldClearIconRes;
         @DrawableRes
-        int doneFabIconRes;
+        int primaryPolyLineColor;
         @ColorRes
-        int backButtonColorRes;
-        @ColorRes
-        int originCircleViewColorRes;
-        @ColorRes
-        int destinationCircleViewColorRes;
-        @ColorRes
-        int originDestinationSeperatorLineColorRes;
-        @ColorRes
-        int doneFabColorRes;
+        int secondaryPolyLineColor;
 
 
         public NiboOriginDestinationPickerBuilder setOriginEditTextHint(String originEditTextHint) {
@@ -100,35 +91,16 @@ public class NiboOriginDestinationPickerActivity extends BaseNiboActivity {
             return this;
         }
 
-        public NiboOriginDestinationPickerBuilder setDoneFabIconRes(int doneFabIconRes) {
-            this.doneFabIconRes = doneFabIconRes;
+        public NiboOriginDestinationPickerBuilder setPrimaryPolyLineColor(int primaryPolyLineColor) {
+            this.primaryPolyLineColor = primaryPolyLineColor;
             return this;
         }
 
-//        public NiboOriginDestinationPickerBuilder setBackButtonColorRes(int backButtonColorRes) {
-//            this.backButtonColorRes = backButtonColorRes;
-//            return this;
-//        }
-
-        public NiboOriginDestinationPickerBuilder setOriginCircleViewColorRes(int originCircleViewColorRes) {
-            this.originCircleViewColorRes = originCircleViewColorRes;
+        public NiboOriginDestinationPickerBuilder setSecondaryPolyLineColor(int secondaryPolyLineColor) {
+            this.secondaryPolyLineColor = secondaryPolyLineColor;
             return this;
         }
 
-        public NiboOriginDestinationPickerBuilder setDestinationCircleViewColorRes(int destinationCircleViewColorRes) {
-            this.destinationCircleViewColorRes = destinationCircleViewColorRes;
-            return this;
-        }
-
-        public NiboOriginDestinationPickerBuilder setOriginDestinationSeperatorLineColorRes(int originDestinationSeperatorLineColorRes) {
-            this.originDestinationSeperatorLineColorRes = originDestinationSeperatorLineColorRes;
-            return this;
-        }
-
-        public NiboOriginDestinationPickerBuilder setDoneFabColorRes(int doneFabColorRes) {
-            this.doneFabColorRes = doneFabColorRes;
-            return this;
-        }
 
         public NiboOriginDestinationPickerBuilder setStyleEnum(NiboStyle styleEnum) {
             this.styleEnum = styleEnum;
@@ -142,8 +114,7 @@ public class NiboOriginDestinationPickerActivity extends BaseNiboActivity {
 
         public NiboOriginDestinationPickerFragment build() {
             return NiboOriginDestinationPickerFragment.newInstance(originEditTextHint, destinationEditTextHint, styleEnum, styleFileID, originMarkerPinIconRes, destinationMarkerPinIconRes,
-                    backButtonIconRes, textFieldClearIconRes, doneFabIconRes, backButtonColorRes, originCircleViewColorRes, destinationCircleViewColorRes,
-                    originDestinationSeperatorLineColorRes, doneFabColorRes);
+                    backButtonIconRes, textFieldClearIconRes, primaryPolyLineColor, secondaryPolyLineColor);
         }
 
     }

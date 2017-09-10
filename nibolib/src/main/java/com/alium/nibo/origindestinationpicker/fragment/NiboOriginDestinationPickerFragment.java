@@ -2,9 +2,7 @@ package com.alium.nibo.origindestinationpicker.fragment;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +11,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.transition.TransitionManager;
@@ -93,9 +90,11 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     private Marker mOriginMapMarker;
     private Marker mDestinationMarker;
 
-    private ArrayList<LatLng> listLatLng = new ArrayList<>();
-    private Polyline blackPolyLine;
-    private Polyline greyPolyLine;
+    private ArrayList<LatLng> mListLatLng = new ArrayList<>();
+
+    private Polyline mPrimaryPolyLine;
+    private Polyline mSecondaryPolyLine;
+
     private TextView mTimeTaken;
     private TextView mOriginToDestinationTv;
     private LinearLayout mTimeDistanceLL;
@@ -109,12 +108,8 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     private int mDestinationMarkerPinIconRes;
     private int mBackButtonIconRes;
     private int mTextFieldClearIconRes;
-    private int mDoneFabIconRes;
-    private int mBackButtonColorRes;
-    private int mOriginCircleViewColorRes;
-    private int mDestinationCircleViewColorRes;
-    private int mOriginDestinationSeperatorLineColorRes;
-    private int mDoneFabColorRes;
+    private int mPrimaryPolyLineColor;
+    private int mSecondaryPolyLineColor;
 
 
     @Override
@@ -143,13 +138,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mBackButtonIconRes = args.getInt(NiboConstants.BACK_BUTTON_ICON_RES_ARG);
             mTextFieldClearIconRes = args.getInt(NiboConstants.TEXT_FIELD_CLEAR_ICON_RES_ARG);
 
-            mDoneFabIconRes = args.getInt(NiboConstants.DONE_FAB_ICON_RES_ARG);
-            mBackButtonColorRes = args.getInt(NiboConstants.BACK_BTN_COLOR_RES_ARG);
+            mPrimaryPolyLineColor = args.getInt(NiboConstants.PRIMARY_POLY_LINE_COLOR_RES);
+            mSecondaryPolyLineColor = args.getInt(NiboConstants.SECONDARY_POLY_LINE_COLOR_RES);
 
-            mDestinationCircleViewColorRes = args.getInt(NiboConstants.DEST_CIRCLE_VIEW_COLOR_RES_ARG);
-            mOriginDestinationSeperatorLineColorRes = args.getInt(NiboConstants.ORIG_DEST_SEPERATOR_LINE_COLOR_RES_ARG);
-
-            mDoneFabColorRes = args.getInt(NiboConstants.DONE_FAB_COLOR_RES_ARG);
         }
 
         if (mOriginEditTextHint != null) {
@@ -169,26 +160,6 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mDestinationEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, mTextFieldClearIconRes, 0);
         }
 
-        if (mDoneFabIconRes != 0) {
-            mDoneFab.setImageResource(mDoneFabIconRes);
-        }
-
-        if (mDestinationCircleViewColorRes != 0) {
-            mRoundedIndicatorDestination.setCheckedCircleColor(ContextCompat.getColor(getContext(), mDestinationCircleViewColorRes));
-        }
-
-        if (mOriginCircleViewColorRes != 0) {
-            mRoundedIndicatorOrigin.setCheckedCircleColor(ContextCompat.getColor(getContext(), mOriginCircleViewColorRes));
-        }
-
-        if (mDoneFabColorRes != 0) {
-            mDoneFab.setBackgroundTintList(ColorStateList.valueOf(mDoneFabColorRes));
-        }
-
-        if(mOriginDestinationSeperatorLineColorRes!=0){
-            mOriginDestinationSeperatorLine.setBackgroundColor(ContextCompat.getColor(getContext(), mOriginDestinationSeperatorLineColorRes));
-        }
-
 
         initmap();
 
@@ -197,8 +168,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
 
     public static NiboOriginDestinationPickerFragment newInstance(String originEditTextHint, String destinationEditTextHint, NiboStyle mapStyle,
                                                                   int styleFileID, int originMarkerPinIconRes, int destinationMarkerPinIconRes, int backButtonIconRes,
-                                                                  int textFieldClearIconRes, int doneFabIconRes, int backButtonColorRes, int originCircleViewColorRes,
-                                                                  int destinationCircleViewColorRes, int originDestinationSeperatorLineColorRes, int doneFabColorRes) {
+                                                                  int textFieldClearIconRes, int primaryPolyLineColor, int secondaryPolyLineColor) {
         Bundle args = new Bundle();
         args.putString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG, originEditTextHint);
         args.putString(NiboConstants.DEST_EDIT_TEXT_HINT_ARG, destinationEditTextHint);
@@ -209,15 +179,9 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         args.putInt(NiboConstants.DEST_MARKER_ICON_RES_ARG, destinationMarkerPinIconRes);
         args.putInt(NiboConstants.BACK_BUTTON_ICON_RES_ARG, backButtonIconRes);
         args.putInt(NiboConstants.TEXT_FIELD_CLEAR_ICON_RES_ARG, textFieldClearIconRes);
-        args.putInt(NiboConstants.DONE_FAB_ICON_RES_ARG, doneFabIconRes);
-        args.putInt(NiboConstants.BACK_BTN_COLOR_RES_ARG, backButtonColorRes);
 
-        args.putInt(NiboConstants.ORIGIN_CIRCLE_VIEW_COLOR_RES_ARG, originCircleViewColorRes);
-        args.putInt(NiboConstants.DEST_CIRCLE_VIEW_COLOR_RES_ARG, destinationCircleViewColorRes);
-
-        args.putInt(NiboConstants.ORIG_DEST_SEPERATOR_LINE_COLOR_RES_ARG, originDestinationSeperatorLineColorRes);
-        args.putInt(NiboConstants.DONE_FAB_COLOR_RES_ARG, doneFabColorRes);
-
+        args.putInt(NiboConstants.PRIMARY_POLY_LINE_COLOR_RES, primaryPolyLineColor);
+        args.putInt(NiboConstants.SECONDARY_POLY_LINE_COLOR_RES, secondaryPolyLineColor);
 
         NiboOriginDestinationPickerFragment fragment = new NiboOriginDestinationPickerFragment();
         fragment.setArguments(args);
@@ -647,15 +611,15 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     public void onDirectionFinderStart() {
         Log.d(TAG, "STARTED");
 
-        if (blackPolyLine != null) {
-            blackPolyLine.remove();
+        if (mPrimaryPolyLine != null) {
+            mPrimaryPolyLine.remove();
         }
 
-        if (greyPolyLine != null) {
-            greyPolyLine.remove();
+        if (mSecondaryPolyLine != null) {
+            mSecondaryPolyLine.remove();
         }
 
-        this.listLatLng.clear();
+        this.mListLatLng.clear();
 
         showLoading();
 
@@ -715,23 +679,31 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         }, 1000);
 
         for (int i = 0; i < routes.size(); i++) {
-            this.listLatLng.addAll(routes.get(i).points);
+            this.mListLatLng.addAll(routes.get(i).points);
         }
 
         lineOptions.width(10);
-        lineOptions.color(Color.BLACK);
+        if (mPrimaryPolyLineColor == 0) {
+            lineOptions.color(Color.BLACK);
+        } else {
+            lineOptions.color(ContextCompat.getColor(getContext(), mPrimaryPolyLineColor));
+        }
         lineOptions.startCap(new SquareCap());
         lineOptions.endCap(new SquareCap());
         lineOptions.jointType(ROUND);
-        blackPolyLine = mMap.addPolyline(lineOptions);
+        mPrimaryPolyLine = mMap.addPolyline(lineOptions);
 
         PolylineOptions greyOptions = new PolylineOptions();
         greyOptions.width(10);
-        greyOptions.color(Color.GRAY);
+        if (mSecondaryPolyLineColor == 0) {
+            greyOptions.color(Color.GRAY);
+        } else {
+            lineOptions.color(ContextCompat.getColor(getContext(), mSecondaryPolyLineColor));
+        }
         greyOptions.startCap(new SquareCap());
         greyOptions.endCap(new SquareCap());
         greyOptions.jointType(ROUND);
-        greyPolyLine = mMap.addPolyline(greyOptions);
+        mSecondaryPolyLine = mMap.addPolyline(greyOptions);
 
         animatePolyLine();
     }
@@ -745,14 +717,14 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
 
-                List<LatLng> latLngList = blackPolyLine.getPoints();
+                List<LatLng> latLngList = mPrimaryPolyLine.getPoints();
                 int initialPointSize = latLngList.size();
                 int animatedValue = (int) animator.getAnimatedValue();
-                int newPoints = (animatedValue * listLatLng.size()) / 100;
+                int newPoints = (animatedValue * mListLatLng.size()) / 100;
 
                 if (initialPointSize < newPoints) {
-                    latLngList.addAll(listLatLng.subList(initialPointSize, newPoints));
-                    blackPolyLine.setPoints(latLngList);
+                    latLngList.addAll(mListLatLng.subList(initialPointSize, newPoints));
+                    mPrimaryPolyLine.setPoints(latLngList);
                 }
 
 
@@ -773,17 +745,17 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         @Override
         public void onAnimationEnd(Animator animator) {
 
-            List<LatLng> blackLatLng = blackPolyLine.getPoints();
-            List<LatLng> greyLatLng = greyPolyLine.getPoints();
+            List<LatLng> primaryLatLng = mPrimaryPolyLine.getPoints();
+            List<LatLng> secondaryLatLng = mSecondaryPolyLine.getPoints();
 
-            greyLatLng.clear();
-            greyLatLng.addAll(blackLatLng);
-            blackLatLng.clear();
+            secondaryLatLng.clear();
+            secondaryLatLng.addAll(primaryLatLng);
+            primaryLatLng.clear();
 
-            blackPolyLine.setPoints(blackLatLng);
-            greyPolyLine.setPoints(greyLatLng);
+            mPrimaryPolyLine.setPoints(primaryLatLng);
+            mSecondaryPolyLine.setPoints(secondaryLatLng);
 
-            blackPolyLine.setZIndex(2);
+            mPrimaryPolyLine.setZIndex(2);
 
             animator.start();
         }
