@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 
 /**
@@ -68,17 +70,19 @@ public class LocationRepository implements ILocationRepository {
                                     Log.v("Latitude is", "" + queriedLocation.latitude);
                                     Log.v("Longitude is", "" + queriedLocation.longitude);
 
-                                    observer.onNext(thatPlace);
+                                    observer.onNext(thatPlace.freeze());
                                 }
                                 places.release();
                             }
                         });
             }
-        };
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
-    public PublishSubject<Location> getLocationObservable() {
-        return publishSubject;
+    public Observable<Location> getLocationObservable() {
+        return  publishSubject.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

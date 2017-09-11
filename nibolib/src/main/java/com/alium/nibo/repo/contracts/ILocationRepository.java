@@ -2,7 +2,7 @@ package com.alium.nibo.repo.contracts;
 
 import android.location.Location;
 
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.Observable;
 
 /**
  * Created by abdulmujibaliu on 9/3/17.
@@ -10,7 +10,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public interface ILocationRepository {
 
-    PublishSubject<Location> getLocationObservable();
+    Observable<Location> getLocationObservable();
 
 
 

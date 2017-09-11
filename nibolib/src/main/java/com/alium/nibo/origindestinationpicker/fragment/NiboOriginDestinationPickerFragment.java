@@ -3,6 +3,7 @@ package com.alium.nibo.origindestinationpicker.fragment;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -168,6 +169,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     public static NiboOriginDestinationPickerFragment newInstance(String originEditTextHint, String destinationEditTextHint, NiboStyle mapStyle,
                                                                   int styleFileID, int originMarkerPinIconRes, int destinationMarkerPinIconRes, int backButtonIconRes,
                                                                   int textFieldClearIconRes, int primaryPolyLineColor, int secondaryPolyLineColor) {
+
         Bundle args = new Bundle();
         args.putString(NiboConstants.ORIGIN_EDIT_TEXT_HINT_ARG, originEditTextHint);
         args.putString(NiboConstants.DEST_EDIT_TEXT_HINT_ARG, destinationEditTextHint);
@@ -197,7 +199,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     }
 
     @Override
-    protected void handleMarkerAddition(LatLng latLng) {
+    protected void handleLocationRetrieval(Location latLng) {
 
     }
 

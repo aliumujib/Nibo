@@ -253,25 +253,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
     }
 
 
-    protected void addSingleMarkerToMap(LatLng latLng) {
-        if (mMap != null) {
-            if (mCurrentMapMarker != null) {
-                mCurrentMapMarker.remove();
-            }
-            CameraPosition cameraPosition =
-                    new CameraPosition.Builder().target(latLng)
-                            .zoom(getDefaultZoom())
-                            .build();
-            hasWiderZoom = false;
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            mCurrentMapMarker = addMarker(latLng);
-            mMap.setOnMarkerDragListener(this);
-            handleMarkerAddition(latLng);
-            extractGeocode(latLng.latitude, latLng.longitude);
-        }
-    }
-
-    protected abstract void handleMarkerAddition(LatLng latLng);
+    protected abstract void handleLocationRetrieval(Location latLng);
 
 
     @Override
@@ -315,10 +297,6 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
 
         mLocationRepository = new LocationRepository(getActivity(), mGoogleApiClient);
 
-        if (mStyleEnum == NiboStyle.DEFAULT) {
-            mStyleEnum = NiboStyle.SUBTLE_GREY_SCALE;
-        }
-
         mLocationRepository.getLocationObservable()
                 .subscribe(new Consumer<Location>() {
                     @Override
@@ -328,7 +306,7 @@ public abstract class BaseNiboFragment extends Fragment implements GoogleApiClie
                                 .zoom(15)
                                 .build();
                         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+                        handleLocationRetrieval(location);
                         extractGeocode(location.getLatitude(), location.getLongitude());
 
                     }

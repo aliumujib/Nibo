@@ -17,8 +17,6 @@ public class BaseNiboActivity extends AppCompatActivity {
 
 
     public void replaceFragment(Fragment fragment, Context context) {
-        String backStateName = fragment.getClass().getName();
-
         FragmentManager manager = ((AppCompatActivity) context).getSupportFragmentManager();
 
         FragmentTransaction ft = manager.beginTransaction();
