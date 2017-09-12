@@ -120,7 +120,7 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra(NiboConstants.RESULTS_SELECTED, mCurrentSelection);
+                intent.putExtra(NiboConstants.SELECTED_PLACE_RESULT, mCurrentSelection);
                 getActivity().setResult(RESULT_OK, intent);
                 getActivity().finish();
             }

@@ -2,6 +2,7 @@ package com.alium.nibo.origindestinationpicker.fragment;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
@@ -28,11 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alium.nibo.R;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.base.BaseNiboFragment;
 import com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike;
+import com.alium.nibo.models.NiboSelectedOriginDestination;
 import com.alium.nibo.origindestinationpicker.adapter.NiboBaseOrigDestSuggestionAdapter;
 import com.alium.nibo.repo.directions.DirectionFinder;
 import com.alium.nibo.repo.directions.DirectionFinderListener;
@@ -66,6 +69,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.app.Activity.RESULT_OK;
 import static com.google.android.gms.maps.model.JointType.ROUND;
 
 /**
@@ -111,6 +115,8 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     private int mTextFieldClearIconRes;
     private int mPrimaryPolyLineColor;
     private int mSecondaryPolyLineColor;
+
+    private NiboSelectedOriginDestination mSelectedOriginDestination = new NiboSelectedOriginDestination();
 
 
     @Override
@@ -268,6 +274,22 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             public boolean onMenuItemClick(MenuItem item) {
                 getActivity().finish();
                 return false;
+            }
+        });
+
+        this.mDoneFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mSelectedOriginDestination.isOriginValid()) {
+                    Toast.makeText(getContext(), "Please select an initial location", Toast.LENGTH_LONG).show();
+                } else if (!mSelectedOriginDestination.isDestinationValid()) {
+                    Toast.makeText(getContext(), "Please select a final location", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra(NiboConstants.SELECTED_ORIGIN_DESTINATION_RESULT, mSelectedOriginDestination);
+                    getActivity().setResult(RESULT_OK, intent);
+                    getActivity().finish();
+                }
             }
         });
 
@@ -459,28 +481,34 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
                 if (mRoundedIndicatorOrigin.isChecked()) {
                     mOriginSuggestion = mSearchSuggestions.get(position);
                     mOriginEditText.setText(mSearchSuggestions.get(position).getShortTitle());
-                    getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
+                    mSelectedOriginDestination.setOriginItem(null);
+                    mSelectedOriginDestination.setOriginLatLng(null);
+                    getPlaceDetailsByID(mSearchSuggestions.get(position));
                 } else if (mRoundedIndicatorDestination.isChecked()) {
                     mDestinationSuggestion = mSearchSuggestions.get(position);
                     mDestinationEditText.setText(mSearchSuggestions.get(position).getShortTitle());
-                    getPlaceDetailsByID(mSearchSuggestions.get(position).getValue());
+                    mSelectedOriginDestination.setDestinationItem(null);
+                    mSelectedOriginDestination.setDestinationLatLng(null);
+                    getPlaceDetailsByID(mSearchSuggestions.get(position));
                 }
             }
         });
     }
 
-    protected void getPlaceDetailsByID(String placeId) {
-        mLocationRepository.getPlaceByID(placeId).subscribe(new Consumer<Place>() {
+    protected void getPlaceDetailsByID(final NiboSearchSuggestionItem searchSuggestionItem) {
+        mLocationRepository.getPlaceByID(searchSuggestionItem.getPlaceID()).subscribe(new Consumer<Place>() {
             @Override
             public void accept(@io.reactivex.annotations.NonNull Place place) throws Exception {
                 hideLoading();
                 closeSuggestions();
                 if (mRoundedIndicatorOrigin.isChecked()) {
+                    mSelectedOriginDestination.setOriginItem(searchSuggestionItem);
+                    mSelectedOriginDestination.setOriginLatLng(place.getLatLng());
                     addOriginMarker(place.getLatLng());
-
-
                 }
                 if (mRoundedIndicatorDestination.isChecked()) {
+                    mSelectedOriginDestination.setDestinationItem(searchSuggestionItem);
+                    mSelectedOriginDestination.setDestinationLatLng(place.getLatLng());
                     addDestinationMarker(place.getLatLng());
                 }
             }

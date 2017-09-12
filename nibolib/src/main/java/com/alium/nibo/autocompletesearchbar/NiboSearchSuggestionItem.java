@@ -1,10 +1,12 @@
 package com.alium.nibo.autocompletesearchbar;
 
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class NiboSearchSuggestionItem {
+public class NiboSearchSuggestionItem implements Parcelable {
     private String mTitle;
     private String mValue;
     private LatLng mLatLng;
@@ -17,6 +19,8 @@ public class NiboSearchSuggestionItem {
     public NiboSearchSuggestionItem(String title, String value) {
         this(title, value, TYPE_SEARCH_ITEM_DEFAULT, null, null);
     }
+
+
 
     /**
      * Create a search result with text and an icon
@@ -69,6 +73,9 @@ public class NiboSearchSuggestionItem {
         this.mTitle = title;
     }
 
+    /**
+     * Used internally by the autocomplete searchview ...
+     */
     public String getValue() {
         return mValue;
     }
@@ -119,4 +126,36 @@ public class NiboSearchSuggestionItem {
         }
         return null;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mTitle);
+        dest.writeString(this.mValue);
+        dest.writeParcelable(this.mLatLng, flags);
+        dest.writeInt(this.mType);
+    }
+
+    protected NiboSearchSuggestionItem(Parcel in) {
+        this.mTitle = in.readString();
+        this.mValue = in.readString();
+        this.mLatLng = in.readParcelable(LatLng.class.getClassLoader());
+        this.mType = in.readInt();
+    }
+
+    public static final Parcelable.Creator<NiboSearchSuggestionItem> CREATOR = new Parcelable.Creator<NiboSearchSuggestionItem>() {
+        @Override
+        public NiboSearchSuggestionItem createFromParcel(Parcel source) {
+            return new NiboSearchSuggestionItem(source);
+        }
+
+        @Override
+        public NiboSearchSuggestionItem[] newArray(int size) {
+            return new NiboSearchSuggestionItem[size];
+        }
+    };
 }

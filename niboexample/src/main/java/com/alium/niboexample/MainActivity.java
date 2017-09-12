@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +15,7 @@ import android.widget.Toast;
 import com.alium.nibo.autocompletesearchbar.NiboAutocompleteSVProvider;
 import com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
+import com.alium.nibo.models.NiboSelectedOriginDestination;
 import com.alium.nibo.models.NiboSelectedPlace;
 import com.alium.nibo.origindestinationpicker.NiboOriginDestinationPickerActivity;
 import com.alium.nibo.placepicker.NiboPlacePickerActivity;
@@ -59,9 +58,9 @@ public class MainActivity extends AppCompatActivity implements NiboAutocompleteS
                 .setConfirmButtonTitle("Pick here bish")
                 .setMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
                 .setStyleEnum(NiboStyle.NIGHT_MODE);
-                //.setStyleFileID(R.raw.retro);
+        //.setStyleFileID(R.raw.retro);
         NiboPlacePickerActivity.setBuilder(config);
-        startActivityForResult(intent, 200);
+        startActivityForResult(intent, 300);
     }
 
 
@@ -85,11 +84,14 @@ public class MainActivity extends AppCompatActivity implements NiboAutocompleteS
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK && requestCode == 200) {
-            NiboSelectedPlace selectedPlace = data.getParcelableExtra(NiboConstants.RESULTS_SELECTED);
+        if (resultCode == Activity.RESULT_OK && requestCode == 300) {
+            NiboSelectedPlace selectedPlace = data.getParcelableExtra(NiboConstants.SELECTED_PLACE_RESULT);
             Toast.makeText(this, selectedPlace.getPlaceAddress(), Toast.LENGTH_LONG).show();
+        } else if (resultCode == Activity.RESULT_OK && requestCode == 200) {
+            NiboSelectedOriginDestination selectedOriginDestination = data.getParcelableExtra(NiboConstants.SELECTED_ORIGIN_DESTINATION_RESULT);
+            Toast.makeText(this, selectedOriginDestination.getOriginFullName() + " - " + selectedOriginDestination.getDestinationFullName(), Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "Error getting images", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error getting results", Toast.LENGTH_LONG).show();
         }
 
     }
@@ -168,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NiboAutocompleteS
 
             @Override
             public boolean onSuggestion(NiboSearchSuggestionItem niboSearchSuggestionItem) {
-                Toast.makeText(MainActivity.this, "PLACE NAME:" + niboSearchSuggestionItem.getFullTitle() +" PLACE ID: "+ niboSearchSuggestionItem.getPlaceID(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "PLACE NAME:" + niboSearchSuggestionItem.getFullTitle() + " PLACE ID: " + niboSearchSuggestionItem.getPlaceID(), Toast.LENGTH_SHORT).show();
                 mAutocompletesearchbar.closeSearch();
                 return false;
             }
