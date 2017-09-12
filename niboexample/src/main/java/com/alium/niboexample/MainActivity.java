@@ -52,8 +52,6 @@ public class MainActivity extends AppCompatActivity implements NiboAutocompleteS
     }
 
 
-
-
     private void launchPickerFragment() {
         Intent intent = new Intent(this, NiboPlacePickerActivity.class);
         NiboPlacePickerActivity.NiboPlacePickerBuilder config = new NiboPlacePickerActivity.NiboPlacePickerBuilder()

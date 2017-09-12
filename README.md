@@ -51,7 +51,7 @@ Simple. All you need is to do is:
         app:niboSV_searchCardElevation="2dp"
         app:niboSV_searchTextColor="#757575" />
 ```
-- In your fragment or activity, implement NiboAutocompleteSVProvider, and return a valid GoogleAPIClient object and an instance of NiboPlacesAutoCompleteSearchView.SearchListener (see example app for better explanation)
+- In your fragment or activity, implement ```NiboAutocompleteSVProvider```, and return a valid GoogleAPIClient object and an instance of NiboPlacesAutoCompleteSearchView.SearchListener (see example app for better explanation)
 
 - Call setmProvider(this) on your seachview.
 
@@ -114,6 +114,9 @@ How to add to your project?
 
 
 ### Manual
+- download project source
+- import new module to your project
+- compile path(":modulename")
 
 Sample
 ------
