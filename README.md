@@ -1,4 +1,4 @@
-Nibo library for Android
+Nibo library for Android (Work In Progress)
 ====================================
 
 Android library that provides UI for a customizable place picker, origin and destination picker and Google Places autocomplete searchview
@@ -123,6 +123,10 @@ Directions, Places and Maps APIs require API Key. Before running samples you nee
 and obtain API Key from [here](https://developers.google.com/places/android/signup).
 Obtained key should used to replace string named: ```google_places_key``` in ```google_maps_api.xml``` file.
 
+TODO
+------
+- Add better example
+- Add options transport type to DirectionsFinder
 
 References
 ------
