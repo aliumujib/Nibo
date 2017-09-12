@@ -20,6 +20,7 @@ What can you do with this?
 * Pick a origin location and a destination location (like Uber)
  - Can be customized to match the theme of your app
  - Can use custom map markers for each location
+* Get directions, distance and time from directions API
 
 What does the UI look like?
 ----------------------------
@@ -118,7 +119,7 @@ Sample
 ------
 Sample usage is available in *niboexample* directory.
 
-Places API requires API Key. Before running samples you need to create project on API console
+Directions, Places and Maps APIs require API Key. Before running samples you need to create project on API console
 and obtain API Key from [here](https://developers.google.com/places/android/signup).
 Obtained key should used to replace string named: ```google_places_key``` in ```google_maps_api.xml``` file.
 
