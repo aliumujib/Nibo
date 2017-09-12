@@ -71,13 +71,13 @@ public class MainActivity extends AppCompatActivity implements NiboAutocompleteS
         Intent intent = new Intent(this, NiboOriginDestinationPickerActivity.class);
 
         NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder config = new NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder()
-                .setDestinationMarkerPinIconRes(R.drawable.ic_location_on)
-                .setOriginMarkerPinIconRes(R.drawable.ic_location_on)
+                .setDestinationMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
+                .setOriginMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
                 .setOriginEditTextHint("Input pick up location")
-                .setPrimaryPolyLineColor(R.color.colorPrimary)
-                .setSecondaryPolyLineColor(R.color.colorAccent)
+//                .setPrimaryPolyLineColor(R.color.colorPrimary)
+//                .setSecondaryPolyLineColor(R.color.colorAccent)
                 .setDestinationEditTextHint("Input destination")
-                .setStyleEnum(NiboStyle.RETRO);
+                .setStyleEnum(NiboStyle.SUBTLE_GREY_SCALE);
 
         NiboOriginDestinationPickerActivity.setBuilder(config);
         startActivityForResult(intent, 200);
@@ -170,7 +170,8 @@ public class MainActivity extends AppCompatActivity implements NiboAutocompleteS
 
             @Override
             public boolean onSuggestion(NiboSearchSuggestionItem niboSearchSuggestionItem) {
-
+                Toast.makeText(MainActivity.this, "PLACE NAME:" + niboSearchSuggestionItem.getFullTitle() +" PLACE ID: "+ niboSearchSuggestionItem.getPlaceID(), Toast.LENGTH_SHORT).show();
+                mAutocompletesearchbar.closeSearch();
                 return false;
             }
 

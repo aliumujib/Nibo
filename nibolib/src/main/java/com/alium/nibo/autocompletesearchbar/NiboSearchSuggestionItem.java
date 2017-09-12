@@ -73,6 +73,10 @@ public class NiboSearchSuggestionItem {
         return mValue;
     }
 
+    public String getPlaceID() {
+        return mValue;
+    }
+
     public void setValue(String value) {
         this.mValue = value;
     }

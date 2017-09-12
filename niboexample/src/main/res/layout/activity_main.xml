@@ -11,23 +11,28 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-
-        <com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView
-            android:id="@+id/autocompletesearchbar"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            app:niboSV_customToolbarHeight="64dp"
-            app:niboSV_displayMode="toolbar"
-            app:niboSV_editHintText="Search"
-            app:niboSV_editHintTextColor="#757575"
-            app:niboSV_editTextColor="#757575"
-            app:niboSV_homeButtonMode="burger"
-            app:niboSV_searchCardElevation="2dp"
-            app:niboSV_searchTextColor="#757575"
-        />
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
+
+    <com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView
+        android:id="@+id/autocompletesearchbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:niboSV_customToolbarHeight="?attr/actionBarSize"
+        app:niboSV_displayMode="toolbar"
+        app:niboSV_editHintText="Search"
+        app:niboSV_editHintTextColor="#757575"
+        app:niboSV_editTextColor="#757575"
+        app:niboSV_homeButtonMode="burger"
+        app:niboSV_searchCardElevation="2dp"
+        app:niboSV_searchTextColor="#757575" />
 
     <include layout="@layout/content_main" />
 

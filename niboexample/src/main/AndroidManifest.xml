@@ -23,7 +23,7 @@
         <activity
             android:name="com.alium.nibo.origindestinationpicker.NiboOriginDestinationPickerActivity"
             android:label="@string/title_activity_origin_destination_picker"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/NiboOrigDestTheme.NoActionBar" />
 
         <activity
             android:name=".MainActivity"

@@ -45,6 +45,10 @@ public class SuggestionsRepository {
     public Observable<Collection<NiboSearchSuggestionItem>> getSuggestions(final String query) {
         final List<NiboSearchSuggestionItem> placeSuggestionItems = new ArrayList<>();
 
+        if (mGoogleApiClient == null) {
+            Log.d(TAG, "Google play services cannot be null");
+        }
+
         return new Observable<Collection<NiboSearchSuggestionItem>>() {
             @Override
             protected void subscribeActual(final Observer<? super Collection<NiboSearchSuggestionItem>> observer) {

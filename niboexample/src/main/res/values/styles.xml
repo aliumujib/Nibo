@@ -10,7 +10,7 @@
     </style>
 
 
-    <style name="AppTheme.NoActionBar" parent="NiboOrigDestTheme.NoActionBar">
+    <style name="NiboActivityStyle" parent="NiboOrigDestTheme.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
