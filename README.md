@@ -28,6 +28,7 @@ What does the UI look like?
 ----------------------------
 |       ROW 1  |        ROW 2    |   
 | ------------- |:-------------:|
+| <img src="GIFS/SCREENSHOT01.png" width="350"/>    | <img src="GIFS/SCREENSHOT02.png" width="350"/> |
 | <img src="GIFS/searchviewgif.gif" width="350"/>    | <img src="GIFS/locationpikcer.gif" width="350"/> |
 | <img src="GIFS/originsourcepickerdefault.gif" width="350"/> | <img src="GIFS/originsourcepickerbluestyled.gif" width="350"/> |
 
