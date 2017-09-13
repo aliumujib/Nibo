@@ -5,7 +5,7 @@ Nibo library for Android
 
 Android library that provides UI for a customizable place picker, origin and destination picker and Google Places autocomplete searchview
 
-Current stable version - 0.10
+Current stable version - 1.01
 ---------------
 
 **This version uses Google Play Services 11.0.4 and RxJava 2.0.+**
@@ -22,7 +22,7 @@ What can you do with this?
 * Pick a origin location and a destination location (like Uber)
  - Can be customized to match the theme of your app
  - Can use custom map markers for each location
-* Get directions, distance and time from directions API
+* Get directions, distance and time from a location with directions API
 
 What does the UI look like?
 ----------------------------
@@ -162,6 +162,4 @@ If you need the SearchView without all the Google Places stuff, look at [Persist
 Other Notes
 ------
 Nibo means “Where?” in my native language (Yoruba), so yeah, Nigeria to the world baby!!
-Also Nibo is a work in progress and I will keep updating it, suggestions are welcome. Tweet them at me @aliumujib on twitter.
-
-
+Also Nibo is a work in progress and I will keep updating it, suggestions (and issues) are welcome. Tweet them at me @aliumujib on twitter.
