@@ -1,6 +1,8 @@
 Nibo library for Android (Work In Progress)
 ====================================
 
+[![JitPack][jitpackbadge-svg]][jitpackbadge] [![License: MIT][mitbadge-svg]][mitbadge]
+
 Android library that provides UI for a customizable place picker, origin and destination picker and Google Places autocomplete searchview
 
 Current stable version - 0.10
@@ -111,7 +113,28 @@ Intent intent = new Intent(this, NiboPlacePickerActivity.class);
 How to add to your project?
 --------------
 ### Gradle
+**Step 1.** Add the JitPack repository to your build file
 
+Add it in your root `build.gradle` at the end of repositories:
+
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+**Step 2.** Add the dependency
+
+```groovy
+dependencies {
+     compile 'com.github.aliumujib:Nibo:v1.01'
+}
+```
+
+Nibo requires at minimum Android 4.1 (API Level 15).
 
 ### Manual
 - download project source
