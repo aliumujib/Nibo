@@ -219,7 +219,7 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
         if (attrs != null) {
             TypedArray attrsValue = getContext().obtainStyledAttributes(attrs,
                     R.styleable.NiboPlacesAutoCompleteSearchView);
-            mDisplayMode = DisplayMode.fromInt(attrsValue.getInt(R.styleable.NiboPlacesAutoCompleteSearchView_niboSV_displayMode, DisplayMode.MENUITEM.toInt()));
+            mDisplayMode = DisplayMode.fromInt(attrsValue.getInt(R.styleable.NiboPlacesAutoCompleteSearchView_niboSV_displayMode, DisplayMode.APPBAR_MENUITEM.toInt()));
             mSearchCardElevation = attrsValue.getDimensionPixelSize(R.styleable.NiboPlacesAutoCompleteSearchView_niboSV_searchCardElevation, -1);
             mSearchTextColor = attrsValue.getColor(R.styleable.NiboPlacesAutoCompleteSearchView_niboSV_searchTextColor, Color.BLACK);
             mLogoDrawable = attrsValue.getDrawable(R.styleable.NiboPlacesAutoCompleteSearchView_niboSV_logoDrawable);
@@ -241,28 +241,28 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
         mCardVerticalPadding = (mCustomToolbarHeight - mCardHeight) / 2;
 
         switch (mDisplayMode) {
-            case MENUITEM:
+            case APPBAR_MENUITEM:
             default:
                 mCardHorizontalPadding = getResources().getDimensionPixelSize(R.dimen.search_card_visible_padding_menu_item_mode);
                 if (mCardVerticalPadding > mCardHorizontalPadding)
                     mCardHorizontalPadding = mCardVerticalPadding;
-                mHomeButtonCloseIconState = NiboHomeButton.IconState.ARROW;
-                mHomeButtonOpenIconState = NiboHomeButton.IconState.ARROW;
+                mHomeButtonCloseIconState = NiboHomeButton.IconState.NIBO_ARROW;
+                mHomeButtonOpenIconState = NiboHomeButton.IconState.NIBO_ARROW;
                 setCurrentState(SearchViewState.NORMAL);
                 break;
-            case TOOLBAR:
+            case SCREEN_TOOLBAR:
                 if (mHomeButtonMode == 0) { // Arrow Mode
-                    mHomeButtonCloseIconState = NiboHomeButton.IconState.ARROW;
-                    mHomeButtonOpenIconState = NiboHomeButton.IconState.ARROW;
+                    mHomeButtonCloseIconState = NiboHomeButton.IconState.NIBO_ARROW;
+                    mHomeButtonOpenIconState = NiboHomeButton.IconState.NIBO_ARROW;
                 } else { // Burger Mode
-                    mHomeButtonCloseIconState = NiboHomeButton.IconState.BURGER;
-                    mHomeButtonOpenIconState = NiboHomeButton.IconState.ARROW;
+                    mHomeButtonCloseIconState = NiboHomeButton.IconState.NIBO_BURGER;
+                    mHomeButtonOpenIconState = NiboHomeButton.IconState.NIBO_ARROW;
                 }
                 mCardHorizontalPadding = getResources().getDimensionPixelSize(R.dimen.search_card_visible_padding_toolbar_mode);
                 setCurrentState(SearchViewState.NORMAL);
                 break;
         }
-        mHomeButtonSearchIconState = NiboHomeButton.IconState.ARROW;
+        mHomeButtonSearchIconState = NiboHomeButton.IconState.NIBO_ARROW;
 
         bindViews();
         setValuesToViews();
@@ -961,10 +961,10 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
     }
 
     private void fromNormalToEditing() {
-        if (mDisplayMode == DisplayMode.TOOLBAR) {
+        if (mDisplayMode == DisplayMode.SCREEN_TOOLBAR) {
             setCurrentState(SearchViewState.EDITING);
             openSearchInternal(true);
-        } else if (mDisplayMode == DisplayMode.MENUITEM) {
+        } else if (mDisplayMode == DisplayMode.APPBAR_MENUITEM) {
             setCurrentState(SearchViewState.EDITING);
             if (ViewCompat.isAttachedToWindow(this))
                 revealFromMenuItem();
@@ -987,10 +987,10 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
     }
 
     private void fromNormalToSearch() {
-        if (mDisplayMode == DisplayMode.TOOLBAR) {
+        if (mDisplayMode == DisplayMode.SCREEN_TOOLBAR) {
             setCurrentState(SearchViewState.SEARCH);
             search();
-        } else if (mDisplayMode == DisplayMode.MENUITEM) {
+        } else if (mDisplayMode == DisplayMode.APPBAR_MENUITEM) {
             setVisibility(VISIBLE);
             fromEditingToSearch();
         }
@@ -1001,9 +1001,9 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
         setLogoTextInt("");
         setSearchString("", true);
         setCurrentState(SearchViewState.NORMAL);
-        if (mDisplayMode == DisplayMode.TOOLBAR) {
+        if (mDisplayMode == DisplayMode.SCREEN_TOOLBAR) {
             closeSearchInternal();
-        } else if (mDisplayMode == DisplayMode.MENUITEM) {
+        } else if (mDisplayMode == DisplayMode.APPBAR_MENUITEM) {
             hideCircularlyToMenuItem();
         }
         setLogoTextInt("");
@@ -1020,10 +1020,10 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
 
     private void fromEditingToNormal() {
         setCurrentState(SearchViewState.NORMAL);
-        if (mDisplayMode == DisplayMode.TOOLBAR) {
+        if (mDisplayMode == DisplayMode.SCREEN_TOOLBAR) {
             setSearchString("", false);
             closeSearchInternal();
-        } else if (mDisplayMode == DisplayMode.MENUITEM) {
+        } else if (mDisplayMode == DisplayMode.APPBAR_MENUITEM) {
             setSearchString("", false);
             hideCircularlyToMenuItem();
         }
@@ -1125,7 +1125,7 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
     }
 
     public enum DisplayMode {
-        MENUITEM(0), TOOLBAR(1);
+        APPBAR_MENUITEM(0), SCREEN_TOOLBAR(1);
         int mode;
 
         DisplayMode(int mode) {

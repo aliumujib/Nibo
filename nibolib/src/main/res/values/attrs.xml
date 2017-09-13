@@ -63,14 +63,14 @@
         <attr name="niboSV_editHintTextColor" format="color" />
         <attr name="niboSV_searchCardElevation" format="dimension" />
         <attr name="niboSV_displayMode" format="enum">
-            <enum name="menuItem" value="0" />
-            <enum name="toolbar" value="1" />
+            <enum name="appbar_menuItem" value="0" />
+            <enum name="screen_toolbar" value="1" />
         </attr>
         <attr name="niboSV_homeButtonColor" format="color" />
         <attr name="niboSV_customToolbarHeight" format="dimension" />
         <attr name="niboSV_homeButtonMode" format="enum">
-            <enum name="arrow" value="0" />
-            <enum name="burger" value="1" />
+            <enum name="nibo_arrow" value="0" />
+            <enum name="nibo_burger" value="1" />
         </attr>
     </declare-styleable>
 

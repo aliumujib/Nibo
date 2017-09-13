@@ -28,9 +28,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.github.aliumujib:Nibo:v1.01'
+    //compile 'com.github.aliumujib:Nibo:v1.01'
 
-    //compile project(':nibolib')
+    compile project(':nibolib')
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'

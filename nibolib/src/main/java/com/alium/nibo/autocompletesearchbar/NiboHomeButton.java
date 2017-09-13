@@ -16,12 +16,12 @@ import com.alium.nibo.drawable.SupportDrawerArrowDrawable;
 
 public class NiboHomeButton extends ImageView {
     public enum IconState {
-        BURGER, ARROW;
+        NIBO_BURGER, NIBO_ARROW;
         public int toDrawablePosition() {
             switch (this) {
-                case BURGER:
+                case NIBO_BURGER:
                     return 0;
-                case ARROW:
+                case NIBO_ARROW:
                     return 1;
                 default:
                     return 0;
@@ -31,7 +31,7 @@ public class NiboHomeButton extends ImageView {
     private ArrowDrawablePositionProperty mArrowPositionProperty = new ArrowDrawablePositionProperty();
     private SupportDrawerArrowDrawable mArrowDrawable;
 
-    private IconState mButtonState = IconState.BURGER;
+    private IconState mButtonState = IconState.NIBO_BURGER;
     private long mAnimationDuration = 300l;
     public NiboHomeButton(Context context) {
         super(context);

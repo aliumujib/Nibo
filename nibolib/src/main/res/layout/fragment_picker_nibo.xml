@@ -119,11 +119,11 @@
         android:layout_marginTop="22dp"
         android:elevation="4dp"
         app:niboSV_customToolbarHeight="64dp"
-        app:niboSV_displayMode="toolbar"
+        app:niboSV_displayMode="screen_toolbar"
         app:niboSV_editHintText="Search"
         app:niboSV_editHintTextColor="?android:textColorHint"
         app:niboSV_editTextColor="?android:textColorPrimary"
-        app:niboSV_homeButtonMode="arrow"
+        app:niboSV_homeButtonMode="nibo_arrow"
         app:niboSV_logoString="Search"
         app:niboSV_searchCardElevation="2dp"
         app:niboSV_searchTextColor="?android:textColorPrimary" />

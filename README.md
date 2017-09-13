@@ -1,7 +1,8 @@
 Nibo library for Android
 ====================================
 
-[![JitPack][jitpackbadge-svg]][jitpackbadge] [![License: MIT][mitbadge-svg]][mitbadge]
+[![JitPack][jitpackbadge-svg]][jitpackbadge]
+[![License: MIT][mitbadge-svg]][mitbadge]
 
 Android library that provides UI for a customizable place picker, origin and destination picker and Google Places autocomplete searchview
 
@@ -41,18 +42,18 @@ Simple. All you need is to do is:
 
 ```xml
 <com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView
-        android:id="@+id/autocompletesearchbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="4dp"
-        app:niboSV_customToolbarHeight="?attr/actionBarSize"
-        app:niboSV_displayMode="toolbar"
-        app:niboSV_editHintText="Search"
-        app:niboSV_editHintTextColor="#757575"
-        app:niboSV_editTextColor="#757575"
-        app:niboSV_homeButtonMode="burger"
-        app:niboSV_searchCardElevation="2dp"
-        app:niboSV_searchTextColor="#757575" />
+       android:id="@+id/autocompletesearchbar"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:elevation="4dp"
+       app:niboSV_customToolbarHeight="?attr/actionBarSize"
+       app:niboSV_displayMode="screen_toolbar"
+       app:niboSV_editHintText="Search"
+       app:niboSV_editHintTextColor="#757575"
+       app:niboSV_editTextColor="#757575"
+       app:niboSV_homeButtonMode="nibo_burger"
+       app:niboSV_searchCardElevation="2dp"
+       app:niboSV_searchTextColor="#757575" />
 ```
 - In your fragment or activity, implement ```NiboAutocompleteSVProvider```, and return a valid GoogleAPIClient object and an instance of NiboPlacesAutoCompleteSearchView.SearchListener (see example app for better explanation)
 
