@@ -1,4 +1,4 @@
-Nibo library for Android (Work In Progress)
+Nibo library for Android
 ====================================
 
 [![JitPack][jitpackbadge-svg]][jitpackbadge] [![License: MIT][mitbadge-svg]][mitbadge]
@@ -158,6 +158,12 @@ References
 ------
 
 If you need the SearchView without all the Google Places stuff, look at [PersistentSearchView ](https://github.com/crysehillmes/PersistentSearchView).
+
+Other Notes
+------
+Nibo means “Where?” in my native language (Yoruba), so yeah, Nigeria to the world baby!!
+Also Nibo is a work in progress and I will keep updating it, suggestions are welcome. Tweet them at me @aliumujib on twitter.
+
 
 License
 =======
