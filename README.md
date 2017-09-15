@@ -1,12 +1,12 @@
 Nibo library for Android
 ====================================
 
-[![JitPack][jitpackbadge-svg]][jitpackbadge]
-[![License: MIT][mitbadge-svg]][mitbadge]
+[![](https://jitpack.io/v/aliumujib/Nibo.svg)](https://jitpack.io/#aliumujib/Nibo)
+
 
 Android library that provides UI for a customizable place picker, origin and destination picker and Google Places autocomplete searchview
 
-Current stable version - 1.01
+Current stable version - 1.02
 ---------------
 
 **This version uses Google Play Services 11.0.4 and RxJava 2.0.+**
@@ -132,7 +132,7 @@ allprojects {
 
 ```groovy
 dependencies {
-     compile 'com.github.aliumujib:Nibo:v1.01'
+     compile 'com.github.aliumujib:Nibo:v1.02'
 }
 ```
 
