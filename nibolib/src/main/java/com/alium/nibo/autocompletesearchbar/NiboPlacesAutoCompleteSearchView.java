@@ -311,7 +311,7 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
 
     private void bindViews() {
         this.mSearchCardView = (CardView) findViewById(R.id.cardview_search);
-        this.mHomeButton = (NiboHomeButton) findViewById(R.id.button_home);
+        this.mHomeButton = (NiboHomeButton) findViewById(R.id.button_home_nibo);
         this.mLogoView = (LogoView) findViewById(R.id.logoview);
         this.mSearchEditText = (EditText) findViewById(R.id.edittext_search);
         this.mSuggestionListView = (ListView) findViewById(R.id.listview_suggestions);

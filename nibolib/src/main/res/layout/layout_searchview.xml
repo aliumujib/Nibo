@@ -22,7 +22,7 @@
             android:layout_height="48dp">
 
             <com.alium.nibo.autocompletesearchbar.NiboHomeButton
-                android:id="@+id/button_home"
+                android:id="@+id/button_home_nibo"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_alignParentLeft="true"
@@ -33,8 +33,8 @@
                 android:id="@+id/logoview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toRightOf="@+id/button_home"
-                android:layout_toEndOf="@+id/button_home"
+                android:layout_toRightOf="@+id/button_home_nibo"
+                android:layout_toEndOf="@+id/button_home_nibo"
                 android:layout_toLeftOf="@+id/button_mic"
                 android:layout_toStartOf="@+id/button_mic"
                 android:layout_marginLeft="8dp"
@@ -50,8 +50,8 @@
                 android:id="@+id/edittext_search"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_toRightOf="@+id/button_home"
-                android:layout_toEndOf="@+id/button_home"
+                android:layout_toRightOf="@+id/button_home_nibo"
+                android:layout_toEndOf="@+id/button_home_nibo"
                 android:layout_toLeftOf="@+id/button_mic"
                 android:layout_toStartOf="@+id/button_mic"
                 android:layout_marginLeft="8dp"
