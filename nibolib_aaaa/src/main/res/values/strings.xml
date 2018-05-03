@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Nibo</string>
+    <string name="title_activity_origin_destination_picker">OriginDestinationPickerActivity</string>
+    <string name="speak_now">Speak now</string>
+
+    <string name="BottomSheetBehaviorGoogleMapsLike">com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike</string>
+
+    <string name="time_distance" formatted="false">%s, %s</string>
+    <string name="origin_to_dest_text" formatted="false">%s - %s</string>
+
+    <string name="origin_hint">select a starting point</string>
+    <string name="destination_hint">destination hint</string>
+
+</resources>
