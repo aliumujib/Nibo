@@ -1,5 +1,7 @@
-package com.alium.nibo.repo.directions;
+package com.alium.nibo.repo.contracts;
 
+
+import com.alium.nibo.models.Route;
 
 import java.util.List;
 

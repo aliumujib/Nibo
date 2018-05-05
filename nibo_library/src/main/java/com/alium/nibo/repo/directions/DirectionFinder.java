@@ -1,14 +1,14 @@
 package com.alium.nibo.repo.directions;
 
 import android.app.Activity;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
 
+import com.alium.nibo.models.Distance;
+import com.alium.nibo.models.Duration;
+import com.alium.nibo.models.Route;
+import com.alium.nibo.repo.contracts.DirectionFinderListener;
 import com.alium.nibo.utils.NiboConstants;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class DirectionFinder {
         String urlDestination = URLEncoder.encode(destination, "utf-8");
 
         if (GOOGLE_API_KEY == null) {
-            throw new IllegalStateException("Please provide a valid google maps API key");
+            throw new IllegalStateException("Please provide a valid google maps DirectionsAPI key");
         }
 
         return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&key=" + GOOGLE_API_KEY;
@@ -105,8 +104,8 @@ public class DirectionFinder {
         if (data == null)
             return;
 
-        List<Route> routes = new ArrayList<Route>();
         JSONObject jsonData = new JSONObject(data);
+        List<Route> routes = new ArrayList<Route>();
 
         if (jsonData.has("status")) {
 

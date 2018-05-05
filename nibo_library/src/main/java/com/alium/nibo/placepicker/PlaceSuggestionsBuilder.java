@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.autocompletesearchbar.SearchSuggestionsBuilder;
-import com.alium.nibo.repo.location.SuggestionsRepository;
+import com.alium.nibo.repo.location.SuggestionsProvider;
 
 
 import java.util.ArrayList;
@@ -33,6 +33,6 @@ public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
 
     @Override
     public Observable<Collection<NiboSearchSuggestionItem>> rXbuildSearchSuggestion(int maxCount, final String query) {
-        return SuggestionsRepository.sharedInstance.getSuggestions(query);
+        return SuggestionsProvider.sharedInstance.getSuggestions(query);
     }
 }

@@ -44,4 +44,13 @@ public interface NiboConstants {
     String REQUEST_DENIED = "REQUEST_DENIED";
     String UNKNOWN_ERROR = "UNKNOWN_ERROR";
 
+
+    String API_KEY_PARAM = "API_KEY_PARAM";
+    String LATITUDE_PARAM = "LATITUDE_PARAM";
+    String LONGITUDE_PARAM = "LONGITUDE_PARAM";
+    String PLACE_ID_PARAM = "PLACE_ID_PARAM";
+
+
+    String BASE_DIRECTIONS_URL = "https://maps.googleapis.com";
+
 }

@@ -2,6 +2,8 @@ package com.alium.nibo.repo.contracts;
 
 import android.location.Location;
 
+import com.google.android.gms.location.places.Place;
+
 import io.reactivex.Observable;
 
 /**
@@ -12,6 +14,5 @@ public interface ILocationRepository {
 
     Observable<Location> getLocationObservable();
 
-
-
+    Observable<Place> getPlaceByID(final String placeId);
 }

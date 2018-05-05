@@ -1,4 +1,4 @@
-package com.alium.nibo.repo.directions;
+package com.alium.nibo.models;
 
 import com.google.android.gms.maps.model.LatLng;
 

@@ -38,9 +38,9 @@ import com.alium.nibo.lib.BottomSheetBehaviorGoogleMapsLike;
 import com.alium.nibo.models.NiboSelectedOriginDestination;
 import com.alium.nibo.origindestinationpicker.adapter.NiboBaseOrigDestSuggestionAdapter;
 import com.alium.nibo.repo.directions.DirectionFinder;
-import com.alium.nibo.repo.directions.DirectionFinderListener;
-import com.alium.nibo.repo.directions.Route;
-import com.alium.nibo.repo.location.SuggestionsRepository;
+import com.alium.nibo.repo.contracts.DirectionFinderListener;
+import com.alium.nibo.models.Route;
+import com.alium.nibo.repo.location.SuggestionsProvider;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
 import com.alium.nibo.utils.customviews.RoundedView;
@@ -612,7 +612,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
 
     private void findResults(String s) {
         showLoading();
-        SuggestionsRepository.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<NiboSearchSuggestionItem>>() {
+        SuggestionsProvider.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<NiboSearchSuggestionItem>>() {
             @Override
             public void accept(@io.reactivex.annotations.NonNull Collection<NiboSearchSuggestionItem> niboSearchSuggestionItems) throws Exception {
                 Log.wtf(TAG, String.valueOf(niboSearchSuggestionItems.size()));

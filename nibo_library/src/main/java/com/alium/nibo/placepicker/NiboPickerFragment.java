@@ -1,32 +1,27 @@
 package com.alium.nibo.placepicker;
 
 import android.content.Intent;
-import android.location.Address;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.RawRes;
-import android.text.Html;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alium.nibo.R;
 import com.alium.nibo.autocompletesearchbar.NiboAutocompleteSVProvider;
 import com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.base.BaseNiboFragment;
+import com.alium.nibo.di.GoogleClientModule;
+import com.alium.nibo.di.Injection;
 import com.alium.nibo.models.NiboSelectedPlace;
-import com.alium.nibo.repo.location.LocationAddress;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,16 +31,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-
 import static android.app.Activity.RESULT_OK;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocompleteSVProvider {
+public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Presenter> implements NiboAutocompleteSVProvider, NiboPickerContracts.View {
 
     private String mAddress;
     private RelativeLayout mRootLayout;
@@ -75,29 +66,21 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
     }
 
 
-    protected void getPlaceDetailsByID(String placeId) {
-        mLocationRepository.getPlaceByID(placeId).subscribe(new Consumer<Place>() {
-            @Override
-            public void accept(@NonNull Place place) throws Exception {
-                addSingleMarkerToMap(place.getLatLng());
-            }
-        }
-        , new Consumer<Throwable>() {
-            @Override
-            public void accept(@NonNull Throwable throwable) throws Exception {
-                Log.e(TAG, throwable.getMessage());
-            }
-        }
-
-        );
+    @Override
+    public void setPlaceData(Place place) {
+        addSingleMarkerToMap(place.getLatLng());
     }
-
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_picker_nibo, container, false);
+    public void displayPlaceDetailsError() {
+        displayError("Error details");
     }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_picker_nibo;
+    }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -119,13 +102,11 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
         mPickLocationLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra(NiboConstants.SELECTED_PLACE_RESULT, mCurrentSelection);
-                getActivity().setResult(RESULT_OK, intent);
-                getActivity().finish();
+                presenter.sendResults();
             }
         });
 
+        //  geoCodingRepository = injection.getGeoCodingRepository();
     }
 
 
@@ -166,34 +147,7 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
 
     @Override
     protected void extractGeocode(final double lati, final double longi) {
-
-        LatLng currentPosition = new LatLng(lati, longi);
-        //addSingleMarkerToMap(currentPosition);
-
-        if ((String.valueOf(lati).equals(null))) {
-            Toast.makeText(getContext(), "Invlaid location", Toast.LENGTH_SHORT).show();
-        } else {
-            LocationAddress.sharedLocationAddressInstance.getObservableAddressStringFromLatLng(lati, longi,
-                    getContext())
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(@NonNull String address) throws Exception {
-                            mAddress = address;
-                            if (mAddress != null) {
-                                mGeocodeAddress.setText(address);
-                                showAddressWithTransition();
-                                Log.d("mGeolocation", " " + address);
-                                mCurrentSelection = new NiboSelectedPlace(new LatLng(lati, longi), null, address);
-                            }
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(@NonNull Throwable throwable) throws Exception {
-                            Log.e(TAG, throwable.getMessage());
-                        }
-                    });
-
-        }
+        presenter.getGeocode(lati, longi);
     }
 
     @Override
@@ -243,7 +197,7 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
     }
 
     private void initView(View convertView) {
-        this.mRootLayout = (RelativeLayout) convertView.findViewById(R.id.root_layout);
+        this.mRootLayout = convertView.findViewById(R.id.root_layout);
         this.mSearchView = (NiboPlacesAutoCompleteSearchView) convertView.findViewById(R.id.searchview);
         this.mLocationDetails = (LinearLayout) convertView.findViewById(R.id.location_details);
         this.mGeocodeAddress = (TextView) convertView.findViewById(R.id.geocode_address);
@@ -259,11 +213,6 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
         super.onStop();
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        super.onConnected(bundle);
-
-    }
 
     @Override
     public GoogleApiClient getGoogleApiClient() {
@@ -277,72 +226,114 @@ public class NiboPickerFragment extends BaseNiboFragment implements NiboAutocomp
 
     @Override
     public NiboPlacesAutoCompleteSearchView.SearchListener getSearchListener() {
-        return new NiboPlacesAutoCompleteSearchView.SearchListener() {
-
-
-            @Override
-            public void onSearchEditOpened() {
-                hideAddressWithTransition();
-
-
-            }
-
-            @Override
-            public void onSearchEditClosed() {
-                if (mAddress != null) {
-                    showAddressWithTransition();
-                }
-
-            }
-
-
-            @Override
-            public boolean onSearchEditBackPressed() {
-                if (mSearchView.isEditing()) {
-                    mSearchView.cancelEditing();
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void onSearchExit() {
-
-            }
-
-            @Override
-            public void onSearchTermChanged(String term) {
-
-
-            }
-
-            @Override
-            public void onSearch(String string) {
-
-            }
-
-            @Override
-            public boolean onSuggestion(NiboSearchSuggestionItem niboSearchSuggestionItem) {
-                Toast.makeText(getContext(), niboSearchSuggestionItem.getValue(), Toast.LENGTH_LONG).show();
-                mSearchView.setSearchString(niboSearchSuggestionItem.getFullTitle(), true);
-                mSearchView.setLogoText(niboSearchSuggestionItem.getFullTitle());
-                getPlaceDetailsByID(niboSearchSuggestionItem.getValue());
-                mSearchView.closeSearch();
-                hideKeyboard();
-                hideAddressWithTransition();
-                return false;
-            }
-
-            @Override
-            public void onSearchCleared() {
-
-            }
-
-        };
+        return new SearchListenerImpl();
     }
 
     @Override
     public boolean getShouldUseVoice() {
         return false;
     }
+
+    @Override
+    public void setResults(NiboSelectedPlace niboSelectedPlace) {
+        Intent intent = new Intent();
+        intent.putExtra(NiboConstants.SELECTED_PLACE_RESULT, niboSelectedPlace);
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void setGeocodeAddress(String address) {
+        mGeocodeAddress.setText(address);
+    }
+
+    @Override
+    public void injectDependencies() {
+        super.injectDependencies();
+
+        Injection.InjectionBuilder injectionBuilder = new Injection.InjectionBuilder();
+        injectionBuilder.setGoogleClientModule(new GoogleClientModule(getAppCompatActivity(), new ConnectionCallbacksImpl(), new OnConnectionFailedListenerImpl()));
+
+
+        //injectionBuilder.setProviderModule(new ProviderModule(getAppCompatActivity()));
+
+        injection = injectionBuilder.build();
+
+    }
+
+    @Override
+    public void showResultView() {
+        showAddressWithTransition();
+    }
+
+    @Override
+    public void displayErrorGeoCodingMessage() {
+        displayError("Error getting address for your location");
+    }
+
+
+    class SearchListenerImpl implements NiboPlacesAutoCompleteSearchView.SearchListener {
+
+        @Override
+        public void onSearchEditOpened() {
+            hideAddressWithTransition();
+        }
+
+        @Override
+        public void onSearchEditClosed() {
+            if (mAddress != null) {
+                showAddressWithTransition();
+            }
+
+        }
+
+
+        @Override
+        public boolean onSearchEditBackPressed() {
+            if (mSearchView.isEditing()) {
+                mSearchView.cancelEditing();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onSearchExit() {
+
+        }
+
+        @Override
+        public void onSearchTermChanged(String term) {
+
+
+        }
+
+        @Override
+        public void onSearch(String string) {
+
+        }
+
+        @Override
+        public boolean onSuggestion(NiboSearchSuggestionItem niboSearchSuggestionItem) {
+            /* Toast.makeText(getContext(), niboSearchSuggestionItem.getValue(), Toast.LENGTH_LONG).show(); */
+            initSearchViews(niboSearchSuggestionItem);
+            presenter.getPlaceDetailsById(niboSearchSuggestionItem.getPlaceID());
+            return false;
+        }
+
+        @Override
+        public void onSearchCleared() {
+
+        }
+
+    }
+
+    public void initSearchViews(NiboSearchSuggestionItem niboSearchSuggestionItem) {
+        mSearchView.setSearchString(niboSearchSuggestionItem.getFullTitle(), true);
+        mSearchView.setLogoText(niboSearchSuggestionItem.getFullTitle());
+        mSearchView.closeSearch();
+        hideKeyboard();
+        hideAddressWithTransition();
+    }
+
 }

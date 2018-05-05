@@ -44,7 +44,7 @@ import com.alium.nibo.R;
 import com.alium.nibo.autocompletesearchbar.animation.BaseSupportAnimator;
 import com.alium.nibo.autocompletesearchbar.animation.ViewAnimationUtilties;
 import com.alium.nibo.placepicker.PlaceSuggestionsBuilder;
-import com.alium.nibo.repo.location.SuggestionsRepository;
+import com.alium.nibo.repo.location.SuggestionsProvider;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 
@@ -121,8 +121,8 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
         Log.d(TAG, "Procider has been set");
         this.mProvider = mProvider;
 
-        SuggestionsRepository.setmContext(getActivity());
-        SuggestionsRepository.setmGoogleApiClient(mProvider.getGoogleApiClient());
+        SuggestionsProvider.setmContext(getActivity());
+        SuggestionsProvider.setmGoogleApiClient(mProvider.getGoogleApiClient());
         setUpSearchView(mProvider.getShouldUseVoice());
 
     }

@@ -30,10 +30,6 @@ import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 public class LocationRepository implements ILocationRepository {
 
     private final ReactiveLocationProvider mLocationProvider;
-    Location userLocation;
-
-    PublishSubject<Location> publishSubject = PublishSubject.create();
-
     private GoogleApiClient mGoogleApiClient;
 
     public LocationRepository(Activity activity, GoogleApiClient mGoogleApiClient) {
@@ -72,4 +68,5 @@ public class LocationRepository implements ILocationRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
 }

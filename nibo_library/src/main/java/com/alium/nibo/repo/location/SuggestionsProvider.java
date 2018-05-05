@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.alium.nibo.R;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
+import com.alium.nibo.repo.contracts.ISuggestionRepository;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompletePrediction;
@@ -25,21 +26,16 @@ import io.reactivex.Observer;
  * Created by abdulmujibaliu on 9/8/17.
  */
 
-public class SuggestionsRepository {
+public class SuggestionsProvider implements ISuggestionRepository {
 
 
     private String TAG = getClass().getSimpleName();
-    private static GoogleApiClient mGoogleApiClient;
-    private static Context mContext;
+    private GoogleApiClient mGoogleApiClient;
+    private Context mContext;
 
-    public static SuggestionsRepository sharedInstance = new SuggestionsRepository();
-
-    public static void setmContext(Context mContext) {
-        SuggestionsRepository.mContext = mContext;
-    }
-
-    public static void setmGoogleApiClient(GoogleApiClient mGoogleApiClient) {
-        SuggestionsRepository.mGoogleApiClient = mGoogleApiClient;
+    public SuggestionsProvider(GoogleApiClient mGoogleApiClient, Context mContext) {
+        this.mGoogleApiClient = mGoogleApiClient;
+        this.mContext = mContext;
     }
 
     public Observable<Collection<NiboSearchSuggestionItem>> getSuggestions(final String query) {
@@ -77,6 +73,7 @@ public class SuggestionsRepository {
 
                                         } else {
                                             Log.d(TAG, buffer.toString());
+                                            observer.onError(new Throwable(buffer.getStatus().getStatusMessage()));
                                         }
                                         //Prevent memory leak by releasing buffer
                                         buffer.release();
@@ -85,6 +82,12 @@ public class SuggestionsRepository {
 
             }
         };
+    }
+
+    @Override
+    public void stop() {
+        mContext = null;
+        mGoogleApiClient = null;
     }
 
 

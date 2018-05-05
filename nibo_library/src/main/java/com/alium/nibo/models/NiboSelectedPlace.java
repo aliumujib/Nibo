@@ -10,21 +10,49 @@ import com.google.android.gms.maps.model.LatLng;
  */
 
 public class NiboSelectedPlace implements Parcelable {
-    LatLng latLng;
-    String placeId;
-    String placeAddress;
+    private double latitude;
+    private double longitude;
+    private String placeId;
+    private String placeAddress;
 
 
-    public NiboSelectedPlace(LatLng latLng, String placeId, String placeAddress) {
-        this.latLng = latLng;
+    public NiboSelectedPlace(double latitude, double longitude, String placeId, String placeAddress) {
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.placeId = placeId;
         this.placeAddress = placeAddress;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
     protected NiboSelectedPlace(Parcel in) {
-        latLng = in.readParcelable(LatLng.class.getClassLoader());
+        latitude = in.readDouble();
+        longitude = in.readDouble();
         placeId = in.readString();
         placeAddress = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeString(placeId);
+        dest.writeString(placeAddress);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<NiboSelectedPlace> CREATOR = new Creator<NiboSelectedPlace>() {
@@ -43,19 +71,5 @@ public class NiboSelectedPlace implements Parcelable {
         return placeAddress;
     }
 
-    public LatLng getLatLng() {
-        return latLng;
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(latLng, flags);
-        dest.writeString(placeId);
-        dest.writeString(placeAddress);
-    }
 }
