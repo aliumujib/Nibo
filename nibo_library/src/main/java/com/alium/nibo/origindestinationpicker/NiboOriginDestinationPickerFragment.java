@@ -380,6 +380,8 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment<Origin
 
     @Override
     public void hideLoading() {
+        mDestinationEditText.setFocusableInTouchMode(true);
+        mOriginEditText.setFocusableInTouchMode(true);
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -447,6 +449,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment<Origin
                         if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
                             mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                         }
+                        mDestinationEditText.setFocusableInTouchMode(false);
                         findResults(s);
                     }
                 });
@@ -459,6 +462,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment<Origin
                         if (mBehavior.getState() == BottomSheetBehaviorGoogleMapsLike.STATE_COLLAPSED) {
                             mBehavior.setState(BottomSheetBehaviorGoogleMapsLike.STATE_ANCHOR_POINT);
                         }
+                        mOriginEditText.setFocusableInTouchMode(false);
                         findResults(s);
 
                     }

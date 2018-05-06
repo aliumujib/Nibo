@@ -127,4 +127,13 @@ public class NiboPickerPresenter extends BasePresenter<View> implements NiboPick
         getPlaceDetailsUseCase.execute(new PlaceDetailsObserver(), getPlaceDetailsParams);
     }
 
+    @Override
+    public void handleBackPress() {
+        if(getView().isSearching()){
+            getView().closeSearch();
+        }else {
+            getView().close();
+        }
+    }
+
 }

@@ -388,10 +388,10 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
      * @param listener         The listener associated with the Snackbar action.
      */
     protected void showSnackbar(final int mainTextStringId, final int actionStringId,
-                              View.OnClickListener listener) {
+                                View.OnClickListener listener) {
         if (getView() != null) {
             Snackbar.make(
-                    getView().findViewById(android.R.id.content),
+                    getAppCompatActivity().findViewById(android.R.id.content),
                     getString(mainTextStringId),
                     Snackbar.LENGTH_INDEFINITE)
                     .setAction(getString(actionStringId), listener).show();
@@ -485,10 +485,13 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
                     public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                         Log.i(TAG, "All location settings are satisfied.");
 
-                        //noinspection MissingPermission
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest,
-                                mLocationCallback, Looper.myLooper());
 
+                        //noinspection MissingPermission
+                        if (checkPermissions()) {
+                            mMap.setMyLocationEnabled(true);
+                            mFusedLocationClient.requestLocationUpdates(mLocationRequest,
+                                    mLocationCallback, Looper.myLooper());
+                        }
 
                     }
                 })
@@ -673,7 +676,6 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.setMyLocationEnabled(true);
         mMap.setMaxZoomPreference(20);
 
         if (getMapStyle() != null) {
