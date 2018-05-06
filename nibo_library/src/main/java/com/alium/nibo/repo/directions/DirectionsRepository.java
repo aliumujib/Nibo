@@ -35,7 +35,7 @@ public class DirectionsRepository implements IDirectionsRepository {
     }
 
     @Override
-    public Observable<List<Route>> getRouteForPolyline(final double origin, final double destination, final String apiKey) {
+    public Observable<List<Route>> getRouteForPolyline(final String origin, final String destination, final String apiKey) {
         return Observable.create(new ObservableOnSubscribe<List<Route>>() {
             @Override
             public void subscribe(final ObservableEmitter<List<Route>> source) throws Exception {

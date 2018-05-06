@@ -3,6 +3,8 @@ package com.alium.nibo.di;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
+import com.alium.nibo.origindestinationpicker.OriginDestinationContracts;
+import com.alium.nibo.placepicker.NiboPickerContracts;
 import com.alium.nibo.placepicker.NiboPickerPresenter;
 import com.alium.nibo.repo.contracts.IGeoCodingRepository;
 import com.alium.nibo.repo.contracts.ISuggestionRepository;
@@ -46,8 +48,12 @@ public class Injection {
     }
 
 
-    public NiboPickerPresenter getNiboPickerPresenter() {
+    public NiboPickerContracts.Presenter getNiboPickerPresenter() {
         return presenterModule.getNiboPickerPresenter();
+    }
+
+    public OriginDestinationContracts.Presenter getOriginDestinationPickerPresenter() {
+        return presenterModule.getOriginDestinationPickerPresenter();
     }
 
     public LocationRequest getLocationRequest() {

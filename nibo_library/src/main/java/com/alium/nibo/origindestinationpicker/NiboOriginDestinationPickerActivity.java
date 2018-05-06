@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.alium.nibo.R;
 import com.alium.nibo.base.BaseNiboActivity;
-import com.alium.nibo.origindestinationpicker.fragment.NiboOriginDestinationPickerFragment;
 import com.alium.nibo.utils.NiboStyle;
 
 public class NiboOriginDestinationPickerActivity extends BaseNiboActivity {

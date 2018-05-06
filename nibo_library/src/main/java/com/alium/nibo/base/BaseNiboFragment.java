@@ -100,8 +100,6 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
     protected GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
-    private Task<LocationSettingsResponse> mResponseTask;
-
     private LocationSettingsRequest mLocationSettingsRequest;
     private FusedLocationProviderClient mFusedLocationClient;
     private SettingsClient mSettingsClient;
@@ -120,11 +118,9 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
     protected
     @DrawableRes
     int mMarkerPinIconRes;
-    protected LocationRepository mLocationRepository;
     protected FloatingActionButton mCenterMyLocationFab;
     public View mOriginDestinationSeperatorLine;
     public Injection injection;
-    private ISuggestionRepository mSuggestionsRepository;
 
     /**
      * Constant used in the location settings dialog.
@@ -306,13 +302,13 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
 
         mGoogleApiClient = injection.getGoogleApiClient();
         mLocationRequest = injection.getLocationRequest();
+
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         mSettingsClient = LocationServices.getSettingsClient(getActivity());
 
-        //TODO move code in the following methods into home baked DI
         mLocationSettingsRequest = builder.build();
 
         // Kick off the process of building the LocationCallback, LocationRequest, and
@@ -345,9 +341,18 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                Location result = locationResult.getLastLocation();
-                if (result != null) {
-                    extractGeocode(result.getLatitude(), result.getLongitude());
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    extractGeocode(location.getLatitude(), location.getLongitude());
+
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .zoom(15)
+                            .build();
+                    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    handleLocationRetrieval(location);
+                    extractGeocode(location.getLatitude(), location.getLongitude());
                 }
             }
         };
@@ -382,7 +387,7 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
      * @param actionStringId   The text of the action item.
      * @param listener         The listener associated with the Snackbar action.
      */
-    private void showSnackbar(final int mainTextStringId, final int actionStringId,
+    protected void showSnackbar(final int mainTextStringId, final int actionStringId,
                               View.OnClickListener listener) {
         if (getView() != null) {
             Snackbar.make(
@@ -539,9 +544,6 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
         super.onStop();
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
-            if (mSuggestionsRepository != null) {
-                mSuggestionsRepository.stop();
-            }
         }
 
         if (getPresenter() != null) {
@@ -706,30 +708,6 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        mLocationRepository = new LocationRepository(mGoogleApiClient, getContext());
-
-        mLocationRepository.getLocationObservable()
-                .subscribe(new Consumer<Location>() {
-                    @Override
-                    public void accept(@NonNull Location location) throws Exception {
-                        CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                                .zoom(15)
-                                .build();
-                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        handleLocationRetrieval(location);
-                        extractGeocode(location.getLatitude(), location.getLongitude());
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                    }
-                });
-
-
     }
 
     public void setMargins(View v, int left, int top, int right, int bottom) {
@@ -754,7 +732,6 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
         @Override
         public void onConnected(@Nullable Bundle bundle) {
             //TODO ... enable any views that should enabled here
-            mSuggestionsRepository = injection.getSuggestionsRepository();
 
 
         }
@@ -763,26 +740,6 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
         public void onConnectionSuspended(int i) {
 
         }
-    }
-
-
-    public class LocationListenerImpl extends LocationCallback {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-
-            if (locationResult != null) {
-                for (Location location : locationResult.getLocations()) {
-                    handleLocationRetrieval(locationResult.getLastLocation());
-                    extractGeocode(location.getLatitude(), location.getLongitude());
-                }
-            } else {
-                Log.d(TAG, "LOcation result is null");
-            }
-
-
-        }
-
     }
 
 }

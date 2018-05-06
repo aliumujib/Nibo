@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:tag="modal-appbar"
-        tools:context="com.alium.nibo.origindestinationpicker.fragment.NiboOriginDestinationPickerFragment"
+        tools:context="com.alium.nibo.origindestinationpicker.NiboOriginDestinationPickerFragment"
         tools:showIn="@layout/activity_origin_destination_picker">
 
         <android.support.design.widget.AppBarLayout
@@ -162,8 +162,8 @@
         app:layout_anchorGravity="top|end"
         android:clickable="true"
         android:layout_gravity="right"
-        android:src="?primaryPolyLineColor"
-        app:backgroundTint="?doneFabColorRes"
+        android:src="?doneFabColorRes"
+        app:backgroundTint="?primaryPolyLineColor"
         app:rippleColor="#FFF" />
 
     <View

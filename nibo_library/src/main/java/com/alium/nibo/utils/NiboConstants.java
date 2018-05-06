@@ -50,6 +50,11 @@ public interface NiboConstants {
     String LONGITUDE_PARAM = "LONGITUDE_PARAM";
     String PLACE_ID_PARAM = "PLACE_ID_PARAM";
 
+    String ORIGIN_PARAM = "ORIGIN_PARAM";
+    String DESTINATION_PARAM = "DESTINATION_PARAM";
+    String SUGGESTION_QUERY_PARAM = "SUGGESTION_QUERY_PARAM";
+    String SUGGESTION_ITEM_PARAM = "SUGGESTION_ITEM_PARAM";
+
 
     String BASE_DIRECTIONS_URL = "https://maps.googleapis.com";
 

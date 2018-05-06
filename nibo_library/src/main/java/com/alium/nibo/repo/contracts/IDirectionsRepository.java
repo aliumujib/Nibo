@@ -13,6 +13,6 @@ import io.reactivex.Observable;
 public interface IDirectionsRepository {
 
 
-    Observable<List<Route>> getRouteForPolyline(double origin, double destination,  String apiKey);
+    Observable<List<Route>> getRouteForPolyline(String origin, String destination,  String apiKey);
 
 }
