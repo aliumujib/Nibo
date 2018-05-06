@@ -42,7 +42,7 @@ ext {
     // sdk and tools
     compileSdkVersion = 26
     minSdkVersion = 16
-    targetSdkVersion = 22
+    targetSdkVersion = 26
     buildToolsVersion = '26.0.2'
 
     // libs versions

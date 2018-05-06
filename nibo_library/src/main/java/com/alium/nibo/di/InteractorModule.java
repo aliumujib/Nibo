@@ -1,7 +1,9 @@
 package com.alium.nibo.di;
 
+import com.alium.nibo.domain.directions.FindDirectionsUseCase;
 import com.alium.nibo.domain.geocoding.GeocodeCordinatesUseCase;
 import com.alium.nibo.domain.places.GetPlaceDetailsUseCase;
+import com.alium.nibo.domain.places.GetPlaceSuggestionsUseCase;
 
 /**
  * Created by aliumujib on 05/05/2018.
@@ -27,4 +29,12 @@ public class InteractorModule {
         return new GetPlaceDetailsUseCase(providerModule.getSuggestionsProvider());
     }
 
+    public FindDirectionsUseCase getFindDirectionsUseCase(){
+        return new FindDirectionsUseCase(repositoryModule.getDirectionsRepository());
+    }
+
+
+    public GetPlaceSuggestionsUseCase getPlaceSuggestionsUseCase(){
+        return new GetPlaceSuggestionsUseCase(providerModule.getSuggestionsProvider());
+    }
 }

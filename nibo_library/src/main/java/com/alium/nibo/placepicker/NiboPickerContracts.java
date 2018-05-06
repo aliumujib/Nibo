@@ -27,6 +27,7 @@ public interface NiboPickerContracts {
 
         void getPlaceDetailsById(String placeID);
 
+        void handleBackPress();
     }
 
 
@@ -44,6 +45,10 @@ public interface NiboPickerContracts {
         void setPlaceData(Place place);
 
         void displayPlaceDetailsError();
+
+        boolean isSearching();
+
+        void closeSearch();
     }
 
 

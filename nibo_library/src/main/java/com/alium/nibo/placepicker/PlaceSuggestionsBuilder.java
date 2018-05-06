@@ -1,11 +1,8 @@
 package com.alium.nibo.placepicker;
 
-import android.content.Context;
-
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.autocompletesearchbar.SearchSuggestionsBuilder;
 import com.alium.nibo.repo.location.SuggestionsProvider;
-
 
 import java.util.ArrayList;
 import java.util.Collection;

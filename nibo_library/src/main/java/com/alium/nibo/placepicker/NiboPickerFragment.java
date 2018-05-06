@@ -75,6 +75,16 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
     }
 
     @Override
+    public boolean isSearching() {
+        return mSearchView.isSearching();
+    }
+
+    @Override
+    public void closeSearch() {
+        mSearchView.closeSearch();
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.fragment_picker_nibo;
     }
@@ -116,9 +126,7 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                     // handle back button's click listener
-                    if (mSearchView.isSearching()) {
-                        mSearchView.closeSearch();
-                    }
+                   presenter.handleBackPress();
                     return true;
                 }
                 return false;

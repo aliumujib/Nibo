@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements NiboAutocompleteS
         NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder config = new NiboOriginDestinationPickerActivity.NiboOriginDestinationPickerBuilder()
                 .setDestinationMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
                 .setOriginMarkerPinIconRes(R.drawable.ic_map_marker_black_36dp)
+                //.setBackButtonIconRes(R.drawable.arrow_left)
                 .setOriginEditTextHint("Input pick up location")
 //                .setPrimaryPolyLineColor(R.color.colorPrimary)
 //                .setSecondaryPolyLineColor(R.color.colorAccent)
