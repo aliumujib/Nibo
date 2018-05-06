@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Nibo.iml" filepath="$PROJECT_DIR$/../Nibo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../niboexample/niboexample.iml" filepath="$PROJECT_DIR$/../niboexample/niboexample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nibolib.iml" filepath="$PROJECT_DIR$/nibolib.iml" />
+    </modules>
+  </component>
+</project>

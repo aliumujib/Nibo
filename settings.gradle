@@ -1,1 +1,1 @@
-include ':nibolib', ':niboexample'
+include ':nibo_library', ':niboexample'

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomBottomSheetBehavior">
+        <attr name="anchorPoint" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="RoundedView">
+        <attr name="colorSelected" format="color" />
+        <attr name="colorUnselected" format="color" />
+    </declare-styleable>
+
+
+    <!-- Backgrround color for location input editTexts -->
+    <attr name="originEditTextBg" format="reference|color" />
+    <attr name="destEditTextBg" format="reference|color" />
+
+    <!-- hint text for location input editTexts -->
+    <attr name="origEditTextHint" format="string|reference" />
+    <attr name="destEditTextHint" format="string|reference" />
+
+    <!-- text color for location input editTexts -->
+    <attr name="origEditTextTextColor" format="string|reference" />
+    <attr name="destEditTextTextColor" format="string|reference" />
+
+    <!-- color of hint text for location input editTexts -->
+    <attr name="origEditTextHintColor" format="color|reference" />
+    <attr name="destEditTextHintColor" format="color|reference" />
+
+    <!-- color of text for descriptionTextViews -->
+    <attr name="distanceDurationTextColor" format="color|reference" />
+    <attr name="originDestinationTextColor" format="color|reference" />
+
+    <!-- color of text for suggestionListViewItems-->
+    <attr name="suggestionItemTitleTextColor" format="color|reference" />
+    <attr name="suggestionItemSubtitleTextColor" format="color|reference" />
+    <attr name="suggestionItemSeperatorLineColor" format="color|reference" />
+    <attr name="suggestionItemLeftIconTintColor" format="color|reference" />
+
+
+    <attr name="editTextClearerIcon" format="reference" />
+
+    <attr name="detailsBackground" format="color|reference" />
+    <attr name="appBarBackground" format="color|reference" />
+
+    <attr name="primaryPolyLineColor" format="reference" />
+    <attr name="doneFabColorRes" format="color|reference" />
+
+    <attr name="destinationRoundViewStyle" format="reference" />
+    <attr name="originRoundViewStyle" format="reference" />
+
+    <attr name="originDestinationSeperatorLineColor" format="color|reference" />
+
+    <attr name="progressBarColor" format="color|reference" />
+
+
+    <declare-styleable name="NiboPlacesAutoCompleteSearchView">
+        <attr name="niboSV_searchTextColor" format="color" />
+        <attr name="niboSV_logoDrawable" format="reference" />
+        <attr name="niboSV_logoString" format="string" />
+        <attr name="niboSV_editTextColor" format="color" />
+        <attr name="niboSV_editHintText" format="string" />
+        <attr name="niboSV_editHintTextColor" format="color" />
+        <attr name="niboSV_searchCardElevation" format="dimension" />
+        <attr name="niboSV_displayMode" format="enum">
+            <enum name="appbar_menuItem" value="0" />
+            <enum name="screen_toolbar" value="1" />
+        </attr>
+        <attr name="niboSV_homeButtonColor" format="color" />
+        <attr name="niboSV_customToolbarHeight" format="dimension" />
+        <attr name="niboSV_homeButtonMode" format="enum">
+            <enum name="nibo_arrow" value="0" />
+            <enum name="nibo_burger" value="1" />
+        </attr>
+    </declare-styleable>
+
+</resources>
