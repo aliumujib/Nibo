@@ -40,7 +40,6 @@ import com.alium.nibo.origindestinationpicker.adapter.NiboBaseOrigDestSuggestion
 import com.alium.nibo.repo.directions.DirectionFinder;
 import com.alium.nibo.repo.contracts.DirectionFinderListener;
 import com.alium.nibo.models.Route;
-import com.alium.nibo.repo.location.SuggestionsProvider;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
 import com.alium.nibo.utils.customviews.RoundedView;
@@ -58,7 +57,6 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -168,7 +166,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             mDestinationEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, mTextFieldClearIconRes, 0);
         }
 
-        initmap();
+        initMap();
 
 
     }
@@ -216,7 +214,7 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
             String destinationString = "" + destination.latitude + "," + destination.longitude;
             String originString = "" + origin.latitude + ","
                     + origin.longitude;
-            new DirectionFinder(getMapsAPIKeyFromManifest(), this, originString, destinationString).execute();
+            new DirectionFinder("", this, originString, destinationString).execute();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -227,6 +225,11 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_origin_destination_picker, container, false);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return 0;
     }
 
 
@@ -386,12 +389,17 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
         };
     }
 
-    private void showLoading() {
+    @Override
+    public void injectPresenter(Object presenter) {
+
+    }
+
+    public void showLoading() {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
 
-    private void hideLoading() {
+    public void hideLoading() {
         mProgressBar.setVisibility(View.GONE);
     }
 
@@ -497,23 +505,23 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
     }
 
     protected void getPlaceDetailsByID(final NiboSearchSuggestionItem searchSuggestionItem) {
-        mLocationRepository.getPlaceByID(searchSuggestionItem.getPlaceID()).subscribe(new Consumer<Place>() {
-            @Override
-            public void accept(@io.reactivex.annotations.NonNull Place place) throws Exception {
-                hideLoading();
-                closeSuggestions();
-                if (mRoundedIndicatorOrigin.isChecked()) {
-                    mSelectedOriginDestination.setOriginItem(searchSuggestionItem);
-                    mSelectedOriginDestination.setOriginLatLng(place.getLatLng());
-                    addOriginMarker(place.getLatLng());
-                }
-                if (mRoundedIndicatorDestination.isChecked()) {
-                    mSelectedOriginDestination.setDestinationItem(searchSuggestionItem);
-                    mSelectedOriginDestination.setDestinationLatLng(place.getLatLng());
-                    addDestinationMarker(place.getLatLng());
-                }
-            }
-        });
+//        mLocationRepository.getPlaceByID(searchSuggestionItem.getPlaceID()).subscribe(new Consumer<Place>() {
+//            @Override
+//            public void accept(@io.reactivex.annotations.NonNull Place place) throws Exception {
+//                hideLoading();
+//                closeSuggestions();
+//                if (mRoundedIndicatorOrigin.isChecked()) {
+//                    mSelectedOriginDestination.setOriginItem(searchSuggestionItem);
+//                    mSelectedOriginDestination.setOriginLatLng(place.getLatLng());
+//                    addOriginMarker(place.getLatLng());
+//                }
+//                if (mRoundedIndicatorDestination.isChecked()) {
+//                    mSelectedOriginDestination.setDestinationItem(searchSuggestionItem);
+//                    mSelectedOriginDestination.setDestinationLatLng(place.getLatLng());
+//                    addDestinationMarker(place.getLatLng());
+//                }
+//            }
+//        });
     }
 
 
@@ -612,15 +620,15 @@ public class NiboOriginDestinationPickerFragment extends BaseNiboFragment implem
 
     private void findResults(String s) {
         showLoading();
-        SuggestionsProvider.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<NiboSearchSuggestionItem>>() {
-            @Override
-            public void accept(@io.reactivex.annotations.NonNull Collection<NiboSearchSuggestionItem> niboSearchSuggestionItems) throws Exception {
-                Log.wtf(TAG, String.valueOf(niboSearchSuggestionItems.size()));
-                mSearchSuggestions.clear();
-                mSearchSuggestions.addAll(niboSearchSuggestionItems);
-                mSearchItemAdapter.notifyDataSetChanged();
-            }
-        });
+//        SuggestionsProvider.sharedInstance.getSuggestions(s).subscribe(new Consumer<Collection<NiboSearchSuggestionItem>>() {
+//            @Override
+//            public void accept(@io.reactivex.annotations.NonNull Collection<NiboSearchSuggestionItem> niboSearchSuggestionItems) throws Exception {
+//                Log.wtf(TAG, String.valueOf(niboSearchSuggestionItems.size()));
+//                mSearchSuggestions.clear();
+//                mSearchSuggestions.addAll(niboSearchSuggestionItems);
+//                mSearchItemAdapter.notifyDataSetChanged();
+//            }
+//        });
     }
 
     private Observable<String> getObservableForEditext(EditText editText) {

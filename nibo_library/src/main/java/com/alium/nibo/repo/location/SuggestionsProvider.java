@@ -11,7 +11,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 
 
 import java.util.ArrayList;
@@ -21,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by abdulmujibaliu on 9/8/17.
@@ -82,6 +87,33 @@ public class SuggestionsProvider implements ISuggestionRepository {
 
             }
         };
+    }
+
+
+    public Observable<Place> getPlaceByID(final String placeId) {
+        return new Observable<Place>() {
+            @Override
+            protected void subscribeActual(final Observer<? super Place> observer) {
+                Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
+                        .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                            @Override
+                            public void onResult(@NonNull PlaceBuffer places) {
+                                if (places.getStatus().isSuccess()) {
+                                    final Place thatPlace = places.get(0);
+                                    LatLng queriedLocation = thatPlace.getLatLng();
+                                    Log.v("Latitude is", "" + queriedLocation.latitude);
+                                    Log.v("Longitude is", "" + queriedLocation.longitude);
+
+                                    observer.onNext(thatPlace.freeze());
+                                } else {
+
+                                }
+                                places.release();
+                            }
+                        });
+            }
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

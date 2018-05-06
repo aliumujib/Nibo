@@ -3,6 +3,7 @@ package com.alium.nibo.domain.places;
 import com.alium.nibo.domain.Params;
 import com.alium.nibo.domain.base.BaseUseCase;
 import com.alium.nibo.repo.contracts.ILocationRepository;
+import com.alium.nibo.repo.contracts.ISuggestionRepository;
 import com.alium.nibo.utils.NiboConstants;
 
 import io.reactivex.Observable;
@@ -13,16 +14,16 @@ import io.reactivex.Observable;
 
 public class GetPlaceDetailsUseCase extends BaseUseCase {
 
-    ILocationRepository locationRepository;
+    ISuggestionRepository suggestionRepository;
 
-    public GetPlaceDetailsUseCase(ILocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
+    public GetPlaceDetailsUseCase(ISuggestionRepository suggestionRepository) {
+        this.suggestionRepository = suggestionRepository;
     }
 
     @Override
     protected Observable getObservable(Params params) {
         String placeId = params.getString(NiboConstants.PLACE_ID_PARAM, null);
-        return locationRepository.getPlaceByID(placeId);
+        return suggestionRepository.getPlaceByID(placeId);
     }
 
 }

@@ -3,9 +3,11 @@ package com.alium.nibo.di;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
+import com.alium.nibo.placepicker.NiboPickerPresenter;
 import com.alium.nibo.repo.contracts.IGeoCodingRepository;
 import com.alium.nibo.repo.contracts.ISuggestionRepository;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 
 /**
  * Created by aliumujib on 03/05/2018.
@@ -17,6 +19,7 @@ public class Injection {
     private RepositoryModule repositoryModule;
     private GoogleClientModule googleClientModule;
     private ProviderModule providerModule;
+    private PresenterModule presenterModule;
 
 
     public GoogleApiClient getGoogleApiClient() {
@@ -26,10 +29,11 @@ public class Injection {
     private Injection() {
     }
 
-    public Injection(RepositoryModule repositoryModule, GoogleClientModule googleClientModule, ProviderModule providerModule) {
-        this.repositoryModule = repositoryModule;
-        this.googleClientModule = googleClientModule;
-        this.providerModule = providerModule;
+    public Injection(InjectionBuilder builder) {
+        this.repositoryModule = builder.repositoryModule;
+        this.googleClientModule = builder.googleClientModule;
+        this.providerModule = builder.providerModule;
+        this.presenterModule = builder.presenterModule;
     }
 
     public IGeoCodingRepository getGeoCodingRepository() {
@@ -42,13 +46,30 @@ public class Injection {
     }
 
 
+    public NiboPickerPresenter getNiboPickerPresenter() {
+        return presenterModule.getNiboPickerPresenter();
+    }
+
+    public LocationRequest getLocationRequest() {
+        return googleClientModule.getLocationRequest();
+    }
+
+
     public static class InjectionBuilder {
-        private APIModule apiModule;
-        private RepositoryModule repositoryModule;
-        private GoogleClientModule googleClientModule;
-        private RetrofitModule retrofitModule;
-        private ProviderModule providerModule;
+        public APIModule apiModule;
+        public RepositoryModule repositoryModule;
+        public GoogleClientModule googleClientModule;
+        public RetrofitModule retrofitModule;
+        public InteractorModule interactorModule;
+        public ProviderModule providerModule;
+        public PresenterModule presenterModule;
+
         private Context context;
+
+        public InjectionBuilder setInteractorModule(InteractorModule interactorModule) {
+            this.interactorModule = interactorModule;
+            return this;
+        }
 
         public InjectionBuilder setAPIModule(APIModule apiModule) {
             this.apiModule = apiModule;
@@ -57,6 +78,11 @@ public class Injection {
 
         public InjectionBuilder setRepositoryModule(RepositoryModule repositoryModule) {
             this.repositoryModule = repositoryModule;
+            return this;
+        }
+
+        public InjectionBuilder setPresenterModule(PresenterModule presenterModule) {
+            this.presenterModule = presenterModule;
             return this;
         }
 
@@ -83,21 +109,31 @@ public class Injection {
         public Injection build() {
             if (googleClientModule == null) {
                 throw new IllegalStateException("Please set GoogleAPI module, it has external dependencies");
-            } else if (providerModule == null) {
+            }
+            if (providerModule == null) {
                 if (context == null) {
-                    throw new IllegalStateException("Please set context, it has external dependencies");
+                    throw new IllegalStateException("Please set context, shit depends on it");
                 } else {
                     providerModule = new ProviderModule(googleClientModule.getGoogleApiClient(), context);
                 }
-            } else if (retrofitModule == null) {
+            }
+            if (retrofitModule == null) {
                 retrofitModule = RetrofitModule.getInstance();
-            } else if (apiModule == null) {
+            }
+            if (apiModule == null) {
                 apiModule = APIModule.getInstance(retrofitModule);
-            } else if (repositoryModule == null) {
+            }
+            if (repositoryModule == null) {
                 repositoryModule = RepositoryModule.getInstance(apiModule);
             }
+            if (interactorModule == null) {
+                interactorModule = new InteractorModule(repositoryModule, providerModule);
+            }
+            if (presenterModule == null) {
+                presenterModule = new PresenterModule(interactorModule);
+            }
 
-            return new Injection(repositoryModule, googleClientModule, providerModule);
+            return new Injection(this);
         }
     }
 

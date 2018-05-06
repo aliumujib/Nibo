@@ -39,22 +39,6 @@ public abstract class BaseFragment<T extends NiboPresentable> extends Fragment i
      * {@inheritDoc}
      */
     @Override
-    public void setTitle(@StringRes int resource) {
-        setTitle(getString(resource));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTitle(@NonNull CharSequence msg) {
-        getActivity().setTitle(msg);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void onStart() {
         super.onStart();
         if (getPresenter() != null) {

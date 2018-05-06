@@ -10,9 +10,11 @@ import com.alium.nibo.domain.places.GetPlaceDetailsUseCase;
 public class InteractorModule {
 
     RepositoryModule repositoryModule;
+    private ProviderModule providerModule;
 
-    public InteractorModule(RepositoryModule repositoryModule) {
+    public InteractorModule(RepositoryModule repositoryModule, ProviderModule providerModule) {
         this.repositoryModule = repositoryModule;
+        this.providerModule = providerModule;
     }
 
 
@@ -22,7 +24,7 @@ public class InteractorModule {
 
 
     public GetPlaceDetailsUseCase getGetPlaceDetailsUseCase() {
-        return new GetPlaceDetailsUseCase(repositoryModule.getDirectionsRepository());
+        return new GetPlaceDetailsUseCase(providerModule.getSuggestionsProvider());
     }
 
 }

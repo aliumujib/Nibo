@@ -14,5 +14,4 @@ public interface ILocationRepository {
 
     Observable<Location> getLocationObservable();
 
-    Observable<Place> getPlaceByID(final String placeId);
 }

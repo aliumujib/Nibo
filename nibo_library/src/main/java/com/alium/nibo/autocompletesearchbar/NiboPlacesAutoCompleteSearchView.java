@@ -116,15 +116,13 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
 
     private NiboAutocompleteSVProvider mProvider;
     private PlaceSuggestionsBuilder mSamplesSuggestionsBuilder;
+    private SuggestionsProvider mSuggestionsProvider;
 
     public void setmProvider(NiboAutocompleteSVProvider mProvider) {
         Log.d(TAG, "Procider has been set");
         this.mProvider = mProvider;
-
-        SuggestionsProvider.setmContext(getActivity());
-        SuggestionsProvider.setmGoogleApiClient(mProvider.getGoogleApiClient());
+        mSuggestionsProvider = new SuggestionsProvider(mProvider.getGoogleApiClient(), getContext());
         setUpSearchView(mProvider.getShouldUseVoice());
-
     }
 
     @Override
@@ -298,7 +296,7 @@ public class NiboPlacesAutoCompleteSearchView extends RevealViewGroup {
             }
         });
 
-        mSuggestionBuilder = new PlaceSuggestionsBuilder(getActivity());
+        mSuggestionBuilder = new PlaceSuggestionsBuilder(mSuggestionsProvider);
 
         this.setSearchListener(mProvider.getSearchListener());
 

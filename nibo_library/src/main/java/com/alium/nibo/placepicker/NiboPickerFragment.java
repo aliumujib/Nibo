@@ -19,12 +19,11 @@ import com.alium.nibo.autocompletesearchbar.NiboAutocompleteSVProvider;
 import com.alium.nibo.autocompletesearchbar.NiboPlacesAutoCompleteSearchView;
 import com.alium.nibo.autocompletesearchbar.NiboSearchSuggestionItem;
 import com.alium.nibo.base.BaseNiboFragment;
-import com.alium.nibo.di.GoogleClientModule;
-import com.alium.nibo.di.Injection;
 import com.alium.nibo.models.NiboSelectedPlace;
 import com.alium.nibo.utils.NiboConstants;
 import com.alium.nibo.utils.NiboStyle;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -38,7 +37,6 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Presenter> implements NiboAutocompleteSVProvider, NiboPickerContracts.View {
 
-    private String mAddress;
     private RelativeLayout mRootLayout;
     private NiboPlacesAutoCompleteSearchView mSearchView;
     private LinearLayout mLocationDetails;
@@ -87,7 +85,7 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         setUpBackPresses(view);
-        initmap();
+        initMap();
 
 
         if (mConfirmButtonTitle != null && !mConfirmButtonTitle.equals("")) {
@@ -203,8 +201,7 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
         this.mGeocodeAddress = (TextView) convertView.findViewById(R.id.geocode_address);
         this.mPickLocationTextView = (TextView) convertView.findViewById(R.id.pick_location_textview);
         this.mPickLocationLL = (LinearLayout) convertView.findViewById(R.id.pick_location_btn);
-
-        mSearchView.setmProvider(this);
+        this.mSearchView.setmProvider(this);
     }
 
     @Override
@@ -250,15 +247,7 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
     @Override
     public void injectDependencies() {
         super.injectDependencies();
-
-        Injection.InjectionBuilder injectionBuilder = new Injection.InjectionBuilder();
-        injectionBuilder.setGoogleClientModule(new GoogleClientModule(getAppCompatActivity(), new ConnectionCallbacksImpl(), new OnConnectionFailedListenerImpl()));
-
-
-        //injectionBuilder.setProviderModule(new ProviderModule(getAppCompatActivity()));
-
-        injection = injectionBuilder.build();
-
+        injectPresenter(injection.getNiboPickerPresenter());
     }
 
     @Override
@@ -281,10 +270,7 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
 
         @Override
         public void onSearchEditClosed() {
-            if (mAddress != null) {
-                showAddressWithTransition();
-            }
-
+            showAddressWithTransition();
         }
 
 
@@ -315,7 +301,6 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
 
         @Override
         public boolean onSuggestion(NiboSearchSuggestionItem niboSearchSuggestionItem) {
-            /* Toast.makeText(getContext(), niboSearchSuggestionItem.getValue(), Toast.LENGTH_LONG).show(); */
             initSearchViews(niboSearchSuggestionItem);
             presenter.getPlaceDetailsById(niboSearchSuggestionItem.getPlaceID());
             return false;

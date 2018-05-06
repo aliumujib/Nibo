@@ -14,13 +14,13 @@ import java.util.List;
 import io.reactivex.Observable;
 
 public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
-    private Context mContext;
     private List<NiboSearchSuggestionItem> mHistorySuggestions = new ArrayList<>();
 
     private String TAG = getClass().getSimpleName();
+    private SuggestionsProvider suggestionsProvider;
 
-    public PlaceSuggestionsBuilder(Context context) {
-        this.mContext = context;
+    public PlaceSuggestionsBuilder(SuggestionsProvider suggestionsProvider) {
+        this.suggestionsProvider = suggestionsProvider;
     }
 
     @Override
@@ -33,6 +33,6 @@ public class PlaceSuggestionsBuilder implements SearchSuggestionsBuilder {
 
     @Override
     public Observable<Collection<NiboSearchSuggestionItem>> rXbuildSearchSuggestion(int maxCount, final String query) {
-        return SuggestionsProvider.sharedInstance.getSuggestions(query);
+        return suggestionsProvider.getSuggestions(query);
     }
 }

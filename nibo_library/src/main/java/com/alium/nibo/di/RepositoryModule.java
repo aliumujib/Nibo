@@ -4,6 +4,7 @@ import com.alium.nibo.repo.contracts.IDirectionsRepository;
 import com.alium.nibo.repo.contracts.IGeoCodingRepository;
 import com.alium.nibo.repo.directions.DirectionsRepository;
 import com.alium.nibo.repo.location.GeoCodingRepository;
+import com.alium.nibo.repo.location.LocationRepository;
 
 /**
  * Created by aliumujib on 03/05/2018.

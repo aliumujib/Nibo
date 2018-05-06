@@ -2,6 +2,9 @@ package com.alium.nibo.di;
 
 import com.alium.nibo.utils.NiboConstants;
 
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -23,9 +26,17 @@ public class RetrofitModule {
 
     private RetrofitModule() {
         if (retrofit == null) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+            httpClient.addInterceptor(logging);
+
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(NiboConstants.BASE_DIRECTIONS_URL)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(httpClient.build())
                     .build();
         }
     }
