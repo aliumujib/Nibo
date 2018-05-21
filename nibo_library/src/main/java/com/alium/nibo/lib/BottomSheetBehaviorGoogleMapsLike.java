@@ -287,24 +287,26 @@ public class BottomSheetBehaviorGoogleMapsLike<V extends View> extends Coordinat
             return false;
         }
 
-        int action = MotionEventCompat.getActionMasked(event);
-        if (mState == STATE_DRAGGING && action == MotionEvent.ACTION_DOWN) {
-            return true;
-        }
+       if(mViewDragHelper!=null){
+           int action = MotionEventCompat.getActionMasked(event);
+           if (mState == STATE_DRAGGING && action == MotionEvent.ACTION_DOWN) {
+               return true;
+           }
 
-        mViewDragHelper.processTouchEvent(event);
+           mViewDragHelper.processTouchEvent(event);
 
-        if (action == MotionEvent.ACTION_DOWN) {
-            reset();
-        }
+           if (action == MotionEvent.ACTION_DOWN) {
+               reset();
+           }
 
-        // The ViewDragHelper tries to capture only the top-most View. We have to explicitly tell it
-        // to capture the bottom sheet in case it is not captured and the touch slop is passed.
-        if (action == MotionEvent.ACTION_MOVE && !mIgnoreEvents) {
-            if (Math.abs(mInitialY - event.getY()) > mViewDragHelper.getTouchSlop()) {
-                mViewDragHelper.captureChildView(child, event.getPointerId(event.getActionIndex()));
-            }
-        }
+           // The ViewDragHelper tries to capture only the top-most View. We have to explicitly tell it
+           // to capture the bottom sheet in case it is not captured and the touch slop is passed.
+           if (action == MotionEvent.ACTION_MOVE && !mIgnoreEvents) {
+               if (Math.abs(mInitialY - event.getY()) > mViewDragHelper.getTouchSlop()) {
+                   mViewDragHelper.captureChildView(child, event.getPointerId(event.getActionIndex()));
+               }
+           }
+       }
         return !mIgnoreEvents;
     }
 

@@ -1,31 +1,21 @@
 package com.alium.nibo.repo.location;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.alium.nibo.repo.contracts.ILocationRepository;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
-import pl.charmas.android.reactivelocation2.ReactiveLocationProvider;
 
 /**
  * Created by abdulmujibaliu on 9/3/17.
