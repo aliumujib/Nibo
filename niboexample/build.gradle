@@ -20,6 +20,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -31,8 +36,8 @@ dependencies {
     //compile 'com.github.aliumujib:Nibo:v1.01'
 
     compile project(':nibo_library')
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:26.+'
+    compile "com.android.support:appcompat-v7:$rootProject.ext.supportVersion"
+    compile "com.android.support.constraint:constraint-layout:1.0.2"
+    compile "com.android.support:design:$rootProject.ext.supportVersion"
     testCompile 'junit:junit:4.12'
 }
