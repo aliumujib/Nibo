@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
-
-
+apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.aliumujib'
 
 repositories {
@@ -48,7 +47,11 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
 
-    //RxPlaceAutoCompleteSearchBar
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
 }
 
 dependencies {
