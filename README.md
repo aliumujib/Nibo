@@ -6,10 +6,10 @@ Nibo library for Android
 
 Android library that provides UI for a customizable place picker, origin and destination picker and Google Places autocomplete searchview
 
-Current stable version - 1.02
+Current stable version - 2.0
 ---------------
 
-**This version uses Google Play Services 11.0.4 and RxJava 2.0.+**
+**This version uses Google Play Services 11.6.0 and RxJava 2.0.+**
 
 What can you do with this?
 --------------------------
@@ -108,6 +108,27 @@ Intent intent = new Intent(this, NiboPlacePickerActivity.class);
  NiboPlacePickerActivity.setBuilder(config);
  startActivityForResult(intent, REQUEST_CODE);
 ```
+
+- To retrieve the results:
+
+```java
+Intent intent = new Intent(this,
+        if (resultCode == Activity.RESULT_OK && requestCode == 300) {
+            NiboSelectedPlace selectedPlace = data.getParcelableExtra(NiboConstants.SELECTED_PLACE_RESULT);
+            Toast.makeText(this, selectedPlace.getPlaceAddress(), Toast.LENGTH_LONG).show();
+
+            Toast.makeText(this, selectedPlace.getLatitude(), Toast.LENGTH_LONG).show();
+
+              Toast.makeText(this, selectedPlace.getLongitude(), Toast.LENGTH_LONG).show();
+        } else if (resultCode == Activity.RESULT_OK && requestCode == 200) {
+            NiboSelectedOriginDestination selectedOriginDestination = data.getParcelableExtra(NiboConstants.SELECTED_ORIGIN_DESTINATION_RESULT);
+            Toast.makeText(this, selectedOriginDestination.getOriginFullName() + " - " + selectedOriginDestination.getDestinationFullName(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Error getting results", Toast.LENGTH_LONG).show();
+        }
+
+```
+
 - You can customize it other things like the directions Polyline color using the NiboPlacePickerBuilder as shown above.
 
 
@@ -132,7 +153,7 @@ allprojects {
 
 ```groovy
 dependencies {
-     compile 'com.github.aliumujib:Nibo:v1.02'
+     compile 'com.github.aliumujib:Nibo:2.0'
 }
 ```
 
