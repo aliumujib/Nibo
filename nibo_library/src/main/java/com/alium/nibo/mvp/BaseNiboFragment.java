@@ -31,7 +31,7 @@ import android.view.ViewGroup;
 import com.alium.nibo.mvp.contract.NiboPresentable;
 import com.alium.nibo.mvp.contract.NiboViewable;
 
-public abstract class BaseFragment<T extends NiboPresentable> extends Fragment implements NiboViewable<T> {
+public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragment implements NiboViewable<T> {
 
     protected T presenter;
 
