@@ -22,7 +22,7 @@ import com.alium.nibo.mvp.contract.NiboViewable;
 import com.alium.nibo.mvp.contract.NiboPresentable;
 
 
-public class BasePresenter<T extends NiboViewable> implements NiboPresentable<T> {
+public class BaseNiboPresenter<T extends NiboViewable> implements NiboPresentable<T> {
 
     private T viewable;
 

@@ -9,7 +9,7 @@ import com.alium.nibo.domain.places.GetPlaceDetailsUseCase;
 import com.alium.nibo.domain.places.GetPlaceSuggestionsUseCase;
 import com.alium.nibo.models.NiboSelectedOriginDestination;
 import com.alium.nibo.models.Route;
-import com.alium.nibo.mvp.BasePresenter;
+import com.alium.nibo.mvp.BaseNiboPresenter;
 import com.alium.nibo.rx.DefaultObserver;
 import com.alium.nibo.utils.NiboConstants;
 import com.google.android.gms.location.places.Place;
@@ -20,7 +20,7 @@ import java.util.List;
  * Created by aliumujib on 06/05/2018.
  */
 
-public class OriginDestinationPickerPresenter extends BasePresenter<OriginDestinationContracts.View> implements OriginDestinationContracts.Presenter {
+public class OriginDestinationPickerPresenter extends BaseNiboPresenter<OriginDestinationContracts.View> implements OriginDestinationContracts.Presenter {
 
     private final String TAG = getClass().getName();
     private Params directionParams = Params.create();

@@ -6,7 +6,7 @@ import com.alium.nibo.domain.Params;
 import com.alium.nibo.domain.geocoding.GeocodeCordinatesUseCase;
 import com.alium.nibo.domain.places.GetPlaceDetailsUseCase;
 import com.alium.nibo.models.NiboSelectedPlace;
-import com.alium.nibo.mvp.BasePresenter;
+import com.alium.nibo.mvp.BaseNiboPresenter;
 import com.alium.nibo.placepicker.NiboPickerContracts.View;
 import com.alium.nibo.rx.DefaultObserver;
 import com.alium.nibo.utils.NiboConstants;
@@ -16,7 +16,7 @@ import com.google.android.gms.location.places.Place;
  * Created by aliumujib on 05/05/2018.
  */
 
-public class NiboPickerPresenter extends BasePresenter<View> implements NiboPickerContracts.Presenter {
+public class NiboPickerPresenter extends BaseNiboPresenter<View> implements NiboPickerContracts.Presenter {
 
     private final String TAG = getClass().getSimpleName();
     protected NiboSelectedPlace selectedPlace;
