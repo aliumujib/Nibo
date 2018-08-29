@@ -314,7 +314,6 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
         // Kick off the process of building the LocationCallback, LocationRequest, and
         // LocationSettingsRequest objects.
         createLocationCallback();
-        startLocationUpdates();
 
         this.mCenterMyLocationFab = (FloatingActionButton) view.findViewById(R.id.center_my_location_fab);
         this.mCenterMyLocationFab.setOnClickListener(new View.OnClickListener() {
@@ -332,6 +331,8 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
         }
 
     }
+
+
 
     /**
      * Creates a callback for receiving location events.
@@ -368,7 +369,12 @@ public abstract class BaseNiboFragment<T extends NiboPresentable> extends Fragme
         } else if (!checkPermissions()) {
             requestPermissions();
         }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
     }
 
     /**
