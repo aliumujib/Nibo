@@ -126,7 +126,7 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                     // handle back button's click listener
-                   presenter.handleBackPress();
+                    presenter.handleBackPress();
                     return true;
                 }
                 return false;
@@ -153,7 +153,9 @@ public class NiboPickerFragment extends BaseNiboFragment<NiboPickerContracts.Pre
 
     @Override
     protected void extractGeocode(final double lati, final double longi) {
-        presenter.getGeocode(lati, longi);
+        if (presenter != null) {
+            presenter.getGeocode(lati, longi);
+        }
     }
 
     @Override
