@@ -87,5 +87,5 @@ package com.aliumujib.nibo
  * @see SelectedPlace
  */
 object PlacePicker {
-    const val VERSION = "1.0.0"
+    const val VERSION = "3.0.0"
 }
