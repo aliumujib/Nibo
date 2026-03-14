@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="place_picker_title">Select Location</string>
+    <string name="place_picker_search_hint">Search for a place</string>
+    <string name="place_picker_confirm">Confirm</string>
+    <string name="place_picker_cancel">Cancel</string>
+    <string name="place_picker_no_results">No places found</string>
+    <string name="place_picker_loading">Loading...</string>
+    <string name="place_picker_error">Error loading places</string>
+</resources>
