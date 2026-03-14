@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Nibo"
+include(":place-picker")
+include(":sample")
