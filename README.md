@@ -8,6 +8,7 @@ A Google Places-powered location picker for Jetpack Compose.
 ## Features
 
 - Full-screen place picker with search autocomplete
+- **Reverse geocoding** - Convert coordinates to place names
 - Map preview with selected location
 - Confirmation dialog before selection
 - Customizable text, place types, and language
@@ -32,7 +33,7 @@ Add the dependency to your module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.aliumujib:Nibo:3.0.0")
+    implementation("com.github.aliumujib:Nibo:3.1.0")
 }
 ```
 
@@ -51,7 +52,7 @@ dependencyResolutionManagement {
 
 // build.gradle
 dependencies {
-    implementation 'com.github.aliumujib:Nibo:3.0.0'
+    implementation 'com.github.aliumujib:Nibo:3.1.0'
 }
 ```
 

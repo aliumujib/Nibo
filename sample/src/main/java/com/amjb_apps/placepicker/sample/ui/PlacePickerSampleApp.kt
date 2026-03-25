@@ -169,7 +169,7 @@ fun PlacePickerSampleApp() {
             // Reverse Geocoding Test Section
             HorizontalDivider()
             
-            ReverseGeocodingTestSection()
+            ReverseGeocodingTestSection(selectedPlace = selectedPlace)
         }
     }
 }
@@ -242,17 +242,13 @@ private fun PlaceDetailRow(label: String, value: String) {
 }
 
 @Composable
-private fun ReverseGeocodingTestSection() {
+private fun ReverseGeocodingTestSection(selectedPlace: SelectedPlace?) {
     val scope = rememberCoroutineScope()
     val dataSource = remember { PlacesDataSource(BuildConfig.GOOGLE_PLACES_API_KEY) }
     
     var reverseGeocodedPlace by remember { mutableStateOf<SelectedPlace?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
-    
-    // Test coordinates: Statue of Liberty, New York
-    val testLatitude = 40.6892
-    val testLongitude = -74.0445
     
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -264,43 +260,54 @@ private fun ReverseGeocodingTestSection() {
             fontWeight = FontWeight.Bold
         )
         
-        Text(
-            text = "Test coordinates: Statue of Liberty",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        
-        Text(
-            text = "Lat: $testLatitude, Lng: $testLongitude",
-            style = MaterialTheme.typography.bodySmall,
-            fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        if (selectedPlace != null) {
+            Text(
+                text = "Using coordinates from selected place:",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            
+            Text(
+                text = "Lat: %.6f, Lng: %.6f".format(selectedPlace.latitude, selectedPlace.longitude),
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            Text(
+                text = "Select a place first to test reverse geocoding",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+            )
+        }
         
         Button(
             onClick = {
-                isLoading = true
-                error = null
-                reverseGeocodedPlace = null
-                
-                scope.launch {
-                    dataSource.reverseGeocode(
-                        latitude = testLatitude,
-                        longitude = testLongitude,
-                        preferEstablishments = true
-                    ).fold(
-                        onSuccess = { place ->
-                            reverseGeocodedPlace = place
-                            isLoading = false
-                        },
-                        onFailure = { throwable ->
-                            error = throwable.message
-                            isLoading = false
-                        }
-                    )
+                selectedPlace?.let { place ->
+                    isLoading = true
+                    error = null
+                    reverseGeocodedPlace = null
+                    
+                    scope.launch {
+                        dataSource.reverseGeocode(
+                            latitude = place.latitude,
+                            longitude = place.longitude,
+                            preferEstablishments = true
+                        ).fold(
+                            onSuccess = { geocodedPlace ->
+                                reverseGeocodedPlace = geocodedPlace
+                                isLoading = false
+                            },
+                            onFailure = { throwable ->
+                                error = throwable.message
+                                isLoading = false
+                            }
+                        )
+                    }
                 }
             },
-            enabled = !isLoading,
+            enabled = !isLoading && selectedPlace != null,
             modifier = Modifier.fillMaxWidth()
         ) {
             if (isLoading) {
