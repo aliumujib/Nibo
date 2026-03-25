@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliumujib.nibo.api.PlacePrediction
-import com.aliumujib.nibo.api.PlacesApiClient
+import com.aliumujib.nibo.api.PlacesDataSource
 import com.aliumujib.nibo.data.PlacePickerConfig
 import com.aliumujib.nibo.data.SelectedPlace
 import kotlinx.coroutines.Job
@@ -21,10 +21,11 @@ private const val TAG = "PlacePickerVM"
  * ViewModel for the PlacePicker screen.
  */
 class PlacePickerViewModel(
-    private val config: PlacePickerConfig
+    private val config: PlacePickerConfig,
+    private val dataSource: PlacesDataSource
 ) : ViewModel() {
 
-    private val apiClient = PlacesApiClient(config.apiKey)
+    private val apiClient = dataSource
 
     private val _state = MutableStateFlow(PlacePickerState(query = config.initialQuery))
     val state: StateFlow<PlacePickerState> = _state.asStateFlow()
@@ -183,5 +184,8 @@ class PlacePickerViewModel(
 class PlacePickerViewModelFactory(
     private val config: PlacePickerConfig
 ) {
-    fun create(): PlacePickerViewModel = PlacePickerViewModel(config)
+    fun create(): PlacePickerViewModel = PlacePickerViewModel(
+        config = config,
+        dataSource = PlacesDataSource(config.apiKey)
+    )
 }

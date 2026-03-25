@@ -174,8 +174,9 @@ private fun MapPreview(
         uiSettings = mapUiSettings
     ) {
         // Marker at the location
+        val markerState = remember(position) { MarkerState(position = position) }
         Marker(
-            state = MarkerState(position = position),
+            state = markerState,
             title = title
         )
 
