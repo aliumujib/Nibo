@@ -30,8 +30,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -41,8 +44,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.aliumujib.nibo.PlacePickerContract
 import com.aliumujib.nibo.PlacePickerInput
+import com.aliumujib.nibo.api.PlacesDataSource
 import com.aliumujib.nibo.data.SelectedPlace
 import com.amjb_apps.placepicker.sample.BuildConfig
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,6 +166,11 @@ fun PlacePickerSampleApp() {
                     }
                 }
             }
+            
+            // Reverse Geocoding Test Section
+            HorizontalDivider()
+            
+            ReverseGeocodingTestSection()
         }
     }
 }
@@ -229,5 +239,136 @@ private fun PlaceDetailRow(label: String, value: String) {
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
+    }
+}
+
+@Composable
+private fun ReverseGeocodingTestSection() {
+    val scope = rememberCoroutineScope()
+    val dataSource = remember { PlacesDataSource(BuildConfig.GOOGLE_PLACES_API_KEY) }
+    
+    var reverseGeocodedPlace by remember { mutableStateOf<SelectedPlace?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+    
+    // Test coordinates: Statue of Liberty, New York
+    val testLatitude = 40.6892
+    val testLongitude = -74.0445
+    
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = "Reverse Geocoding Test",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        
+        Text(
+            text = "Test coordinates: Statue of Liberty",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        
+        Text(
+            text = "Lat: $testLatitude, Lng: $testLongitude",
+            style = MaterialTheme.typography.bodySmall,
+            fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        
+        Button(
+            onClick = {
+                isLoading = true
+                error = null
+                reverseGeocodedPlace = null
+                
+                scope.launch {
+                    dataSource.reverseGeocode(
+                        latitude = testLatitude,
+                        longitude = testLongitude,
+                        preferEstablishments = true
+                    ).fold(
+                        onSuccess = { place ->
+                            reverseGeocodedPlace = place
+                            isLoading = false
+                        },
+                        onFailure = { throwable ->
+                            error = throwable.message
+                            isLoading = false
+                        }
+                    )
+                }
+            },
+            enabled = !isLoading,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (isLoading) {
+                androidx.compose.material3.CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Reverse Geocoding...")
+            } else {
+                Text("Test Reverse Geocoding")
+            }
+        }
+        
+        // Show error if any
+        error?.let { errorMessage ->
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
+                Text(
+                    text = errorMessage,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
+        
+        // Show result if available
+        AnimatedVisibility(
+            visible = reverseGeocodedPlace != null,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            reverseGeocodedPlace?.let { place ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "✓ Reverse Geocoded Result",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            fontWeight = FontWeight.Bold
+                        )
+                        
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.2f)
+                        )
+                        
+                        PlaceDetailRow(label = "Name", value = place.name)
+                        PlaceDetailRow(label = "Address", value = place.address)
+                        PlaceDetailRow(label = "Place ID", value = place.placeId)
+                    }
+                }
+            }
+        }
     }
 }
