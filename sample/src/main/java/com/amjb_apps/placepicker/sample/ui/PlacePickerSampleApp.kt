@@ -17,7 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
@@ -44,19 +51,21 @@ import androidx.compose.ui.unit.dp
 import com.aliumujib.nibo.PlacePickerContract
 import com.aliumujib.nibo.PlacePickerInput
 import com.aliumujib.nibo.api.PlacesDataSource
+import com.aliumujib.nibo.data.PlacePickerConfig
 import com.aliumujib.nibo.data.SelectedPlace
 import com.amjb_apps.placepicker.sample.BuildConfig
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlacePickerSampleApp() {
+fun PlacePickerSampleApp(
+    viewModel: PlacePickerSampleViewModel = viewModel()
+) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    
-    var selectedPlace by rememberSaveable { mutableStateOf<SelectedPlace?>(null) }
+    val state by viewModel.state.collectAsState()
     
     val placePicker = rememberLauncherForActivityResult(PlacePickerContract()) { result ->
-        selectedPlace = result
+        viewModel.onAction(SampleAppAction.UpdateSelectedPlace(result))
     }
     
     Scaffold(
@@ -84,11 +93,45 @@ fun PlacePickerSampleApp() {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            // Configuration Toggle Button
+            Button(
+                onClick = { viewModel.onAction(SampleAppAction.ToggleConfigSection) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    Icons.Default.Settings,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(if (state.showConfigSection) "Hide Configuration" else "Show Configuration")
+            }
+            
+            // Configuration Section
+            AnimatedVisibility(
+                visible = state.showConfigSection,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                ConfigurationSection(
+                    config = state.pickerConfig,
+                    onAction = viewModel::onAction
+                )
+            }
+            
             // Launch Button
             Button(
                 onClick = {
+                    val config = state.pickerConfig
                     placePicker.launch(
-                        PlacePickerInput(apiKey = BuildConfig.GOOGLE_PLACES_API_KEY)
+                        PlacePickerInput(
+                            apiKey = BuildConfig.GOOGLE_PLACES_API_KEY,
+                            title = config.title,
+                            searchHint = config.searchHint,
+                            confirmButtonText = config.confirmButtonText,
+                            cancelButtonText = config.cancelButtonText,
+                            placeTypes = listOf(config.placeType)
+                        )
                     )
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -116,25 +159,25 @@ fun PlacePickerSampleApp() {
                     fontWeight = FontWeight.Bold
                 )
                 
-                AnimatedVisibility(visible = selectedPlace != null) {
-                    IconButton(onClick = { selectedPlace = null }) {
+                AnimatedVisibility(visible = state.selectedPlace != null) {
+                    IconButton(onClick = { viewModel.onAction(SampleAppAction.UpdateSelectedPlace(null)) }) {
                         Icon(Icons.Default.Clear, contentDescription = "Clear")
                     }
                 }
             }
             
             AnimatedVisibility(
-                visible = selectedPlace != null,
+                visible = state.selectedPlace != null,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                selectedPlace?.let { place ->
+                state.selectedPlace?.let { place ->
                     PlaceResultCard(place = place)
                 }
             }
             
             AnimatedVisibility(
-                visible = selectedPlace == null,
+                visible = state.selectedPlace == null,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
@@ -169,7 +212,7 @@ fun PlacePickerSampleApp() {
             // Reverse Geocoding Test Section
             HorizontalDivider()
             
-            ReverseGeocodingTestSection(selectedPlace = selectedPlace)
+            ReverseGeocodingTestSection(selectedPlace = state.selectedPlace)
         }
     }
 }
@@ -372,6 +415,113 @@ private fun ReverseGeocodingTestSection(selectedPlace: SelectedPlace?) {
                         PlaceDetailRow(label = "Name", value = place.name)
                         PlaceDetailRow(label = "Address", value = place.address)
                         PlaceDetailRow(label = "Place ID", value = place.placeId)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ConfigurationSection(
+    config: PickerConfigState,
+    onAction: (SampleAppAction) -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Picker Configuration",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            
+            HorizontalDivider()
+            
+            // Title
+            OutlinedTextField(
+                value = config.title,
+                onValueChange = { onAction(SampleAppAction.UpdateTitle(it)) },
+                label = { Text("Title") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            // Search Hint
+            OutlinedTextField(
+                value = config.searchHint,
+                onValueChange = { onAction(SampleAppAction.UpdateSearchHint(it)) },
+                label = { Text("Search Hint") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            // Confirm Button Text
+            OutlinedTextField(
+                value = config.confirmButtonText,
+                onValueChange = { onAction(SampleAppAction.UpdateConfirmButtonText(it)) },
+                label = { Text("Confirm Button Text") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            // Cancel Button Text
+            OutlinedTextField(
+                value = config.cancelButtonText,
+                onValueChange = { onAction(SampleAppAction.UpdateCancelButtonText(it)) },
+                label = { Text("Cancel Button Text") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            // Place Type Dropdown
+            var expanded by remember { mutableStateOf(false) }
+            val placeTypes = listOf(
+                "(regions)" to "Regions",
+                "(cities)" to "Cities",
+                "geocode" to "Geocode",
+                "address" to "Address",
+                "establishment" to "Establishment"
+            )
+            
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
+                OutlinedTextField(
+                    value = placeTypes.find { it.first == config.placeType }?.second ?: config.placeType,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Place Type") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor(),
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+                )
+                
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    placeTypes.forEach { (value, label) ->
+                        DropdownMenuItem(
+                            text = { Text(label) },
+                            onClick = {
+                                onAction(SampleAppAction.UpdatePlaceType(value))
+                                expanded = false
+                            }
+                        )
                     }
                 }
             }
