@@ -93,7 +93,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "com.github.aliumujib"
             artifactId = "nibo"
-            version = "3.1.0"
+            version = "3.1.1"
 
             afterEvaluate {
                 from(components["release"])

@@ -33,7 +33,7 @@ Add the dependency to your module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("com.github.aliumujib:Nibo:3.1.0")
+    implementation("com.github.aliumujib:Nibo:3.1.1")
 }
 ```
 
@@ -52,7 +52,7 @@ dependencyResolutionManagement {
 
 // build.gradle
 dependencies {
-    implementation 'com.github.aliumujib:Nibo:3.1.0'
+    implementation 'com.github.aliumujib:Nibo:3.1.1'
 }
 ```
 
